@@ -1,0 +1,14 @@
+/**
+
+\mainpage
+\htmlinclude manifest.html
+
+The \b sound_play package, documented <a
+href="http://www.ros.org/wiki/sound_play>here</a> provides a way to say
+strings, play WAV or OGG files and to play builtin sounds. Python and C++
+client classes are provide for ease of use:
+
+- \ref sound_play::SoundHandle for C++
+- \ref libsoundplay::SoundHandle for Python
+
+*/
