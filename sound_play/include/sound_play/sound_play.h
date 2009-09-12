@@ -288,7 +288,8 @@ public:
 private:
 	void init(ros::NodeHandle nh, const std::string &topic)
 	{
-    pub_ = nh.advertise<sound_play::SoundRequest>(topic, 5);
+    nh_ = nh;
+		pub_ = nh.advertise<sound_play::SoundRequest>(topic, 5);
 		quiet_ = false;
   }
 
@@ -296,6 +297,9 @@ private:
   {
 		boost::mutex::scoped_lock lock(mutex_);
     
+		if (!nh_.ok())
+			return;
+		
 		SoundRequest msg;
     msg.sound = snd;
     msg.command = cmd;
@@ -307,6 +311,7 @@ private:
   }
 
 	bool quiet_;
+	ros::NodeHandle nh_;
   ros::Publisher pub_;
 	boost::mutex mutex_;
 };

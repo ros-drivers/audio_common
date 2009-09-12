@@ -44,7 +44,8 @@ from sound_play.msg import SoundRequest
 import os
 import logging
 import sys
-import traceback                                                 
+import traceback
+from diagnostic_msgs.msg import DiagnosticStatus, KeyValue, DiagnosticArray
 
 try:
     import pygame.mixer as mixer
@@ -69,7 +70,7 @@ class soundtype:
         self.chan = None
         self.sound = mixer.Sound(file)
         self.sound.set_volume(volume)
-        self.staleness = 0
+        self.staleness = 1
         self.file = file
 
     def loop(self):  
@@ -77,7 +78,7 @@ class soundtype:
         self.staleness = 0
         try:
             if self.state == self.COUNTING:
-                stop()
+                self.stop()
             
             if self.state == self.STOPPED:
                 self.chan = self.sound.play(-1)
@@ -100,7 +101,7 @@ class soundtype:
         self.staleness = 0
         try:
             if self.state == self.LOOPING:
-                stop()
+                self.stop()
             
             if self.state == self.STOPPED:
                 self.chan = self.sound.play()
@@ -137,8 +138,9 @@ class soundplay:
         self.stopdict(self.voicesounds)
 
     def callback(self,data):
+        if not self.initialized:
+            return
         self.mutex.acquire()
-        
         try:
             if data.sound == SoundRequest.ALL and data.command == SoundRequest.PLAY_STOP:
                 self.stopall()
@@ -179,8 +181,19 @@ class soundplay:
                         rospy.logdebug('command for cached text: "%s"'%data.arg)
                     sound = self.voicesounds[data.arg]
                 else:
-                    rospy.logdebug('command for builting wave: %i'%data.sound)
+                    rospy.logdebug('command for builtin wave: %i'%data.sound)
+                    if not data.sound in self.builtinsounds:
+                        params = self.builtinsoundparams[data.sound]
+                        self.builtinsounds[data.sound] = soundtype(params[0], params[1])
                     sound = self.builtinsounds[data.sound]
+                if sound.staleness != 0 and data.command != SoundRequest.PLAY_STOP:
+                    # This sound isn't counted in active_sounds
+                    #print "activating %i %s"%(data.sound,data.arg)
+                    self.active_sounds = self.active_sounds + 1
+                    sound.staleness = 0
+#                    if self.active_sounds > self.num_channels:
+#                        mixer.set_num_channels(self.active_sounds)
+#                        self.num_channels = self.active_sounds
                 sound.command(data.command)
         except Exception, e:
             rospy.logerr('Exception in callback: %s'%str(e))
@@ -200,54 +213,126 @@ class soundplay:
             #print "%s %i"%(key, staleness)
             if staleness >= 10:
                 purgelist.append(key)
+            if staleness == 0: # Sound is playing
+                self.active_sounds = self.active_sounds + 1
         for key in purgelist:
            del dict[key]
     
     def cleanup(self):
         #print "cleanup %i files %i voices"%(len(self.filesounds),len(self.voicesounds))
-        self.cleanupdict(self.filesounds)
-        self.cleanupdict(self.voicesounds)
+        self.mutex.acquire()
+        try:
+            self.active_sounds = 0
+            self.cleanupdict(self.filesounds)
+            self.cleanupdict(self.voicesounds)
+            self.cleanupdict(self.builtinsounds)
+        except:
+            rospy.loginfo('Exception in cleanup: %s'%sys.exc_info()[0])
+        finally:
+            self.mutex.release()
+
+    def diagnostics(self, state):
+        try:
+            da = DiagnosticArray()
+            ds = DiagnosticStatus()
+            ds.name = rospy.get_caller_id() + ": Node State"
+            if state == 0:
+                ds.level = DiagnosticStatus.OK
+                ds.message = "%i sounds playing"%self.active_sounds
+                ds.values.append(KeyValue("Active sounds", str(self.active_sounds)))
+                ds.values.append(KeyValue("Allocated sound channels", str(self.num_channels)))
+                ds.values.append(KeyValue("Buffered builtin sounds", str(len(self.builtinsounds))))
+                ds.values.append(KeyValue("Buffered wave sounds", str(len(self.filesounds))))
+                ds.values.append(KeyValue("Buffered voice sounds", str(len(self.voicesounds))))
+            elif state == 1:
+                ds.level = DiagnosticStatus.WARN
+                ds.message = "Sound device not open yet."
+            else:
+                ds.level = DiagnosticStatus.ERROR
+                ds.message = "Can't open sound device."
+            da.status.append(ds)
+            self.diagnostic_pub.publish(da)
+        except Exception, e:
+            rospy.loginfo('Exception in diagnostics: %s'%str(e))
 
     def __init__(self):
         rospy.init_node('sound_play')
+        self.diagnostic_pub = rospy.Publisher("/diagnostics", DiagnosticArray)
 
         rootdir = os.path.join(os.path.dirname(__file__),'..','sounds')
         
+        self.builtinsoundparams = {
+                SoundRequest.BACKINGUP              : (os.path.join(rootdir, 'BACKINGUP.ogg'), 0.1),
+                SoundRequest.NEEDS_UNPLUGGING       : (os.path.join(rootdir, 'NEEDS_UNPLUGGING.ogg'), 1),
+                SoundRequest.NEEDS_PLUGGING         : (os.path.join(rootdir, 'NEEDS_PLUGGING.ogg'), 1),
+                SoundRequest.NEEDS_UNPLUGGING_BADLY : (os.path.join(rootdir, 'NEEDS_UNPLUGGING_BADLY.ogg'), 1),
+                SoundRequest.NEEDS_PLUGGING_BADLY   : (os.path.join(rootdir, 'NEEDS_PLUGGING_BADLY.ogg'), 1),
+                }
+        
         self.mutex = threading.Lock()
-        while True:
-            try:
-                mixer.init(11025, -16, 1, 4000)
-                self.builtinsounds = {
-                        SoundRequest.BACKINGUP              : soundtype(os.path.join(rootdir, 'BACKINGUP.ogg'), 0.1),
-                        SoundRequest.NEEDS_UNPLUGGING       : soundtype(os.path.join(rootdir, 'NEEDS_UNPLUGGING.ogg')),
-                        SoundRequest.NEEDS_PLUGGING         : soundtype(os.path.join(rootdir, 'NEEDS_PLUGGING.ogg')),
-                        SoundRequest.NEEDS_UNPLUGGING_BADLY : soundtype(os.path.join(rootdir, 'NEEDS_UNPLUGGING_BADLY.ogg')),
-                        SoundRequest.NEEDS_PLUGGING_BADLY   : soundtype(os.path.join(rootdir, 'NEEDS_PLUGGING_BADLY.ogg')),
-                        }
-                self.filesounds = {}
-                self.voicesounds = {}
-                self.hotlist = []
-                break
-            except Exception, e:
-                rospy.logerr('Exception in sound startup, will retry in 5 seconds. Is the speaker connected? Have you configured ALSA? Can aplay play sound? See the wiki if there is a red light on the Logitech speaker. Have a look at http://pr.willowgarage.com/wiki/sound_play/Troubleshooting Error message: %s'%str(e))
-                rospy.sleep(5);
-
-        rospy.Subscriber("robotsound", SoundRequest, self.callback)
-
-        rospy.loginfo('sound_play node is ready to play sound')
-
+        sub = rospy.Subscriber("robotsound", SoundRequest, self.callback)
+        self.mutex.acquire()
+        self.no_error = True
+        self.initialized = False
+        self.active_sounds = 0
+        self.sleep(0.5) # For ros startup race condition
+        self.diagnostics(1)
         while not rospy.is_shutdown():
-            try:
-                rospy.sleep(1)   
-            except rospy.exceptions.ROSInterruptException:
-                break
-            self.mutex.acquire()
-            try:
-                self.cleanup()
-            except:
-                rospy.loginfo('Exception in cleanup: %s'%sys.exc_info()[0])
+            while not rospy.is_shutdown() and self.mixer_init():
+                self.no_error = True
+                self.initialized = True
+                self.mutex.release()
+                try:
+                    self.idle_loop()
+                    # Returns after inactive period to test device availability
+                    #print "Exiting idle"
+                except:
+                    rospy.loginfo('Exception in idle_loop: %s'%sys.exc_info()[0])
+                finally:
+                    self.mutex.acquire()
+                    mixer.quit()
+            self.diagnostics(2)
+        self.mutex.release()
 
-            self.mutex.release()
+    def mixer_init(self): 
+        try:
+            mixer.init(11025, -16, 1, 4000)
+            self.init_vars()
+            return True
+        except Exception, e:
+            if self.no_error:
+                rospy.logerr('Exception in sound startup, will retry once per second. Is the speaker connected? Have you configured ALSA? Can aplay play sound? See the wiki if there is a red light on the Logitech speaker. Have a look at http://pr.willowgarage.com/wiki/sound_play/Troubleshooting Error message: %s'%str(e))
+                self.no_error = False
+                self.initialized = False
+            self.sleep(1);
+        return False
+
+    def init_vars(self):
+        self.num_channels = 10
+        mixer.set_num_channels(self.num_channels)
+        self.builtinsounds = {}
+        self.filesounds = {}
+        self.voicesounds = {}
+        self.hotlist = []
+        if not self.initialized:
+            rospy.loginfo('sound_play node is ready to play sound')
+            
+    def sleep(self, duration):
+        try:    
+            rospy.sleep(duration)   
+        except rospy.exceptions.ROSInterruptException:
+            pass
+    
+    def idle_loop(self):
+        self.last_activity_time = rospy.get_time()
+        while (rospy.get_time() - self.last_activity_time < 10 or
+                 len(self.builtinsounds) + len(self.voicesounds) + len(self.filesounds) > 0) \
+                and not rospy.is_shutdown():
+            print "idle_loop"
+            self.diagnostics(0)
+            self.sleep(1)
+            self.cleanup()
+        print "idle_exiting"
 
 if __name__ == '__main__':
     soundplay()
