@@ -138,6 +138,7 @@ class soundplay:
         self.stopdict(self.voicesounds)
 
     def callback(self,data):
+        print "callback", str(data)
         if not self.initialized:
             return
         self.mutex.acquire()
@@ -200,6 +201,7 @@ class soundplay:
             rospy.loginfo(traceback.format_exc())
         finally:
             self.mutex.release()
+            print "done callback"
 
     # Purge sounds that haven't been played in a while.
     def cleanupdict(self, dict):
