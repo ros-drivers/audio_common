@@ -50,7 +50,7 @@ public:
 
 		void play()
 		{
-			client_->sendmsg(snd_, SoundRequest::PLAY_ONCE, arg_);
+			client_->sendMsg(snd_, SoundRequest::PLAY_ONCE, arg_);
 		}
 
 		/**
@@ -62,7 +62,7 @@ public:
 
 		void repeat()
 		{
-			client_->sendmsg(snd_, SoundRequest::PLAY_START, arg_);
+			client_->sendMsg(snd_, SoundRequest::PLAY_START, arg_);
 		}
 
 		/**
@@ -73,7 +73,7 @@ public:
 
 		void stop()
 		{
-			client_->sendmsg(snd_, SoundRequest::PLAY_STOP, arg_);
+			client_->sendMsg(snd_, SoundRequest::PLAY_STOP, arg_);
 		}
 	};
 	
@@ -145,26 +145,26 @@ public:
 /** \brief Say a string
  *
  * Send a string to be said by the sound_node. The vocalization can be
- * stopped using stopsaying or stopall.
+ * stopped using stopSaying or stopAll.
  *
  * \param s String to say
  */
 	
 	void say(const std::string &s)
   {
-    sendmsg(SoundRequest::SAY, SoundRequest::PLAY_ONCE, s);
+    sendMsg(SoundRequest::SAY, SoundRequest::PLAY_ONCE, s);
   }
 
 /** \brief Say a string repeatedly
  *
- * The string is said repeatedly until stopsaying or stopall is used.
+ * The string is said repeatedly until stopSaying or stopAll is used.
  *
  * \param s String to say repeatedly
  */
 	
   void repeat(const std::string &s)
   {
-    sendmsg(SoundRequest::SAY, SoundRequest::PLAY_START, s);
+    sendMsg(SoundRequest::SAY, SoundRequest::PLAY_START, s);
   }
 
 /** \brief Stop saying a string
@@ -175,67 +175,87 @@ public:
  * \param s Same string as in the say or repeat command
  */
 
-  void stopsaying(const std::string &s)
+  void stopSaying(const std::string &s)
   {
-    sendmsg(SoundRequest::SAY, SoundRequest::PLAY_STOP, s);
+    sendMsg(SoundRequest::SAY, SoundRequest::PLAY_STOP, s);
+  }
+
+  ROSCPP_DEPRECATED void stopsaying(const std::string &s)
+  {
+    stopSaying(s);
   }
 
 /** \brief Plays a WAV or OGG file
  *
- * Plays a WAV or OGG file once. The playback can be stopped by stopwave or
- * stopall.
+ * Plays a WAV or OGG file once. The playback can be stopped by stopWave or
+ * stopAll.
  *
  * \param s Filename of the WAV or OGG file. Must be an absolute path valid
  * on the computer on which the sound_play node is running
  */
 
-  void playwave(const std::string &s)
+  void playWave(const std::string &s)
   {
-    sendmsg(SoundRequest::PLAY_FILE, SoundRequest::PLAY_ONCE, s);
+    sendMsg(SoundRequest::PLAY_FILE, SoundRequest::PLAY_ONCE, s);
+  }
+
+  ROSCPP_DEPRECATED void playwave(const std::string &s)
+  {
+    playWave(s);
   }
 
 /** \brief Plays a WAV or OGG file repeatedly
  *
- * Plays a WAV or OGG file repeatedly until stopwave or stopall is used.
+ * Plays a WAV or OGG file repeatedly until stopWave or stopAll is used.
  *
  * \param s Filename of the WAV or OGG file. Must be an absolute path valid
  * on the computer on which the sound_play node is running.
  */
 
-  void startwave(const std::string &s)
+  void startWave(const std::string &s)
   {
-    sendmsg(SoundRequest::PLAY_FILE, SoundRequest::PLAY_START, s);
+    sendMsg(SoundRequest::PLAY_FILE, SoundRequest::PLAY_START, s);
+  }
+
+  ROSCPP_DEPRECATED void startwave(const std::string &s)
+  {
+    startWave(s);
   }
 
 /** \brief Stop playing a WAV or OGG file
  *
- * Stops playing a file that was previously started by playwave or
- * startwave.
+ * Stops playing a file that was previously started by playWave or
+ * startWave.
  *
- * \param s Same string as in the playwave or startwave command
+ * \param s Same string as in the playWave or startWave command
  */
 
-  void stopwave(const std::string &s)
+  void stopWave(const std::string &s)
   {
-    sendmsg(SoundRequest::PLAY_FILE, SoundRequest::PLAY_STOP, s);
+    sendMsg(SoundRequest::PLAY_FILE, SoundRequest::PLAY_STOP, s);
+  }
+
+  ROSCPP_DEPRECATED void stopwave(const std::string &s)
+  {
+    stopWave(s);
   }
 
 /** \brief Play a buildin sound
  *
  * Starts playing one of the built-in sounds. built-ing sounds are documented
- * in \ref SoundRequest.msg. Playback can be stopped by stopall.
+ * in \ref SoundRequest.msg. Playback can be stopped by stopAll.
  *
  * \param sound Identifier of the sound to play.
  */
 	
 	void play(int sound)
   {
-    sendmsg(sound, SoundRequest::PLAY_ONCE);
+    sendMsg(sound, SoundRequest::PLAY_ONCE);
   }
 
 /** \brief Play a buildin sound repeatedly
  *
- * Starts playing one of the built-in sounds repeatedly until stop or stopall 
+ * Starts playing one of the built-in sounds repeatedly until stop or stopAll 
  * is used. Built-in sounds are documented in \ref SoundRequest.msg.
  *
  * \param sound Identifier of the sound to play.
@@ -243,7 +263,7 @@ public:
 	
 	void start(int sound) 
 	{ 
-		sendmsg(sound, SoundRequest::PLAY_START); 
+		sendMsg(sound, SoundRequest::PLAY_START); 
 	}
 
 /** \brief Stop playing a built-in sound
@@ -255,7 +275,7 @@ public:
 
   void stop(int sound)
   {
-    sendmsg(sound, SoundRequest::PLAY_STOP);
+    sendMsg(sound, SoundRequest::PLAY_STOP);
   }
 
 /** \brief Stop all currently playing sounds
@@ -263,10 +283,15 @@ public:
  * This method stops all speech, wave file, and built-in sound playback.
  */
 
-  void stopall()
+  void stopAll()
 	{
 		stop(SoundRequest::ALL);
 	}
+  
+  ROSCPP_DEPRECATED void stopall()
+  {
+    stopAll();
+  }
 
   /** \brief Turns warning messages on or off.
 	 *  
@@ -290,7 +315,7 @@ private:
 		quiet_ = false;
   }
 
-	void sendmsg(int snd, int cmd, const std::string &s = "")
+	void sendMsg(int snd, int cmd, const std::string &s = "")
   {
 		boost::mutex::scoped_lock lock(mutex_);
     
