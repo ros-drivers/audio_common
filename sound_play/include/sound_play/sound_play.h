@@ -10,9 +10,6 @@
 namespace sound_play
 {
 
-/// Using SoundHandle is deprecated. The new name is SoundClient.
-#define SoundHandle SoundClient
-
 /**
  * \brief Class that publishes messages to the sound_play node.
  *
@@ -317,6 +314,19 @@ private:
 };
 
 typedef SoundClient::Sound Sound;
+
+/**
+ * \brief Deprecated. Use SoundClient instead.
+ */
+
+class SoundHandle : public SoundClient
+{
+  ROSCPP_DEPRECATED SoundHandle() : SoundClient()
+  {
+    ROS_WARN("sound_play::SoundHandle is deprecated. Please use sound_play::SoundClient instead. A simple search an replace should be sufficient to make this change.");
+  }
+};
+
 };
 
 #endif
