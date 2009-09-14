@@ -65,7 +65,7 @@ class soundtype:
     COUNTING = 2
 
     def __init__(self, file, volume = 1.0):
-        self.lock = threading.Lock()
+        self.lock = threading.RLock()
         self.state = self.STOPPED
         self.chan = None
         self.sound = mixer.Sound(file)
@@ -74,9 +74,11 @@ class soundtype:
         self.file = file
 
     def loop(self):  
+        #print "loop"
+        #print "lock"
         self.lock.acquire()
-        self.staleness = 0
         try:
+            self.staleness = 0
             if self.state == self.COUNTING:
                 self.stop()
             
@@ -86,20 +88,31 @@ class soundtype:
             self.state = self.LOOPING
         finally:
             self.lock.release()
+            #print "unlock done"
+        #print "loop done"
 
     def stop(self):
+        #print "stop"
         if self.state != self.STOPPED:
+            #print "lock"
             self.lock.acquire()
+            #print "lock done"
             try:
+                #print "fadeout"
                 self.chan.fadeout(300)
+                #print "fadeout done"
                 self.state = self.STOPPED
             finally:
                 self.lock.release()
+                #print "unlock done"
+        #print "stop done"
 
     def single(self):
+        #print "single"
+        #print "lock"
         self.lock.acquire()
-        self.staleness = 0
         try:
+            self.staleness = 0
             if self.state == self.LOOPING:
                 self.stop()
             
@@ -111,6 +124,8 @@ class soundtype:
             self.state = self.COUNTING
         finally:
             self.lock.release()
+            #print "unlock done"
+        #print "single done"
 
     def command(self, cmd):
          if cmd == SoundRequest.PLAY_STOP:
@@ -121,11 +136,17 @@ class soundtype:
              self.loop()
 
     def get_staleness(self):
-        if self.chan.get_busy():
-            self.staleness = 0
-        else:
-            self.staleness = self.staleness + 1
-        return self.staleness
+        #print "lock"
+        self.lock.acquire()
+        try:
+            if self.chan.get_busy():
+                self.staleness = 0
+            else:
+                self.staleness = self.staleness + 1
+            return self.staleness
+        finally:
+            self.lock.release()
+            #print "unlock done"
 
 class soundplay:
     def stopdict(self,dict):
@@ -138,7 +159,7 @@ class soundplay:
         self.stopdict(self.voicesounds)
 
     def callback(self,data):
-        print "callback", str(data)
+        #print "callback", str(data)
         if not self.initialized:
             return
         self.mutex.acquire()
@@ -201,7 +222,7 @@ class soundplay:
             rospy.loginfo(traceback.format_exc())
         finally:
             self.mutex.release()
-            print "done callback"
+            #print "done callback"
 
     # Purge sounds that haven't been played in a while.
     def cleanupdict(self, dict):
@@ -330,11 +351,11 @@ class soundplay:
         while (rospy.get_time() - self.last_activity_time < 10 or
                  len(self.builtinsounds) + len(self.voicesounds) + len(self.filesounds) > 0) \
                 and not rospy.is_shutdown():
-            print "idle_loop"
+            #print "idle_loop"
             self.diagnostics(0)
             self.sleep(1)
             self.cleanup()
-        print "idle_exiting"
+        #print "idle_exiting"
 
 if __name__ == '__main__':
     soundplay()
