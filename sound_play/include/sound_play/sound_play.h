@@ -88,10 +88,15 @@ public:
  */
 
 	SoundClient(ros::NodeHandle &nh, const std::string &topic)
-  {
+    {
 		init(nh, topic);
 	}
 
+  /** \brief Needed to support the deprecated SoundHandle API */
+
+	virtual ~SoundClient()
+	{}
+	
 /** \brief Create a SoundClient with the default topic
  *
  * Creates a SoundClient that publishes to "robotsound".
@@ -310,31 +315,31 @@ public:
 private:
 	void init(ros::NodeHandle nh, const std::string &topic)
 	{
-    nh_ = nh;
+        nh_ = nh;
 		pub_ = nh.advertise<sound_play::SoundRequest>(topic, 5);
 		quiet_ = false;
-  }
+    }
 
 	void sendMsg(int snd, int cmd, const std::string &s = "")
-  {
+    {
 		boost::mutex::scoped_lock lock(mutex_);
     
 		if (!nh_.ok())
 			return;
 		
 		SoundRequest msg;
-    msg.sound = snd;
-    msg.command = cmd;
-    msg.arg = s;
-		pub_.publish(msg);
+        msg.sound = snd;
+        msg.command = cmd;
+        msg.arg = s;
+        pub_.publish(msg);
 
-		if (pub_.getNumSubscribers() == 0 && !quiet_)
-			ROS_WARN("Sound command issued, but no node is subscribed to the topic.");
-  }
+        if (pub_.getNumSubscribers() == 0 && !quiet_)
+            ROS_WARN("Sound command issued, but no node is subscribed to the topic.");
+    }
 
-	bool quiet_;
+    bool quiet_;
 	ros::NodeHandle nh_;
-  ros::Publisher pub_;
+    ros::Publisher pub_;
 	boost::mutex mutex_;
 };
 
@@ -346,10 +351,15 @@ typedef SoundClient::Sound Sound;
 
 class SoundHandle : public SoundClient
 {
-  ROSCPP_DEPRECATED SoundHandle() : SoundClient()
+  ROSCPP_DEPRECATED SoundHandle()
   {
     ROS_WARN("sound_play::SoundHandle is deprecated. Please use sound_play::SoundClient instead. A simple search an replace should be sufficient to make this change.");
   }
+
+	ROSCPP_DEPRECATED virtual ~SoundHandle()
+	{
+    ROS_WARN("sound_play::SoundHandle is deprecated. Please use sound_play::SoundClient instead. A simple search an replace should be sufficient to make this change.");
+	}
 };
 
 };
