@@ -229,10 +229,9 @@ class soundplay:
         purgelist = []
         for (key,sound) in dict.iteritems():
             try:
-                print 'Cleaning %s'%(str(key))
                 staleness = sound.get_staleness()
             except Exception, e:
-                rospy.logerr('Exception in cleanupdict: %s'%str(e))
+                rospy.logerr('Exception in cleanupdict for sound (%s): %s'%(str(key),str(e)))
                 staleness = 100 # Something is wrong. Let's purge and try again.
             #print "%s %i"%(key, staleness)
             if staleness >= 10:
