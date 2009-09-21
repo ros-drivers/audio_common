@@ -76,7 +76,7 @@ class Sound:
 ## This method causes the Sound to stop playing.
 
     def stop(self):
-        self.client.sendMsg(seld.snd, SoundRequest.PLAY_STOP, self.arg)
+        self.client.sendMsg(self.snd, SoundRequest.PLAY_STOP, self.arg)
 
 ## This class is a helper class for communicating with the sound_play node
 ## via the \ref sound_play.SoundRequest message. There is a one-to-one mapping
@@ -121,7 +121,7 @@ class SoundClient:
 ## \param text String to say
 
     def say(self,text):
-        self.send_msg(SoundRequest.SAY, SoundRequest.PLAY_ONCE, text)
+        self.sendMsg(SoundRequest.SAY, SoundRequest.PLAY_ONCE, text)
 
 ## \brief Say a string repeatedly
 ## 
@@ -130,7 +130,7 @@ class SoundClient:
 ## \param text String to say repeatedly
 
     def repeat(self,text):
-        self.send_msg(SoundRequest.SAY, SoundRequest.PLAY_START, text)
+        self.sendMsg(SoundRequest.SAY, SoundRequest.PLAY_START, text)
 
 ## \brief Stop saying a string
 ## 
@@ -140,7 +140,7 @@ class SoundClient:
 ## \param text Same string as in the say or repeat command
 
     def stopSaying(self,text):
-        self.send_msg(SoundRequest.SAY, SoundRequest.PLAY_STOP, text)
+        self.sendMsg(SoundRequest.SAY, SoundRequest.PLAY_STOP, text)
     
 ## \brief Deprecated, use stopSaying instead
     def stopsaying(self,text):
@@ -156,7 +156,7 @@ class SoundClient:
 ## on the computer on which the sound_play node is running
 
     def playWave(self,sound):
-        self.send_msg(SoundRequest.PLAY_FILE, SoundRequest.PLAY_ONCE, sound)
+        self.sendMsg(SoundRequest.PLAY_FILE, SoundRequest.PLAY_ONCE, sound)
     
 ## \brief Deprecated, use playWave instead
     def playwave(self,sound):
@@ -171,7 +171,7 @@ class SoundClient:
 ## on the computer on which the sound_play node is running.
 
     def startWave(self,sound):
-        self.send_msg(SoundRequest.PLAY_FILE, SoundRequest.PLAY_START, sound)
+        self.sendMsg(SoundRequest.PLAY_FILE, SoundRequest.PLAY_START, sound)
 
 ## \brief Deprecated, use startWave instead
     def startwave(self,sound):
@@ -186,7 +186,7 @@ class SoundClient:
 ## \param sound Same string as in the playWave or startWave command
 
     def stopWave(self,sound):
-        self.send_msg(SoundRequest.PLAY_FILE, SoundRequest.PLAY_STOP, sound)
+        self.sendMsg(SoundRequest.PLAY_FILE, SoundRequest.PLAY_STOP, sound)
 
 ## \brief Deprecated, use stopWave instead
     def stopwave(self,sound):
@@ -201,7 +201,7 @@ class SoundClient:
 ## \param sound Identifier of the sound to play.
 
     def play(self,sound):
-        self.send_msg(sound, SoundRequest.PLAY_ONCE, "")
+        self.sendMsg(sound, SoundRequest.PLAY_ONCE, "")
 
 ## \brief Play a buildin sound repeatedly
 ##
@@ -211,7 +211,7 @@ class SoundClient:
 ## \param sound Identifier of the sound to play.
     
     def start(self,sound):
-        self.send_msg(sound, SoundRequest.PLAY_START, "")
+        self.sendMsg(sound, SoundRequest.PLAY_START, "")
 
 ## \brief Stop playing a built-in sound
 ##
@@ -220,7 +220,7 @@ class SoundClient:
 ## \param sound Same sound that was used to start playback
     
     def stop(self,sound):
-        self.send_msg(sound, SoundRequest.PLAY_STOP, "")
+        self.sendMsg(sound, SoundRequest.PLAY_STOP, "")
 
 ## \brief Stop all currently playing sounds
 ##
@@ -234,7 +234,7 @@ class SoundClient:
         rospy.logerr('sound_play.libsoundplay.stopall is deprecated, use stopAll instead.')
         self.stopAll()
 
-    def send_msg(self, snd, cmd, s):
+    def sendMsg(self, snd, cmd, s):
         msg = SoundRequest()
         msg.sound = snd
         msg.command = cmd

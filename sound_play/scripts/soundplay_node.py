@@ -229,6 +229,7 @@ class soundplay:
         purgelist = []
         for (key,sound) in dict.iteritems():
             try:
+                print 'Cleaning %s'%(str(key))
                 staleness = sound.get_staleness()
             except Exception, e:
                 rospy.logerr('Exception in cleanupdict: %s'%str(e))

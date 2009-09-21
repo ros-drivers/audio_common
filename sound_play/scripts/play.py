@@ -57,5 +57,5 @@ if __name__ == '__main__':
     
     rospy.sleep(1)
     print 'Playing "%s".'%sys.argv[1]
-    soundhandle.playwave(sys.argv[1])
+    soundhandle.playWave(sys.argv[1])
     rospy.sleep(1)

@@ -59,7 +59,7 @@ if __name__ == '__main__':
     
     num = int(sys.argv[1])
 
-    print 'Playing sound %i".'%num
+    print 'Playing sound %i.'%num
 
     soundhandle.play(num)
 

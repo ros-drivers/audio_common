@@ -61,20 +61,20 @@ if __name__ == '__main__':
     while not rospy.is_shutdown():
         print
         print 'Try to play wave files that do not exist.'
-        soundhandle.playwave('17')
-        soundhandle.playwave('dummy')
+        soundhandle.playWave('17')
+        soundhandle.playWave('dummy')
         
         print 'say'
         soundhandle.say('Hello world!')
         sleep(3)
         
         print 'wave (assumes you have some xemacs21 sounds present)'
-        soundhandle.playwave('/usr/share/xemacs21/xemacs-packages/etc/sounds/cuckoo.wav')
+        soundhandle.playWave('/usr/share/xemacs21/xemacs-packages/etc/sounds/cuckoo.wav')
 
         sleep(3)
         
         print 'wave2 (assumes you have some xemacs21 sounds present)'
-        soundhandle.playwave('/usr/share/xemacs21/xemacs-packages/etc/sounds/say-beep.wav')
+        soundhandle.playWave('/usr/share/xemacs21/xemacs-packages/etc/sounds/say-beep.wav')
 
         sleep(3)
 
@@ -102,4 +102,19 @@ if __name__ == '__main__':
         soundhandle.play(SoundRequest.NEEDS_UNPLUGGING_BADLY)
 
         sleep(3)
-        
+
+        s1 = soundhandle.builtinSound(SoundRequest.NEEDS_UNPLUGGING_BADLY)
+        s2 = soundhandle.waveSound("/usr/share/xemacs21/xemacs-packages/etc/sounds/say-beep.wav")
+        s3 = soundhandle.voiceSound("Testing the new A P I")
+
+        print "New API start voice"
+        s3.repeat()
+        sleep(2)
+        print "New API wave"
+        s2.play()
+        sleep(2)
+        print "New API builtin"
+        s1.play()
+        sleep(2)
+        print "New API stop"
+        s3.stop()
