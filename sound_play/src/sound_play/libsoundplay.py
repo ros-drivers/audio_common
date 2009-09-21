@@ -60,7 +60,7 @@ class Sound:
 ## 
 ## This method causes the Sound to be played once.
 
-    def play():
+    def play(self):
         self.client.sendMsg(self.snd, SoundRequest.PLAY_ONCE, self.arg)
 
 ## \brief Play the Sound repeatedly.
@@ -68,14 +68,14 @@ class Sound:
 ## This method causes the Sound to be played repeatedly until stop() is
 ## called.
     
-    def repeat():
+    def repeat(self):
        self.client.sendMsg(self.snd, SoundRequest.PLAY_START, self.arg)
 
 ## \brief Stop Sound playback.
 ##
 ## This method causes the Sound to stop playing.
 
-    def stop():
+    def stop(self):
         self.client.sendMsg(seld.snd, SoundRequest.PLAY_STOP, self.arg)
 
 ## This class is a helper class for communicating with the sound_play node
