@@ -242,7 +242,7 @@ class SoundClient:
         self.pub.publish(msg)
         ## @todo this should be a warn once warns become visible on the console.
         if self.pub.get_num_connections() < 1:
-            rospy.logerr("Sound command issued, but no node is subscribed to the topic.");
+            rospy.logerr("Sound command issued, but no node is subscribed to the topic. Perhaps you forgot to run soundplay_node.py");
 
 ## \brief Deprecated, use SoundClient instead.
 

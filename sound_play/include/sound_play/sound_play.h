@@ -370,7 +370,7 @@ private:
         pub_.publish(msg);
 
         if (pub_.getNumSubscribers() == 0 && !quiet_)
-            ROS_WARN("Sound command issued, but no node is subscribed to the topic.");
+            ROS_WARN("Sound command issued, but no node is subscribed to the topic. Perhaps you forgot to run soundplay_node.py");
     }
 
     bool quiet_;
