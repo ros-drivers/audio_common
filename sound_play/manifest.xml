@@ -4,7 +4,7 @@ sound_play provides a ROS node that translates commands on a ROS topic (<tt>robo
   </description>
   <author>Blaise Gassend</author>
   <license>BSD</license>
-  <review status="API reviewed"/>
+  <review status="API and Documentation reviewed" notes="reviewed 9/30/2009"/>
   <depend package="rospy" />
   <depend package="roscpp" />
   <depend package="roslib" />
