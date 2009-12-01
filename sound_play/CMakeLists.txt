@@ -6,8 +6,8 @@ include($ENV{ROS_ROOT}/core/rosbuild/rosbuild.cmake)
 # The argument to the "rospack" macro must be the name of the package.
 
 set(ROS_BUILD_TYPE RelWithDebInfo)
-rospack(sound_play)
-genmsg()
+rosbuild_init()
+rosbuild_genmsg()
 
 set(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/bin)
 
