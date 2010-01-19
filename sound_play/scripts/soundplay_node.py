@@ -258,7 +258,7 @@ class soundplay:
         try:
             da = DiagnosticArray()
             ds = DiagnosticStatus()
-            ds.name = rospy.get_caller_id() + ": Node State"
+            ds.name = rospy.get_caller_id().lstrip('/') + ": Node State"
             if state == 0:
                 ds.level = DiagnosticStatus.OK
                 ds.message = "%i sounds playing"%self.active_sounds
