@@ -12,7 +12,7 @@ sound_play provides a ROS node that translates commands on a ROS topic (<tt>robo
   <rosdep name="python-pygame" />
   <rosdep name="festival" />
   <export>
-    <cpp cflags="-I${prefix}/msg/cpp" />
+    <cpp cflags="-I${prefix}/include -I${prefix}/msg/cpp" />
   </export>
   <url>http://www.ros.org/wiki/sound_play</url>
 </package>
