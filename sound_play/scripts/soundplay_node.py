@@ -45,6 +45,7 @@ import os
 import logging
 import sys
 import traceback
+import tempfile
 from diagnostic_msgs.msg import DiagnosticStatus, KeyValue, DiagnosticArray
 
 try:
@@ -181,24 +182,24 @@ class soundplay:
                 elif data.sound == SoundRequest.SAY:
                     if not data.arg in self.voicesounds.keys():
                         rospy.logdebug('command for uncached text: "%s"'%data.arg)
-                        txtfilename='/tmp/play_sound_text_temp.txt'
-                        wavfilename='/tmp/play_sound_wave_temp.wav'
-                        f = open(txtfilename, 'w')
+                        txtfile = tempfile.NamedTemporaryFile(prefix='sound_play', suffix='txt')
+                        wavfile = tempfile.NamedTemporaryFile(prefix='sound_play', suffix='wav')
+                        txtfilename=txtfile.name
+                        wavfilename=wavfile.name
                         try:
-                            f.write(data.arg)
+                            txtfile.write(data.arg)
+                            txtfile.flush()
+                            os.system('text2wave '+txtfilename+' -o '+wavfilename)
+                            try:
+                                if os.stat(wavfilename).st_size == 0:
+                                    raise OSError # So we hit the same catch block
+                            except OSError:
+                                rospy.logerr('Sound synthesis failed. Is festival installed? Is a festival voice installed? Try running "rosdep satisfy sound_play|sh". Refer to http://pr.willowgarage.com/wiki/sound_play/Troubleshooting')
+                                return
+                            self.voicesounds[data.arg] = soundtype(wavfilename)
                         finally:
-                            f.close()
-                        try:
-                            os.remove(wavfilename);
-                        except OSError:
-                            pass
-                        os.system('text2wave '+txtfilename+' -o '+wavfilename)
-                        try:
-                            os.stat(wavfilename)
-                        except OSError:
-                            rospy.logerr('Sound synthesis failed. Is festival installed? Is a festival voice installed? Try running "rosdep satisfy sound_play|sh". Refer to http://pr.willowgarage.com/wiki/sound_play/Troubleshooting')
-                            return
-                        self.voicesounds[data.arg] = soundtype(wavfilename)
+                            txtfile.close()
+                            wavfile.close()
                     else:
                         rospy.logdebug('command for cached text: "%s"'%data.arg)
                     sound = self.voicesounds[data.arg]
