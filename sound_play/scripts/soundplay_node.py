@@ -275,6 +275,7 @@ class soundplay:
                 ds.level = DiagnosticStatus.ERROR
                 ds.message = "Can't open sound device."
             da.status.append(ds)
+            da.header.stamp = rospy.get_rostime()
             self.diagnostic_pub.publish(da)
         except Exception, e:
             rospy.loginfo('Exception in diagnostics: %s'%str(e))
