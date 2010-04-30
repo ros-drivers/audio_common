@@ -39,12 +39,12 @@
 import roslib; roslib.load_manifest('sound_play')
 import rospy
 from sound_play.msg import SoundRequest
-from sound_play.libsoundplay import SoundHandle
+from sound_play.libsoundplay import SoundClient
 
 if __name__ == '__main__':
     rospy.init_node('shutup', anonymous = True)
     
-    soundhandle = SoundHandle()
+    soundhandle = SoundClient()
     rospy.sleep(0.5) # let ROS get started...
 
     print "Sending stopAll commande every 100 ms."

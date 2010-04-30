@@ -40,7 +40,7 @@ import roslib; roslib.load_manifest('sound_play')
 import rospy
 from sound_play.msg import SoundRequest
 
-from sound_play.libsoundplay import SoundHandle
+from sound_play.libsoundplay import SoundClient
 
 def sleep(t):
     try:
@@ -50,11 +50,11 @@ def sleep(t):
 
 if __name__ == '__main__':
     rospy.init_node('soundplay_test', anonymous = True)
-    soundhandle = SoundHandle()
+    soundhandle = SoundClient()
 
     rospy.sleep(1)
     
-    soundhandle.stopall()
+    soundhandle.stopAll()
 
     print "This script will run continuously until you hit CTRL+C, testing various sound_node sound types."
 

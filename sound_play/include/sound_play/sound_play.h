@@ -128,11 +128,6 @@ public:
 		init(nh, topic);
 	}
 
-  /** \brief Needed to support the deprecated SoundHandle API */
-
-	virtual ~SoundClient()
-	{}
-	
 /** \brief Create a SoundClient with the default topic
  *
  * Creates a SoundClient that publishes to "robotsound".
@@ -221,11 +216,6 @@ public:
     sendMsg(SoundRequest::SAY, SoundRequest::PLAY_STOP, s);
   }
 
-  ROSCPP_DEPRECATED void stopsaying(const std::string &s)
-  {
-    stopSaying(s);
-  }
-
 /** \brief Plays a WAV or OGG file
  *
  * Plays a WAV or OGG file once. The playback can be stopped by stopWave or
@@ -238,11 +228,6 @@ public:
   void playWave(const std::string &s)
   {
     sendMsg(SoundRequest::PLAY_FILE, SoundRequest::PLAY_ONCE, s);
-  }
-
-  ROSCPP_DEPRECATED void playwave(const std::string &s)
-  {
-    playWave(s);
   }
 
 /** \brief Plays a WAV or OGG file repeatedly
@@ -258,11 +243,6 @@ public:
     sendMsg(SoundRequest::PLAY_FILE, SoundRequest::PLAY_START, s);
   }
 
-  ROSCPP_DEPRECATED void startwave(const std::string &s)
-  {
-    startWave(s);
-  }
-
 /** \brief Stop playing a WAV or OGG file
  *
  * Stops playing a file that was previously started by playWave or
@@ -274,11 +254,6 @@ public:
   void stopWave(const std::string &s)
   {
     sendMsg(SoundRequest::PLAY_FILE, SoundRequest::PLAY_STOP, s);
-  }
-
-  ROSCPP_DEPRECATED void stopwave(const std::string &s)
-  {
-    stopWave(s);
   }
 
 /** \brief Play a buildin sound
@@ -329,11 +304,6 @@ public:
 		stop(SoundRequest::ALL);
 	}
   
-  ROSCPP_DEPRECATED void stopall()
-  {
-    stopAll();
-  }
-
   /** \brief Turns warning messages on or off.
 	 *  
 	 * If a message is sent when no node is subscribed to the topic, a
@@ -380,23 +350,6 @@ private:
 };
 
 typedef SoundClient::Sound Sound;
-
-/**
- * \brief Deprecated. Use SoundClient instead.
- */
-
-class SoundHandle : public SoundClient
-{
-  ROSCPP_DEPRECATED SoundHandle()
-  {
-    ROS_WARN("sound_play::SoundHandle is deprecated. Please use sound_play::SoundClient instead. A simple search an replace should be sufficient to make this change.");
-  }
-
-	ROSCPP_DEPRECATED virtual ~SoundHandle()
-	{
-    ROS_WARN("sound_play::SoundHandle is deprecated. Please use sound_play::SoundClient instead. A simple search an replace should be sufficient to make this change.");
-	}
-};
 
 };
 

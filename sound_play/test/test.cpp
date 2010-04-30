@@ -59,15 +59,15 @@ int main(int argc, char **argv)
     const char *str1 = "I am annoying.";
     sc.repeat(str1);
     sleepok(4, nh);
-    sc.stopsaying(str1);
+    sc.stopSaying(str1);
 
-    sc.playwave("/usr/share/xemacs21/xemacs-packages/etc/sounds/boing.wav");
+    sc.playWave("/usr/share/xemacs21/xemacs-packages/etc/sounds/boing.wav");
     sleepok(2, nh);
 
     const char *str2 = "/usr/share/xemacs21/xemacs-packages/etc/sounds/piano-beep.wav";
-    sc.startwave(str2);
+    sc.startWave(str2);
     sleepok(4, nh);
-    sc.stopwave(str2);
+    sc.stopWave(str2);
 
     sc.play(sound_play::SoundRequest::NEEDS_UNPLUGGING);
     sleepok(2, nh);

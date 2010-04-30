@@ -142,11 +142,6 @@ class SoundClient:
     def stopSaying(self,text):
         self.sendMsg(SoundRequest.SAY, SoundRequest.PLAY_STOP, text)
     
-## \brief Deprecated, use stopSaying instead
-    def stopsaying(self,text):
-        rospy.logerr('sound_play.libsoundplay.stopsaying is deprecated, use stopSaying instead.')
-        self.stopSaying(text)
-
 ## \brief Plays a WAV or OGG file
 ## 
 ## Plays a WAV or OGG file once. The playback can be stopped by stopWave or
@@ -158,11 +153,6 @@ class SoundClient:
     def playWave(self,sound):
         self.sendMsg(SoundRequest.PLAY_FILE, SoundRequest.PLAY_ONCE, sound)
     
-## \brief Deprecated, use playWave instead
-    def playwave(self,sound):
-        rospy.logerr('sound_play.libsoundplay.playwave is deprecated, use playWave instead.')
-        self.playWave(sound)
-
 ## \brief Plays a WAV or OGG file repeatedly
 ## 
 ## Plays a WAV or OGG file repeatedly until stopWave or stopAll is used.
@@ -173,11 +163,6 @@ class SoundClient:
     def startWave(self,sound):
         self.sendMsg(SoundRequest.PLAY_FILE, SoundRequest.PLAY_START, sound)
 
-## \brief Deprecated, use startWave instead
-    def startwave(self,sound):
-        rospy.logerr('sound_play.libsoundplay.startwave is deprecated, use startWave instead.')
-        self.startWave(sound)
-
 ##  \brief Stop playing a WAV or OGG file
 ## 
 ## Stops playing a file that was previously started by playWave or
@@ -187,11 +172,6 @@ class SoundClient:
 
     def stopWave(self,sound):
         self.sendMsg(SoundRequest.PLAY_FILE, SoundRequest.PLAY_STOP, sound)
-
-## \brief Deprecated, use stopWave instead
-    def stopwave(self,sound):
-        rospy.logerr('sound_play.libsoundplay.stopwave is deprecated, use stopWave instead.')
-        self.stopWave(sound)
 
 ## \brief Play a buildin sound
 ##
@@ -229,11 +209,6 @@ class SoundClient:
     def stopAll(self):
         self.stop(SoundRequest.ALL)
 
-## \brief Deprecated, use stopAll instead
-    def stopall(self):
-        rospy.logerr('sound_play.libsoundplay.stopall is deprecated, use stopAll instead.')
-        self.stopAll()
-
     def sendMsg(self, snd, cmd, s):
         msg = SoundRequest()
         msg.sound = snd
@@ -243,9 +218,3 @@ class SoundClient:
         ## @todo this should be a warn once warns become visible on the console.
         if self.pub.get_num_connections() < 1:
             rospy.logerr("Sound command issued, but no node is subscribed to the topic. Perhaps you forgot to run soundplay_node.py");
-
-## \brief Deprecated, use SoundClient instead.
-
-class SoundHandle(SoundClient):
-    def __init__(self):
-        SoundClient.__init__(self)
