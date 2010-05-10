@@ -273,7 +273,7 @@ class soundplay:
                 ds.message = "Sound device not open yet."
             else:
                 ds.level = DiagnosticStatus.ERROR
-                ds.message = "Can't open sound device."
+                ds.message = "Can't open sound device. See http://pr.willowgarage.com/wiki/sound_play/Troubleshooting"
             da.status.append(ds)
             da.header.stamp = rospy.get_rostime()
             self.diagnostic_pub.publish(da)
