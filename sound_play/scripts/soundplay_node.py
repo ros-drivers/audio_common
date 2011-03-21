@@ -58,6 +58,7 @@ Error opening pygame.mixer. Is pygame installed? (sudo apt-get install python-py
 """
     rospy.logfatal(str)
     print str
+    exit(1)
 
 
 class soundtype:
