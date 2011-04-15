@@ -1,0 +1,9 @@
+<launch>
+
+  <node name="audio_server" pkg="audio_transport" type="audio_server" output="screen">
+    <remap from="audio" to="audio"/>
+    <param name="bitrate" value="128"/>
+    <param name="src" value="alsasrc"/>
+  </node>
+
+</launch>

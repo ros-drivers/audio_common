@@ -1,0 +1,14 @@
+<stack>
+  <description brief="Common code for working with audio">
+    Common code for working with audio in ROS
+  </description>
+  <author>Maintained by Nate Koenig</author>
+  <license>BSD</license>  
+  <review status="unreviewed" notes=""/>
+  <url>http://ros.org/wiki/audio_common</url>
+  <depend stack="ros" />
+  <depend stack="common" />
+  <depend stack="common_msgs" />
+  <depend stack="ros_comm" />
+
+</stack>

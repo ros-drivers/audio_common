@@ -1,0 +1,14 @@
+<package>
+  <description brief="audio_msgs">
+
+     audio_msgs
+
+  </description>
+  <author>Nate Koenig</author>
+  <license>BSD</license>
+  <review status="unreviewed" notes=""/>
+  <url>http://ros.org/wiki/audio_msgs</url>
+
+</package>
+
+

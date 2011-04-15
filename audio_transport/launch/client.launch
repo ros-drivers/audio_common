@@ -1,0 +1,8 @@
+<launch>
+
+  <node name="audio_client" pkg="audio_transport" type="audio_client" output="screen">
+    <remap from="audio" to="audio"/>
+    <param name="dst" value="alsasink"/>
+  </node>
+
+</launch>
