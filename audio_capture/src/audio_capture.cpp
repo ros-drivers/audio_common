@@ -9,21 +9,18 @@
 
 namespace audio_transport
 {
-  class RosGstServer
+  class RosGstCapture
   {
     public: 
-      RosGstServer()
+      RosGstCapture()
       {
-        std::string source_type;
-
-        _sleep_time = 0;
         _bitrate = 192;
 
         // The bitrate at which to encode the audio
         ros::param::param<int>("~bitrate", _bitrate, 128);
 
         // The source of the audio
-        ros::param::param<std::string>("~src", source_type, "alsasrc");
+        //ros::param::param<std::string>("~src", source_type, "alsasrc");
 
         _pub = _nh.advertise<audio_msgs::AudioData>("audio", 10, true);
 
@@ -37,8 +34,6 @@ namespace audio_transport
         g_signal_connect( G_OBJECT(_sink), "new-buffer", 
                           G_CALLBACK(onNewBuffer), this);
 
-        //if (source_type == "alsasrc")
-        //{
           _source = gst_element_factory_make("alsasrc", "source");
           _convert = gst_element_factory_make("audioconvert", "convert");
 
@@ -72,7 +67,7 @@ namespace audio_transport
 
       static GstFlowReturn onNewBuffer (GstAppSink *appsink, gpointer userData)
       {
-        RosGstServer *server = reinterpret_cast<RosGstServer*>(userData);
+        RosGstCapture *server = reinterpret_cast<RosGstCapture*>(userData);
 
         GstBuffer *buffer;
         g_signal_emit_by_name(appsink, "pull-buffer", &buffer);
@@ -103,6 +98,6 @@ int main (int argc, char **argv)
   ros::init(argc, argv, "audio_capture");
   gst_init(&argc, &argv);
 
-  audio_transport::RosGstServer server;
+  audio_transport::RosGstCapture server;
   ros::spin();
 }

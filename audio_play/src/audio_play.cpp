@@ -7,10 +7,10 @@
 
 namespace audio_transport
 {
-  class RosGstClient
+  class RosGstPlay
   {
     public:
-      RosGstClient()
+      RosGstPlay()
       {
         GstPad *audiopad;
 
@@ -19,7 +19,7 @@ namespace audio_transport
         // The destination of the audio
         ros::param::param<std::string>("~dst", dst_type, "alsasink");
 
-        _sub = _nh.subscribe("audio", 10, &RosGstClient::onAudio, this);
+        _sub = _nh.subscribe("audio", 10, &RosGstPlay::onAudio, this);
 
         _loop = g_main_loop_new(NULL, false);
         _pipeline = gst_pipeline_new("ros_pipeline");
@@ -74,7 +74,7 @@ namespace audio_transport
       static void cb_newpad (GstElement *decodebin, GstPad *pad, 
                              gboolean last, gpointer data)
       {
-        RosGstClient *client = reinterpret_cast<RosGstClient*>(data);
+        RosGstPlay *client = reinterpret_cast<RosGstPlay*>(data);
 
         GstCaps *caps;
         GstStructure *str;
@@ -117,10 +117,10 @@ namespace audio_transport
 
 int main (int argc, char **argv)
 {
-  ros::init(argc, argv, "audio_client");
+  ros::init(argc, argv, "audio_play");
   gst_init(&argc, &argv);
 
-  audio_transport::RosGstClient client;
+  audio_transport::RosGstPlay client;
 
   ros::spin();
 }

@@ -1,5 +1,5 @@
 <package>
-  <description brief="audio_transport">
+  <description brief="audio_capture">
     Transports audio from a source to a destination. Audio sources can come
     from a microphone or file. The destination can play the audio or save it
     to an mp3 file.
@@ -8,7 +8,7 @@
   <author>Nate Koenig</author>
   <license>BSD</license>
   <review status="unreviewed" notes=""/>
-  <url>http://ros.org/wiki/audio_transport</url>
+  <url>http://ros.org/wiki/audio_capture</url>
   <depend package="roscpp"/>
   <depend package="audio_msgs"/>
 
