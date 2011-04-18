@@ -20,7 +20,7 @@ namespace audio_transport
         _bitrate = 192;
 
         // The bitrate at which to encode the audio
-        ros::param::param<int>("~bitrate", _bitrate, 192);
+        ros::param::param<int>("~bitrate", _bitrate, 128);
 
         // The source of the audio
         ros::param::param<std::string>("~src", source_type, "alsasrc");
@@ -37,8 +37,8 @@ namespace audio_transport
         g_signal_connect( G_OBJECT(_sink), "new-buffer", 
                           G_CALLBACK(onNewBuffer), this);
 
-        if (source_type == "alsasrc")
-        {
+        //if (source_type == "alsasrc")
+        //{
           _source = gst_element_factory_make("alsasrc", "source");
           _convert = gst_element_factory_make("audioconvert", "convert");
 
@@ -48,7 +48,7 @@ namespace audio_transport
           
           gst_bin_add_many( GST_BIN(_pipeline), _source, _convert, _encode, _sink, NULL);
           gst_element_link_many(_source, _convert, _encode, _sink, NULL);
-        }
+        /*}
         else
         {
           _sleep_time = 10000;
@@ -58,6 +58,7 @@ namespace audio_transport
           gst_bin_add_many( GST_BIN(_pipeline), _source, _sink, NULL);
           gst_element_link_many(_source, _sink, NULL);
         }
+        */
 
         gst_element_set_state(GST_ELEMENT(_pipeline), GST_STATE_PLAYING);
 
@@ -67,9 +68,6 @@ namespace audio_transport
       void publish( const audio_msgs::AudioData &msg )
       {
         _pub.publish(msg);
-
-        if (_sleep_time > 0)
-          usleep(_sleep_time);
       }
 
       static GstFlowReturn onNewBuffer (GstAppSink *appsink, gpointer userData)
@@ -96,14 +94,13 @@ namespace audio_transport
 
       GstElement *_pipeline, *_source, *_sink, *_convert, *_encode;
       GMainLoop *_loop;
-      int _sleep_time;
       int _bitrate;
   };
 }
 
 int main (int argc, char **argv)
 {
-  ros::init(argc, argv, "audio_server");
+  ros::init(argc, argv, "audio_capture");
   gst_init(&argc, &argv);
 
   audio_transport::RosGstServer server;

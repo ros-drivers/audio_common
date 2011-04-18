@@ -1,0 +1,17 @@
+<package>
+  <description brief="audio_play">
+
+     audio_play
+
+  </description>
+  <author>Nate Koenig</author>
+  <license>BSD</license>
+  <review status="unreviewed" notes=""/>
+  <url>http://ros.org/wiki/audio_play</url>
+  <depend package="roscpp"/>
+  <depend package="audio_msgs"/>
+
+
+</package>
+
+
