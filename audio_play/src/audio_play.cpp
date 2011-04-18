@@ -1,4 +1,5 @@
 #include <gst/gst.h>
+#include <gst/gst.h>
 #include <gst/app/gstappsrc.h>
 #include <ros/ros.h>
 #include <boost/thread.hpp>
@@ -22,11 +23,13 @@ namespace audio_transport
         _sub = _nh.subscribe("audio", 10, &RosGstPlay::onAudio, this);
 
         _loop = g_main_loop_new(NULL, false);
-        _pipeline = gst_pipeline_new("ros_pipeline");
-        _source = gst_element_factory_make("appsrc", "source");
 
+        _pipeline = gst_pipeline_new("app_pipeline");
+        _source = gst_element_factory_make("appsrc", "app_source");
         gst_bin_add( GST_BIN(_pipeline), _source);
 
+        //_playbin = gst_element_factory_make("playbin2", "uri_play");
+        //g_object_set( G_OBJECT(_playbin), "uri", "file:///home/test/test.mp3", NULL);
         if (dst_type == "alsasink")
         {
           _decoder = gst_element_factory_make("decodebin", "decoder");
@@ -55,6 +58,7 @@ namespace audio_transport
         }
 
         gst_element_set_state(GST_ELEMENT(_pipeline), GST_STATE_PLAYING);
+        //gst_element_set_state(GST_ELEMENT(_playbin), GST_STATE_PLAYING);
 
         _gst_thread = boost::thread::thread( boost::bind(g_main_loop_run, _loop) );
       }
@@ -71,7 +75,7 @@ namespace audio_transport
         g_signal_emit_by_name(_source, "push-buffer", buffer, &ret);
       }
 
-      static void cb_newpad (GstElement *decodebin, GstPad *pad, 
+     static void cb_newpad (GstElement *decodebin, GstPad *pad, 
                              gboolean last, gpointer data)
       {
         RosGstPlay *client = reinterpret_cast<RosGstPlay*>(data);
@@ -110,6 +114,7 @@ namespace audio_transport
       boost::thread _gst_thread;
 
       GstElement *_pipeline, *_source, *_sink, *_decoder, *_convert, *_audio;
+      GstElement *_playbin;
       GMainLoop *_loop;
   };
 }
