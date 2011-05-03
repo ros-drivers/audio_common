@@ -16,8 +16,13 @@ namespace audio_transport
       {
         _bitrate = 192;
 
+        std::string dst_type;
+
         // The bitrate at which to encode the audio
         ros::param::param<int>("~bitrate", _bitrate, 128);
+
+        // The destination of the audio
+        ros::param::param<std::string>("~dst", dst_type, "appsink");
 
         // The source of the audio
         //ros::param::param<std::string>("~src", source_type, "alsasrc");
@@ -28,21 +33,29 @@ namespace audio_transport
         _pipeline = gst_pipeline_new("ros_pipeline");
 
         // We create the sink first, just for convenience
-        _sink = gst_element_factory_make("appsink", "sink");
-        g_object_set(G_OBJECT(_sink), "emit-signals", true, NULL);
-        g_object_set(G_OBJECT(_sink), "max-buffers", 100, NULL);
-        g_signal_connect( G_OBJECT(_sink), "new-buffer", 
-                          G_CALLBACK(onNewBuffer), this);
+        if (dst_type == "appsink")
+        {
+          _sink = gst_element_factory_make("appsink", "sink");
+          g_object_set(G_OBJECT(_sink), "emit-signals", true, NULL);
+          g_object_set(G_OBJECT(_sink), "max-buffers", 100, NULL);
+          g_signal_connect( G_OBJECT(_sink), "new-buffer", 
+                            G_CALLBACK(onNewBuffer), this);
+        }
+        else
+        {
+          _sink = gst_element_factory_make("filesink", "sink");
+          g_object_set( G_OBJECT(_sink), "location", dst_type.c_str(), NULL);
+        }
 
-          _source = gst_element_factory_make("alsasrc", "source");
-          _convert = gst_element_factory_make("audioconvert", "convert");
+        _source = gst_element_factory_make("alsasrc", "source");
+        _convert = gst_element_factory_make("audioconvert", "convert");
 
-          _encode = gst_element_factory_make("lame", "encoder");
-          g_object_set( G_OBJECT(_encode), "preset", 1001, NULL);
-          g_object_set( G_OBJECT(_encode), "bitrate", _bitrate, NULL);
+        _encode = gst_element_factory_make("lame", "encoder");
+        g_object_set( G_OBJECT(_encode), "preset", 1001, NULL);
+        g_object_set( G_OBJECT(_encode), "bitrate", _bitrate, NULL);
           
-          gst_bin_add_many( GST_BIN(_pipeline), _source, _convert, _encode, _sink, NULL);
-          gst_element_link_many(_source, _convert, _encode, _sink, NULL);
+        gst_bin_add_many( GST_BIN(_pipeline), _source, _convert, _encode, _sink, NULL);
+        gst_element_link_many(_source, _convert, _encode, _sink, NULL);
         /*}
         else
         {
