@@ -2,7 +2,7 @@
 \mainpage
 \htmlinclude manifest.html
 
-\b audio_transport is a package that transports audio from a source to a destination. Audio sources can come from a microphone or file. The destination can play the audio or save it to an mp3 file.
+\b audio_capture is a package that records audio from a microphone and makes it available to other ROS nodes.
 
 \section codeapi Code API
 

@@ -1,8 +1,6 @@
 <package>
   <description brief="audio_msgs">
-
-     audio_msgs
-
+    Messages for transmitting audio via ROS
   </description>
   <author>Nate Koenig</author>
   <license>BSD</license>

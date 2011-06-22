@@ -2,11 +2,7 @@
 \mainpage
 \htmlinclude manifest.html
 
-\b audio_play is ... 
-
-<!-- 
-Provide an overview of your package.
--->
+\b audio_play is a package that listens to a node that produces audio_msgs, and plays them through a connected speaker.
 
 
 \section codeapi Code API
