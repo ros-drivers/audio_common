@@ -62,13 +62,18 @@ if __name__ == '__main__':
     rospy.init_node('say', anonymous = True)
     soundhandle = SoundClient()
     rospy.sleep(1)
+
+    voice = 'voice_kal_diphone'
     
     if len(sys.argv) == 1:
         s = sys.stdin.read()
     else:
-        s = " ".join(sys.argv[1:])
+      s = sys.argv[1]
+      if len(sys.argv) == 3:
+        voice = sys.argv[2]
+   
+    print 'Saying: %s' % s
+    print 'Voice: %s' % voice
     
-    print 'Saying: %s'%s
-    
-    soundhandle.say(s)
+    soundhandle.say(s,voice)
     rospy.sleep(1)

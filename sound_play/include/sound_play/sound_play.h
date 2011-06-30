@@ -186,9 +186,9 @@ public:
  * \param s String to say
  */
 	
-	void say(const std::string &s)
+	void say(const std::string &s, const std::string &voice="voice_kal_diphone")
   {
-    sendMsg(SoundRequest::SAY, SoundRequest::PLAY_ONCE, s);
+    sendMsg(SoundRequest::SAY, SoundRequest::PLAY_ONCE, s, voice);
   }
 
 /** \brief Say a string repeatedly
@@ -326,22 +326,23 @@ private:
 		quiet_ = false;
     }
 
-	void sendMsg(int snd, int cmd, const std::string &s = "")
-    {
-		boost::mutex::scoped_lock lock(mutex_);
-    
-		if (!nh_.ok())
-			return;
-		
-		SoundRequest msg;
-        msg.sound = snd;
-        msg.command = cmd;
-        msg.arg = s;
-        pub_.publish(msg);
+	void sendMsg(int snd, int cmd, const std::string &s = "", const std::string &arg2 = "")
+  {
+    boost::mutex::scoped_lock lock(mutex_);
 
-        if (pub_.getNumSubscribers() == 0 && !quiet_)
-            ROS_WARN("Sound command issued, but no node is subscribed to the topic. Perhaps you forgot to run soundplay_node.py");
-    }
+    if (!nh_.ok())
+      return;
+
+    SoundRequest msg;
+    msg.sound = snd;
+    msg.command = cmd;
+    msg.arg = s;
+    msg.arg2 = arg2;
+    pub_.publish(msg);
+
+    if (pub_.getNumSubscribers() == 0 && !quiet_)
+      ROS_WARN("Sound command issued, but no node is subscribed to the topic. Perhaps you forgot to run soundplay_node.py");
+  }
 
     bool quiet_;
 	ros::NodeHandle nh_;

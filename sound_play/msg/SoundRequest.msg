@@ -24,3 +24,4 @@ int8 PLAY_START = 2 # Play the sound in a loop until a stop request occurs
 int8 command # Indicates what to do with the sound
 
 string arg # file name or text to say
+string arg2 # other arguments

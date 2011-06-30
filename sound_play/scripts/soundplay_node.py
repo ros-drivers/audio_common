@@ -49,11 +49,14 @@ import tempfile
 from diagnostic_msgs.msg import DiagnosticStatus, KeyValue, DiagnosticArray
 
 try:
-    import pygame.mixer as mixer
+    import pygst
+    pygst.require('0.10')
+    import gst
+    import gobject
 except:
     str="""
 **************************************************************
-Error opening pygame.mixer. Is pygame installed? (sudo apt-get install python-pygame)
+Error opening pygst. Is gstreamer installed? (sudo apt-get install python-gst0.10 
 **************************************************************
 """
     rospy.logfatal(str)
@@ -69,9 +72,16 @@ class soundtype:
     def __init__(self, file, volume = 1.0):
         self.lock = threading.RLock()
         self.state = self.STOPPED
-        self.chan = None
-        self.sound = mixer.Sound(file)
-        self.sound.set_volume(volume)
+        self.sound = gst.element_factory_make("playbin","player")
+        if (":" in file):
+            uri = file
+        elif os.path.isfile(file):
+            uri = "file://" + os.path.abspath(file)
+        else:
+          rospy.logerr('Error: URI is invalid: %s'%file)
+
+        self.sound.set_property('uri', uri)
+        self.sound.set_property("volume",volume)
         self.staleness = 1
         self.file = file
 
@@ -85,7 +95,8 @@ class soundtype:
                 self.stop()
             
             if self.state == self.STOPPED:
-                self.chan = self.sound.play(-1)
+              self.sound.seek_simple(gst.FORMAT_TIME, gst.SEEK_FLAG_FLUSH, 0)
+              self.sound.set_state(gst.STATE_PLAYING)
             
             self.state = self.LOOPING
         finally:
@@ -101,8 +112,8 @@ class soundtype:
             #print "lock done"
             try:
                 #print "fadeout"
-                self.chan.fadeout(300)
                 #print "fadeout done"
+                self.sound.set_state(gst.STATE_NULL)
                 self.state = self.STOPPED
             finally:
                 self.lock.release()
@@ -118,11 +129,9 @@ class soundtype:
             if self.state == self.LOOPING:
                 self.stop()
             
-            if self.state == self.STOPPED:
-                self.chan = self.sound.play()
-            else: # Already counting
-                self.chan.queue(self.sound) # This will only allow one extra one to be enqueued
-
+            self.sound.seek_simple(gst.FORMAT_TIME, gst.SEEK_FLAG_FLUSH, 0)
+            self.sound.set_state(gst.STATE_PLAYING)
+        
             self.state = self.COUNTING
         finally:
             self.lock.release()
@@ -141,14 +150,20 @@ class soundtype:
         #print "lock"
         self.lock.acquire()
         try:
-            if self.chan.get_busy():
-                self.staleness = 0
+            position = self.sound.query_position(gst.FORMAT_TIME)[0]
+            duration = self.sound.query_duration(gst.FORMAT_TIME)[0]
+            if position != duration:
+              self.staleness = 0
             else:
-                self.staleness = self.staleness + 1
+              self.staleness = self.staleness + 1
             return self.staleness
         finally:
             self.lock.release()
             #print "unlock done"
+
+
+
+
 
 class soundplay:
     def stopdict(self,dict):
@@ -183,14 +198,15 @@ class soundplay:
                 elif data.sound == SoundRequest.SAY:
                     if not data.arg in self.voicesounds.keys():
                         rospy.logdebug('command for uncached text: "%s"'%data.arg)
-                        txtfile = tempfile.NamedTemporaryFile(prefix='sound_play', suffix='txt')
-                        wavfile = tempfile.NamedTemporaryFile(prefix='sound_play', suffix='wav')
+                        txtfile = tempfile.NamedTemporaryFile(prefix='sound_play', suffix='.txt')
+                        wavfile = tempfile.NamedTemporaryFile(prefix='sound_play', suffix='.wav')
                         txtfilename=txtfile.name
                         wavfilename=wavfile.name
+                        voice = data.arg2
                         try:
                             txtfile.write(data.arg)
                             txtfile.flush()
-                            os.system('text2wave '+txtfilename+' -o '+wavfilename)
+                            os.system("text2wave -eval '("+voice+")' "+txtfilename+" -o "+wavfilename)
                             try:
                                 if os.stat(wavfilename).st_size == 0:
                                     raise OSError # So we hit the same catch block
@@ -200,7 +216,7 @@ class soundplay:
                             self.voicesounds[data.arg] = soundtype(wavfilename)
                         finally:
                             txtfile.close()
-                            wavfile.close()
+                            #wavfile.close()
                     else:
                         rospy.logdebug('command for cached text: "%s"'%data.arg)
                     sound = self.voicesounds[data.arg]
@@ -303,8 +319,10 @@ class soundplay:
         self.active_sounds = 0
         self.sleep(0.5) # For ros startup race condition
         self.diagnostics(1)
+
         while not rospy.is_shutdown():
-            while not rospy.is_shutdown() and self.mixer_init():
+            while not rospy.is_shutdown():
+                self.init_vars()
                 self.no_error = True
                 self.initialized = True
                 self.mutex.release()
@@ -316,26 +334,12 @@ class soundplay:
                     rospy.loginfo('Exception in idle_loop: %s'%sys.exc_info()[0])
                 finally:
                     self.mutex.acquire()
-                    mixer.quit()
+
             self.diagnostics(2)
         self.mutex.release()
 
-    def mixer_init(self): 
-        try:
-            mixer.init(11025, -16, 1, 4000)
-            self.init_vars()
-            return True
-        except Exception, e:
-            if self.no_error:
-                rospy.logerr('Exception in sound startup, will retry once per second. Is the speaker connected? Have you configured ALSA? Can aplay play sound? See the wiki if there is a red light on the Logitech speaker. Have a look at http://pr.willowgarage.com/wiki/sound_play/Troubleshooting Error message: %s'%str(e))
-                self.no_error = False
-                self.initialized = False
-            self.sleep(1);
-        return False
-
     def init_vars(self):
         self.num_channels = 10
-        mixer.set_num_channels(self.num_channels)
         self.builtinsounds = {}
         self.filesounds = {}
         self.voicesounds = {}
