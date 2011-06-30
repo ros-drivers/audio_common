@@ -8,7 +8,7 @@
   <review status="unreviewed" notes=""/>
   <url>http://ros.org/wiki/audio_play</url>
   <depend package="roscpp"/>
-  <depend package="audio_msgs"/>
+  <depend package="audio_common_msgs"/>
 
 </package>
 

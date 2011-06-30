@@ -5,7 +5,7 @@
 
 #include <ros/ros.h>
 
-#include "audio_msgs/AudioData.h"
+#include "audio_common_msgs/AudioData.h"
 
 namespace audio_transport
 {
@@ -27,7 +27,7 @@ namespace audio_transport
         // The source of the audio
         //ros::param::param<std::string>("~src", source_type, "alsasrc");
 
-        _pub = _nh.advertise<audio_msgs::AudioData>("audio", 10, true);
+        _pub = _nh.advertise<audio_common_msgs::AudioData>("audio", 10, true);
 
         _loop = g_main_loop_new(NULL, false);
         _pipeline = gst_pipeline_new("ros_pipeline");
@@ -73,7 +73,7 @@ namespace audio_transport
         _gst_thread = boost::thread::thread( boost::bind(g_main_loop_run, _loop) );
       }
 
-      void publish( const audio_msgs::AudioData &msg )
+      void publish( const audio_common_msgs::AudioData &msg )
       {
         _pub.publish(msg);
       }
@@ -85,7 +85,7 @@ namespace audio_transport
         GstBuffer *buffer;
         g_signal_emit_by_name(appsink, "pull-buffer", &buffer);
 
-        audio_msgs::AudioData msg;
+        audio_common_msgs::AudioData msg;
         msg.data.resize( buffer->size );
         memcpy( &msg.data[0], buffer->data, buffer->size);
 

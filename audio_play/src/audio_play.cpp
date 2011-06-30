@@ -4,7 +4,7 @@
 #include <ros/ros.h>
 #include <boost/thread.hpp>
 
-#include "audio_msgs/AudioData.h"
+#include "audio_common_msgs/AudioData.h"
 
 namespace audio_transport
 {
@@ -65,7 +65,7 @@ namespace audio_transport
 
     private:
 
-      void onAudio(const audio_msgs::AudioDataConstPtr &msg)
+      void onAudio(const audio_common_msgs::AudioDataConstPtr &msg)
       {
         GstBuffer *buffer = gst_buffer_new_and_alloc(msg->data.size());
         memcpy(buffer->data, &msg->data[0], msg->data.size());
