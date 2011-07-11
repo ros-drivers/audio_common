@@ -71,7 +71,7 @@ namespace audio_transport
 
         gst_element_set_state(GST_ELEMENT(_pipeline), GST_STATE_PLAYING);
 
-        _gst_thread = boost::thread::thread( boost::bind(g_main_loop_run, _loop) );
+        _gst_thread = boost::thread( boost::bind(g_main_loop_run, _loop) );
       }
 
       void publish( const audio_common_msgs::AudioData &msg )
