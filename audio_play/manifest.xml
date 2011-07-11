@@ -9,6 +9,7 @@
   <url>http://ros.org/wiki/audio_play</url>
   <depend package="roscpp"/>
   <depend package="audio_common_msgs"/>
+  <rosdep name="gstreamer"/>
 
 </package>
 

@@ -1,0 +1,5 @@
+festival:
+  ubuntu: festival
+  debian: festival
+gstreamer:
+  ubuntu: libgstreamer0.10-dev libgstreamer-plugins-base0.10-dev gstreamer0.10-plugins-ugly-multiverse
