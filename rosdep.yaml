@@ -1,6 +1,2 @@
-festival:
-  ubuntu: festival festvox-kallpc16k
-  debian: festival festvox-kallpc16k
-  arch: festival festival-kallpc16k
 gstreamer:
   ubuntu: libgstreamer0.10-dev libgstreamer-plugins-base0.10-dev gstreamer0.10-plugins-ugly-multiverse

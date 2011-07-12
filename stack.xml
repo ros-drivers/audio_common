@@ -9,6 +9,7 @@
   <depend stack="ros" />
   <depend stack="common" />
   <depend stack="common_msgs" />
+  <depend stack="common_rosdeps" />
   <depend stack="ros_comm" />
 
 </stack>
