@@ -8,6 +8,7 @@ sound_play provides a ROS node that translates commands on a ROS topic (<tt>robo
   <depend package="rospy" />
   <depend package="roscpp" />
   <depend package="roslib" />
+  <depend package="diagnostic_msgs" />
   <!--<depend package="diagnostic_msgs" />-->
   <rosdep name="festival" />
   <export>
