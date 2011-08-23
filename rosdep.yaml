@@ -1,2 +1,2 @@
 gstreamer:
-  ubuntu: libgstreamer0.10-dev libgstreamer-plugins-base0.10-dev gstreamer0.10-plugins-ugly-multiverse
+  ubuntu: libgstreamer0.10-dev libgstreamer-plugins-base0.10-dev gstreamer0.10-plugins-ugly-multiverse python-gst0.10
