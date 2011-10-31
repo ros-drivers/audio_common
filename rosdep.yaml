@@ -1,2 +1,6 @@
 gstreamer:
-  ubuntu: libgstreamer0.10-dev libgstreamer-plugins-base0.10-dev gstreamer0.10-plugins-ugly-multiverse python-gst0.10
+  ubuntu:
+    10.04: libgstreamer0.10-dev libgstreamer-plugins-base0.10-dev python-gst0.10 gstreamer0.10-plugins-ugly-multiverse
+    10.10: libgstreamer0.10-dev libgstreamer-plugins-base0.10-dev python-gst0.10 gstreamer0.10-plugins-ugly-multiverse
+    11.04: libgstreamer0.10-dev libgstreamer-plugins-base0.10-dev python-gst0.10 gstreamer0.10-plugins-ugly-multiverse
+    11.10: libgstreamer0.10-dev libgstreamer-plugins-base0.10-dev python-gst0.10 gstreamer0.10-plugins-ugly
