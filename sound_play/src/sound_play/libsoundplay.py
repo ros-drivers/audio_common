@@ -37,6 +37,7 @@
 # Author: Blaise Gassend
 
 import rospy
+import os, sys
 from sound_play.msg import SoundRequest
 
 ## \brief Class that publishes messages to the sound_play node.
@@ -101,8 +102,10 @@ class SoundClient:
 ##
 ## \param s File to play. Should be an absolute path that exists on the
 ## machine running the sound_play node.
-    def waveSound(self, s):
-        return Sound(self, SoundRequest.PLAY_FILE, s)
+    def waveSound(self, sound):
+        if sound[0] != "/":
+          sound = os.getcwd() + "/" + sound
+        return Sound(self, SoundRequest.PLAY_FILE, sound)
     
 ## \brief Create a builtin Sound.
 ##
@@ -150,7 +153,9 @@ class SoundClient:
 ## \param sound Filename of the WAV or OGG file. Must be an absolute path valid
 ## on the computer on which the sound_play node is running
 
-    def playWave(self,sound):
+    def playWave(self, sound):
+        if sound[0] != "/":
+          sound = os.getcwd() + "/" + sound
         self.sendMsg(SoundRequest.PLAY_FILE, SoundRequest.PLAY_ONCE, sound)
     
 ## \brief Plays a WAV or OGG file repeatedly
@@ -160,7 +165,9 @@ class SoundClient:
 ## \param sound Filename of the WAV or OGG file. Must be an absolute path valid
 ## on the computer on which the sound_play node is running.
 
-    def startWave(self,sound):
+    def startWave(self, sound):
+        if sound[0] != "/":
+          sound = os.getcwd() + "/" + sound
         self.sendMsg(SoundRequest.PLAY_FILE, SoundRequest.PLAY_START, sound)
 
 ##  \brief Stop playing a WAV or OGG file
@@ -171,6 +178,8 @@ class SoundClient:
 ## \param sound Same string as in the playWave or startWave command
 
     def stopWave(self,sound):
+        if sound[0] != "/":
+          sound = os.getcwd() + "/" + sound
         self.sendMsg(SoundRequest.PLAY_FILE, SoundRequest.PLAY_STOP, sound)
 
 ## \brief Play a buildin sound

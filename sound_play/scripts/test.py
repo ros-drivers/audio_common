@@ -37,7 +37,7 @@
 # Author: Blaise Gassend
 
 import roslib; roslib.load_manifest('sound_play')
-import rospy
+import rospy, os, sys
 from sound_play.msg import SoundRequest
 
 from sound_play.libsoundplay import SoundClient
@@ -58,63 +58,50 @@ if __name__ == '__main__':
 
     print "This script will run continuously until you hit CTRL+C, testing various sound_node sound types."
 
-    while not rospy.is_shutdown():
-        print
-        print 'Try to play wave files that do not exist.'
-        soundhandle.playWave('17')
-        soundhandle.playWave('dummy')
+    print
+    print 'Try to play wave files that do not exist.'
+    soundhandle.playWave('17')
+    soundhandle.playWave('dummy')
         
-        print 'say'
-        soundhandle.say('Hello world!')
-        sleep(3)
+    print 'say'
+    soundhandle.say('Hello world!')
+    sleep(3)
         
-        print 'wave (assumes you have some xemacs21 sounds present)'
-        soundhandle.playWave('/usr/share/xemacs21/xemacs-packages/etc/sounds/cuckoo.wav')
-
-        sleep(3)
+    print 'wave'
+    soundhandle.playWave('sounds/say-beep.wav')
+    sleep(2)
         
-        print 'wave2 (assumes you have some xemacs21 sounds present)'
-        soundhandle.playWave('/usr/share/xemacs21/xemacs-packages/etc/sounds/say-beep.wav')
+    print 'plugging'
+    soundhandle.play(SoundRequest.NEEDS_PLUGGING)
+    sleep(2)
 
-        sleep(3)
+    print 'unplugging'
+    soundhandle.play(SoundRequest.NEEDS_UNPLUGGING)
+    sleep(2)
 
-        print 'plugging'
-        soundhandle.play(SoundRequest.NEEDS_PLUGGING)
-        soundhandle.play(SoundRequest.NEEDS_PLUGGING)
+    print 'plugging badly'
+    soundhandle.play(SoundRequest.NEEDS_PLUGGING_BADLY)
+    sleep(2)
 
-        sleep(2)
+    print 'unplugging badly'
+    soundhandle.play(SoundRequest.NEEDS_UNPLUGGING_BADLY)
+    sleep(2)
 
-        #start(SoundRequest.BACKINGUP)
+    s1 = soundhandle.builtinSound(SoundRequest.NEEDS_UNPLUGGING_BADLY)
+    s2 = soundhandle.waveSound("sounds/say-beep.wav")
+    s3 = soundhandle.voiceSound("Testing the new A P I")
 
-        sleep(1)
+    print "New API start voice"
+    s3.repeat()
+    sleep(2)
 
-        print 'unplugging'
-        soundhandle.play(SoundRequest.NEEDS_UNPLUGGING)
+    print "New API wave"
+    s2.play()
+    sleep(2)
 
-        sleep(1)
-        print 'plugging badly'
-        soundhandle.play(SoundRequest.NEEDS_PLUGGING_BADLY)
-        sleep(1)
-        #stop(SoundRequest.BACKINGUP)
+    print "New API builtin"
+    s1.play()
+    sleep(2)
 
-        sleep(2)
-        print 'unplugging badly'
-        soundhandle.play(SoundRequest.NEEDS_UNPLUGGING_BADLY)
-
-        sleep(3)
-
-        s1 = soundhandle.builtinSound(SoundRequest.NEEDS_UNPLUGGING_BADLY)
-        s2 = soundhandle.waveSound("/usr/share/xemacs21/xemacs-packages/etc/sounds/say-beep.wav")
-        s3 = soundhandle.voiceSound("Testing the new A P I")
-
-        print "New API start voice"
-        s3.repeat()
-        sleep(2)
-        print "New API wave"
-        s2.play()
-        sleep(2)
-        print "New API builtin"
-        s1.play()
-        sleep(2)
-        print "New API stop"
-        s3.stop()
+    print "New API stop"
+    s3.stop()
