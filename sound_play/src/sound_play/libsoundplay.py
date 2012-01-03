@@ -104,7 +104,8 @@ class SoundClient:
 ## machine running the sound_play node.
     def waveSound(self, sound):
         if sound[0] != "/":
-          sound = os.getcwd() + "/" + sound
+	  rootdir = os.path.join(os.path.dirname(__file__),'../..','sounds')
+          sound = rootdir + "/" + sound
         return Sound(self, SoundRequest.PLAY_FILE, sound)
     
 ## \brief Create a builtin Sound.
@@ -155,7 +156,8 @@ class SoundClient:
 
     def playWave(self, sound):
         if sound[0] != "/":
-          sound = os.getcwd() + "/" + sound
+	  rootdir = os.path.join(os.path.dirname(__file__),'../..','sounds')
+          sound = rootdir + "/" + sound
         self.sendMsg(SoundRequest.PLAY_FILE, SoundRequest.PLAY_ONCE, sound)
     
 ## \brief Plays a WAV or OGG file repeatedly
@@ -167,7 +169,8 @@ class SoundClient:
 
     def startWave(self, sound):
         if sound[0] != "/":
-          sound = os.getcwd() + "/" + sound
+	  rootdir = os.path.join(os.path.dirname(__file__),'../..','sounds')
+          sound = rootdir + "/" + sound
         self.sendMsg(SoundRequest.PLAY_FILE, SoundRequest.PLAY_START, sound)
 
 ##  \brief Stop playing a WAV or OGG file
@@ -179,7 +182,8 @@ class SoundClient:
 
     def stopWave(self,sound):
         if sound[0] != "/":
-          sound = os.getcwd() + "/" + sound
+	  rootdir = os.path.join(os.path.dirname(__file__),'../..','sounds')
+          sound = rootdir + "/" + sound
         self.sendMsg(SoundRequest.PLAY_FILE, SoundRequest.PLAY_STOP, sound)
 
 ## \brief Play a buildin sound

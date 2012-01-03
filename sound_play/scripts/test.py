@@ -59,16 +59,16 @@ if __name__ == '__main__':
     print "This script will run continuously until you hit CTRL+C, testing various sound_node sound types."
 
     print
-    print 'Try to play wave files that do not exist.'
-    soundhandle.playWave('17')
-    soundhandle.playWave('dummy')
+    #print 'Try to play wave files that do not exist.'
+    #soundhandle.playWave('17')
+    #soundhandle.playWave('dummy')
         
-    print 'say'
-    soundhandle.say('Hello world!')
-    sleep(3)
-        
+    #print 'say'
+    #soundhandle.say('Hello world!')
+    #sleep(3)
+    #    
     print 'wave'
-    soundhandle.playWave('sounds/say-beep.wav')
+    soundhandle.playWave('say-beep.wav')
     sleep(2)
         
     print 'plugging'
@@ -88,12 +88,12 @@ if __name__ == '__main__':
     sleep(2)
 
     s1 = soundhandle.builtinSound(SoundRequest.NEEDS_UNPLUGGING_BADLY)
-    s2 = soundhandle.waveSound("sounds/say-beep.wav")
+    s2 = soundhandle.waveSound("say-beep.wav")
     s3 = soundhandle.voiceSound("Testing the new A P I")
 
     print "New API start voice"
     s3.repeat()
-    sleep(2)
+    sleep(3)
 
     print "New API wave"
     s2.play()

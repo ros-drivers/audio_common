@@ -63,11 +63,18 @@ Error opening pygst. Is gstreamer installed? (sudo apt-get install python-gst0.1
     print str
     exit(1)
 
+def sleep(t):
+    try:
+        rospy.sleep(t)
+    except:
+        pass
+
 
 class soundtype:
     STOPPED = 0
     LOOPING = 1
     COUNTING = 2
+    #sound = gst.element_factory_make("playbin2","player")
 
     def __init__(self, file, volume = 1.0):
         self.lock = threading.RLock()
@@ -80,14 +87,14 @@ class soundtype:
         else:
           rospy.logerr('Error: URI is invalid: %s'%file)
 
+        self.uri = uri
+        self.volume = volume
         self.sound.set_property('uri', uri)
         self.sound.set_property("volume",volume)
         self.staleness = 1
         self.file = file
 
     def loop(self):  
-        #print "loop"
-        #print "lock"
         self.lock.acquire()
         try:
             self.staleness = 0
@@ -101,28 +108,17 @@ class soundtype:
             self.state = self.LOOPING
         finally:
             self.lock.release()
-            #print "unlock done"
-        #print "loop done"
 
     def stop(self):
-        #print "stop"
         if self.state != self.STOPPED:
-            #print "lock"
             self.lock.acquire()
-            #print "lock done"
             try:
-                #print "fadeout"
-                #print "fadeout done"
                 self.sound.set_state(gst.STATE_NULL)
                 self.state = self.STOPPED
             finally:
                 self.lock.release()
-                #print "unlock done"
-        #print "stop done"
 
     def single(self):
-        #print "single"
-        #print "lock"
         self.lock.acquire()
         try:
             self.staleness = 0
@@ -135,8 +131,6 @@ class soundtype:
             self.state = self.COUNTING
         finally:
             self.lock.release()
-            #print "unlock done"
-        #print "single done"
 
     def command(self, cmd):
          if cmd == SoundRequest.PLAY_STOP:
@@ -147,23 +141,23 @@ class soundtype:
              self.loop()
 
     def get_staleness(self):
-        #print "lock"
         self.lock.acquire()
+        position = 0
+        duration = 0
         try:
             position = self.sound.query_position(gst.FORMAT_TIME)[0]
             duration = self.sound.query_duration(gst.FORMAT_TIME)[0]
-            if position != duration:
-              self.staleness = 0
-            else:
-              self.staleness = self.staleness + 1
-            return self.staleness
+        except Exception, e:
+            position = 0
+            duration = 0
         finally:
             self.lock.release()
-            #print "unlock done"
 
-
-
-
+        if position != duration:
+            self.staleness = 0
+        else:
+            self.staleness = self.staleness + 1
+        return self.staleness
 
 class soundplay:
     def stopdict(self,dict):
@@ -176,10 +170,12 @@ class soundplay:
         self.stopdict(self.voicesounds)
 
     def callback(self,data):
-        #print "callback", str(data)
         if not self.initialized:
             return
         self.mutex.acquire()
+        
+        # Force only one sound at a time
+        self.stopall()
         try:
             if data.sound == SoundRequest.ALL and data.command == SoundRequest.PLAY_STOP:
                 self.stopall()
@@ -190,14 +186,16 @@ class soundplay:
                         try:
                             self.filesounds[data.arg] = soundtype(data.arg)
                         except:
+                            print "Exception"
                             rospy.logerr('Error setting up to play "%s". Does this file exist on the machine on which sound_play is running?'%data.arg)
                             return
                     else:
+                        print "cached"
                         rospy.logdebug('command for cached wave: "%s"'%data.arg)
                     sound = self.filesounds[data.arg]
                 elif data.sound == SoundRequest.SAY:
                     if not data.arg in self.voicesounds.keys():
-                        rospy.logdebug('command for uncached text: "%s"'%data.arg)
+                        rospy.logdebug('command for uncached text: "%s"' % data.arg)
                         txtfile = tempfile.NamedTemporaryFile(prefix='sound_play', suffix='.txt')
                         wavfile = tempfile.NamedTemporaryFile(prefix='sound_play', suffix='.wav')
                         txtfilename=txtfile.name
@@ -260,7 +258,6 @@ class soundplay:
            del dict[key]
     
     def cleanup(self):
-        #print "cleanup %i files %i voices"%(len(self.filesounds),len(self.voicesounds))
         self.mutex.acquire()
         try:
             self.active_sounds = 0
