@@ -1,6 +1,6 @@
 gstreamer:
   ubuntu:
-    lucid: libgstreamer0.10-dev libgstreamer-plugins-base0.10-dev python-gst0.10 gstreamer0.10-plugins-ugly-multiverse
-    maverick: libgstreamer0.10-dev libgstreamer-plugins-base0.10-dev python-gst0.10 gstreamer0.10-plugins-ugly-multiverse
-    natty: libgstreamer0.10-dev libgstreamer-plugins-base0.10-dev python-gst0.10 gstreamer0.10-plugins-ugly
-    oneiric: libgstreamer0.10-dev libgstreamer-plugins-base0.10-dev python-gst0.10 gstreamer0.10-plugins-ugly
+    lucid: libgstreamer0.10-dev libgstreamer-plugins-base0.10-dev python-gst0.10 gstreamer0.10-plugins-ugly-multiverse gstreamer0.10-plugins-good
+    maverick: libgstreamer0.10-dev libgstreamer-plugins-base0.10-dev python-gst0.10 gstreamer0.10-plugins-ugly-multiverse gstreamer0.10-plugins-good
+    natty: libgstreamer0.10-dev libgstreamer-plugins-base0.10-dev python-gst0.10 gstreamer0.10-plugins-ugly gstreamer0.10-plugins-good
+    oneiric: libgstreamer0.10-dev libgstreamer-plugins-base0.10-dev python-gst0.10 gstreamer0.10-plugins-ugly gstreamer0.10-plugins-good
