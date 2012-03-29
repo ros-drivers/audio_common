@@ -9,7 +9,11 @@
   <url>http://ros.org/wiki/audio_play</url>
   <depend package="roscpp"/>
   <depend package="audio_common_msgs"/>
-  <rosdep name="gstreamer"/>
+  <rosdep name="libgstreamer0.10-dev"/>
+  <rosdep name="libgstreamer-plugins-base0.10-dev"/>
+  <rosdep name="python-gst0.10"/>
+  <rosdep name="gstreamer0.10-plugins-ugly"/>
+  <rosdep name="gstreamer0.10-plugins-good"/>
 
 </package>
 

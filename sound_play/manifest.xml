@@ -10,7 +10,12 @@ sound_play provides a ROS node that translates commands on a ROS topic (<tt>robo
   <depend package="roslib" />
   <depend package="diagnostic_msgs" />
   <rosdep name="festival" />
-  <rosdep name="gstreamer" />
+  <rosdep name="libgstreamer0.10-dev"/>
+  <rosdep name="libgstreamer-plugins-base0.10-dev"/>
+  <rosdep name="python-gst0.10"/>
+  <rosdep name="gstreamer0.10-plugins-ugly"/>
+  <rosdep name="gstreamer0.10-plugins-good"/>
+
   <export>
     <cpp cflags="-I${prefix}/include -I${prefix}/msg/cpp" />
   </export>
