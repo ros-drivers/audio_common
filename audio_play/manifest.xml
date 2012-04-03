@@ -11,7 +11,7 @@
   <depend package="audio_common_msgs"/>
   <rosdep name="libgstreamer0.10-dev"/>
   <rosdep name="libgstreamer-plugins-base0.10-dev"/>
-  <rosdep name="python-gst0.10"/>
+  <rosdep name="python-gst"/>
   <rosdep name="gstreamer0.10-plugins-ugly"/>
   <rosdep name="gstreamer0.10-plugins-good"/>
 
