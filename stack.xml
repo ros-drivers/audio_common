@@ -2,7 +2,7 @@
   <description brief="Common code for working with audio">
     Common code for working with audio in ROS
   </description>
-  <author>Maintained by Nate Koenig</author>
+  <author>Maintained by Austin Hendrix</author>
   <license>BSD</license>  
   <review status="unreviewed" notes=""/>
   <url>http://ros.org/wiki/audio_common</url>
