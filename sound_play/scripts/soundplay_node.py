@@ -74,7 +74,6 @@ class soundtype:
     STOPPED = 0
     LOOPING = 1
     COUNTING = 2
-    #sound = gst.element_factory_make("playbin2","player")
 
     def __init__(self, file, volume = 1.0):
         self.lock = threading.RLock()
@@ -93,6 +92,10 @@ class soundtype:
         self.sound.set_property("volume",volume)
         self.staleness = 1
         self.file = file
+
+    def __del__(self):
+        # stop our GST object so that it gets garbage-collected
+        self.stop()
 
     def loop(self):  
         self.lock.acquire()
@@ -121,6 +124,7 @@ class soundtype:
     def single(self):
         self.lock.acquire()
         try:
+            rospy.logdebug("Playing %s"%self.uri)
             self.staleness = 0
             if self.state == self.LOOPING:
                 self.stop()
@@ -197,9 +201,9 @@ class soundplay:
                     if not data.arg in self.voicesounds.keys():
                         rospy.logdebug('command for uncached text: "%s"' % data.arg)
                         txtfile = tempfile.NamedTemporaryFile(prefix='sound_play', suffix='.txt')
-                        wavfile = tempfile.NamedTemporaryFile(prefix='sound_play', suffix='.wav')
+                        (wavfile,wavfilename) = tempfile.mkstemp(prefix='sound_play', suffix='.wav')
                         txtfilename=txtfile.name
-                        wavfilename=wavfile.name
+                        os.close(wavfile)
                         voice = data.arg2
                         try:
                             txtfile.write(data.arg)
@@ -214,7 +218,6 @@ class soundplay:
                             self.voicesounds[data.arg] = soundtype(wavfilename)
                         finally:
                             txtfile.close()
-                            #wavfile.close()
                     else:
                         rospy.logdebug('command for cached text: "%s"'%data.arg)
                     sound = self.voicesounds[data.arg]
@@ -226,7 +229,7 @@ class soundplay:
                     sound = self.builtinsounds[data.sound]
                 if sound.staleness != 0 and data.command != SoundRequest.PLAY_STOP:
                     # This sound isn't counted in active_sounds
-                    #print "activating %i %s"%(data.sound,data.arg)
+                    rospy.logdebug("activating %i %s"%(data.sound,data.arg))
                     self.active_sounds = self.active_sounds + 1
                     sound.staleness = 0
 #                    if self.active_sounds > self.num_channels:
@@ -238,7 +241,7 @@ class soundplay:
             rospy.loginfo(traceback.format_exc())
         finally:
             self.mutex.release()
-            #print "done callback"
+            rospy.logdebug("done callback")
 
     # Purge sounds that haven't been played in a while.
     def cleanupdict(self, dict):
@@ -255,6 +258,7 @@ class soundplay:
             if staleness == 0: # Sound is playing
                 self.active_sounds = self.active_sounds + 1
         for key in purgelist:
+           rospy.logdebug('Purging %s from cache'%key)
            del dict[key]
     
     def cleanup(self):
