@@ -124,7 +124,7 @@ class SoundClient:
 ## 
 ## \param text String to say
 
-    def say(self,text, voice='voice_kal_diphone'):
+    def say(self,text, voice=''):
         self.sendMsg(SoundRequest.SAY, SoundRequest.PLAY_ONCE, text, voice)
 
 ## \brief Say a string repeatedly
