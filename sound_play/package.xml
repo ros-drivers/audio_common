@@ -1,12 +1,15 @@
 <package>
    <name>sound_play</name>
+   <version>0.2.0</version>
    <description>
       sound_play provides a ROS node that translates commands on a ROS topic (<tt>robotsound</tt>) into sounds. The node supports built-in sounds, playing OGG/WAV files, and doing speech synthesis via festival. C++ and Python bindings allow this node to be used without understanding the details of the message format, allowing faster development and resilience to message format changes.
    </description>
    <maintainer email="ahendrix@willowgarage.com">Austin Hendrix</maintainer>
    <author>Blaise Gassend</author>
    <license>BSD</license>
-   <url>http://www.ros.org/wiki/sound_play</url>
+   <url type="website">http://ros.org/wiki/sound_play</url>
+   <url type="repository">https://github.com/ros-drivers/audio_common</url>
+   <url type="bugtracker">https://github.com/ros-drivers/audio_common/issues</url>
 
    <buildtool_depend>catkin</buildtool_depend>
 

@@ -9,7 +9,9 @@
    <maintainer email="ahendrix@willowgarage.com">Austin Hendrix</maintainer>
    <author>Nate Koenig</author>
    <license>BSD</license>
-   <url>http://ros.org/wiki/audio_capture</url>
+   <url type="website">http://ros.org/wiki/audio_capture</url>
+   <url type="repository">https://github.com/ros-drivers/audio_common</url>
+   <url type="bugtracker">https://github.com/ros-drivers/audio_common/issues</url>
 
    <buildtool_depend>catkin</buildtool_depend>
 

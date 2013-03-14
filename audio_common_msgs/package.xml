@@ -1,5 +1,6 @@
 <package>
    <name>audio_common_msgs</name>
+   <version>0.2.0</version>
    <description>
       Messages for transmitting audio via ROS
    </description>
@@ -7,7 +8,9 @@
    <author>Nate Koenig</author>
    <license>BSD</license>
    <review status="unreviewed" notes=""/>
-   <url>http://ros.org/wiki/audio_common_msgs</url>
+   <url type="website">http://ros.org/wiki/audio_common_msgs</url>
+   <url type="repository">https://github.com/ros-drivers/audio_common</url>
+   <url type="bugtracker">https://github.com/ros-drivers/audio_common/issues</url>
 
    <buildtool_depend>catkin</buildtool_depend>
 
