@@ -1,0 +1,17 @@
+<package>
+   <name>audio_common_msgs</name>
+   <description>
+      Messages for transmitting audio via ROS
+   </description>
+   <maintainer email="ahendrix@willowgarage.com">Austin Hendrix</maintainer>
+   <author>Nate Koenig</author>
+   <license>BSD</license>
+   <review status="unreviewed" notes=""/>
+   <url>http://ros.org/wiki/audio_common_msgs</url>
+
+   <buildtool_depend>catkin</buildtool_depend>
+
+   <build_depend>message_generation</build_depend>
+
+   <run_depend>message_runtime</run_depend>
+</package>

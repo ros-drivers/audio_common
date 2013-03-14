@@ -1,15 +1,12 @@
 <package>
-   <name>audio_capture</name>
-   <version>0.2.0</version>
+   <name>audio_play</name>
    <description>
-      Transports audio from a source to a destination. Audio sources can come
-      from a microphone or file. The destination can play the audio or save it
-      to an mp3 file.
+      Outputs audio to a speaker from a source node.
    </description>
    <maintainer email="ahendrix@willowgarage.com">Austin Hendrix</maintainer>
    <author>Nate Koenig</author>
    <license>BSD</license>
-   <url>http://ros.org/wiki/audio_capture</url>
+   <url>http://ros.org/wiki/audio_play</url>
 
    <buildtool_depend>catkin</buildtool_depend>
 
@@ -24,4 +21,7 @@
    <run_depend>libgstreamer-plugins-base0.10-0</run_depend>
    <run_depend>gstreamer0.10-plugins-ugly</run_depend>
    <run_depend>gstreamer0.10-plugins-good</run_depend>
+
 </package>
+
+
