@@ -1,6 +1,0 @@
-build
-bin
-msg_gen
-src/audio_msgs
-.*\.pyc
-msg/_.*\.py
