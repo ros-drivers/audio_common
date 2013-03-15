@@ -1,2 +1,3 @@
-rosbuild_add_executable(test test.cpp)
+add_executable(test test.cpp)
+target_link_libraries(test ${catkin_LIBRARIES})
 

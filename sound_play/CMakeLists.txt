@@ -1,15 +1,12 @@
-cmake_minimum_required(VERSION 2.4.6)
+cmake_minimum_required(VERSION 2.8.3)
 
-# Include the ROS cmake rules
-include($ENV{ROS_ROOT}/core/rosbuild/rosbuild.cmake)
-# Sets up various things for the pytalker_listener package.  
-# The argument to the "rospack" macro must be the name of the package.
+project(sound_play)
 
-set(ROS_BUILD_TYPE RelWithDebInfo)
-rosbuild_init()
-rosbuild_genmsg()
+find_package(catkin REQUIRED COMPONENTS message_generation roscpp)
+add_message_files(DIRECTORY msg FILES SoundRequest.msg)
+generate_messages()
 
-set(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/bin)
+include_directories(include ${catkin_INCLUDE_DIRS})
 
 add_subdirectory(test)
 
