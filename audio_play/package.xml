@@ -14,7 +14,7 @@
    <buildtool_depend>catkin</buildtool_depend>
 
    <build_depend>roscpp</build_depend>
-   <duild_depend>audio_common_msgs</build_depend>
+   <build_depend>audio_common_msgs</build_depend>
    <build_depend>libgstreamer0.10-dev</build_depend>
    <build_depend>libgstreamer-plugins-base0.10-dev</build_depend>
 
