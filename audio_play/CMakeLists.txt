@@ -13,3 +13,5 @@ include_directories(${catkin_INCLUDE_DIRS} ${Boost_INCLUDE_DIRS} ${GST_INCLUDE_D
 
 add_executable(audio_play src/audio_play.cpp)
 target_link_libraries(audio_play ${catkin_LIBRARIES} ${GST_LIBRARIES} ${Boost_LIBRARIES}) 
+
+catkin_package()

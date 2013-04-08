@@ -4,9 +4,27 @@ project(sound_play)
 
 find_package(catkin REQUIRED COMPONENTS message_generation roscpp)
 add_message_files(DIRECTORY msg FILES SoundRequest.msg)
-generate_messages()
 
 include_directories(include ${catkin_INCLUDE_DIRS})
 
 add_subdirectory(test)
 
+catkin_python_setup()
+
+generate_messages()
+
+install(PROGRAMS
+   scripts/playbuiltin.py
+   scripts/play.py
+   scripts/say.py
+   scripts/shutup.py
+   scripts/soundplay_node.py
+   scripts/test.py
+      DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
+
+install(FILES
+   soundplay_node.launch
+   test.launch
+      DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION})
+
+catkin_package(CATKIN_DEPENDS message_runtime)
