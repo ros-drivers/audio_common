@@ -11,6 +11,8 @@
    <url type="repository">https://github.com/ros-drivers/audio_common</url>
    <url type="bugtracker">https://github.com/ros-drivers/audio_common/issues</url>
 
+   <buildtool_depend>catkin</buildtool_depend>
+
    <run_depend>audio_capture</run_depend>
    <run_depend>audio_common_msgs</run_depend>
    <run_depend>audio_play</run_depend>
