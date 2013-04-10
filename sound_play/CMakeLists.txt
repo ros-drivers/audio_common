@@ -7,11 +7,11 @@ add_message_files(DIRECTORY msg FILES SoundRequest.msg)
 
 include_directories(include ${catkin_INCLUDE_DIRS})
 
-add_subdirectory(test)
-
 catkin_python_setup()
 
 generate_messages()
+
+add_subdirectory(test)
 
 install(PROGRAMS
    scripts/playbuiltin.py
