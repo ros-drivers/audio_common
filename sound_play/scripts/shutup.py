@@ -36,7 +36,6 @@
 
 # Author: Blaise Gassend
 
-import roslib; roslib.load_manifest('sound_play')
 import rospy
 from sound_play.msg import SoundRequest
 from sound_play.libsoundplay import SoundClient

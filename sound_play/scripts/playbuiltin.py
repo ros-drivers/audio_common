@@ -46,7 +46,6 @@ if __name__ == '__main__':
         exit(1)
 
     # Import here so that usage is fast.
-    import roslib; roslib.load_manifest('sound_play')
     import rospy
     from sound_play.msg import SoundRequest
     from sound_play.libsoundplay import SoundClient

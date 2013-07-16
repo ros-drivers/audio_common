@@ -36,7 +36,6 @@
 
 # Author: Blaise Gassend
 
-import roslib; roslib.load_manifest('sound_play')
 
 import rospy
 import threading
