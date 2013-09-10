@@ -12,6 +12,8 @@ catkin_python_setup()
 
 generate_messages()
 
+catkin_package(CATKIN_DEPENDS message_runtime)
+
 add_subdirectory(test)
 
 install(PROGRAMS
@@ -27,5 +29,3 @@ install(FILES
    soundplay_node.launch
    test.launch
       DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION})
-
-catkin_package(CATKIN_DEPENDS message_runtime)
