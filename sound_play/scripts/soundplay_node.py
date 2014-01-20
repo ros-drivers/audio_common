@@ -301,7 +301,7 @@ class soundplay:
         rospy.init_node('sound_play')
         self.diagnostic_pub = rospy.Publisher("/diagnostics", DiagnosticArray)
 
-        rootdir = os.path.join(os.path.dirname(__file__),'..','sounds')
+        rootdir = os.path.join(roslib.packages.get_pkg_dir('sound_play'),'sounds')
         
         self.builtinsoundparams = {
                 SoundRequest.BACKINGUP              : (os.path.join(rootdir, 'BACKINGUP.ogg'), 0.1),
