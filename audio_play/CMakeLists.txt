@@ -5,7 +5,7 @@ project(audio_play)
 find_package(catkin REQUIRED COMPONENTS roscpp audio_common_msgs)
 
 find_package(PkgConfig)
-pkg_check_modules(GST gstreamer-0.10)
+pkg_check_modules(GST gstreamer-0.10 REQUIRED)
 
 find_package(Boost REQUIRED COMPONENTS thread)
 
