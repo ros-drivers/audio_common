@@ -36,7 +36,7 @@
 
 # Author: Blaise Gassend
 
-
+import roslib
 import rospy
 import threading
 from sound_play.msg import SoundRequest
