@@ -37,6 +37,7 @@
 # Author: Blaise Gassend
 
 import rospy
+import roslib
 import os, sys
 from sound_play.msg import SoundRequest
 
@@ -104,7 +105,7 @@ class SoundClient:
 ## machine running the sound_play node.
     def waveSound(self, sound):
         if sound[0] != "/":
-	  rootdir = os.path.join(os.path.dirname(__file__),'../..','sounds')
+          rootdir = os.path.join(roslib.packages.get_pkg_dir('sound_play'),'sounds')
           sound = rootdir + "/" + sound
         return Sound(self, SoundRequest.PLAY_FILE, sound)
     
@@ -156,7 +157,7 @@ class SoundClient:
 
     def playWave(self, sound):
         if sound[0] != "/":
-	  rootdir = os.path.join(os.path.dirname(__file__),'../..','sounds')
+          rootdir = os.path.join(roslib.packages.get_pkg_dir('sound_play'),'sounds')
           sound = rootdir + "/" + sound
         self.sendMsg(SoundRequest.PLAY_FILE, SoundRequest.PLAY_ONCE, sound)
     
@@ -169,7 +170,7 @@ class SoundClient:
 
     def startWave(self, sound):
         if sound[0] != "/":
-	  rootdir = os.path.join(os.path.dirname(__file__),'../..','sounds')
+          rootdir = os.path.join(roslib.packages.get_pkg_dir('sound_play'),'sounds')
           sound = rootdir + "/" + sound
         self.sendMsg(SoundRequest.PLAY_FILE, SoundRequest.PLAY_START, sound)
 
@@ -182,7 +183,7 @@ class SoundClient:
 
     def stopWave(self,sound):
         if sound[0] != "/":
-	  rootdir = os.path.join(os.path.dirname(__file__),'../..','sounds')
+          rootdir = os.path.join(roslib.package.get_pkg_dir('sound_play'),'sounds')
           sound = rootdir + "/" + sound
         self.sendMsg(SoundRequest.PLAY_FILE, SoundRequest.PLAY_STOP, sound)
 
