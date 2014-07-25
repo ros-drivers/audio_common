@@ -1,6 +1,6 @@
 <package>
    <name>audio_play</name>
-   <version>0.2.6</version>
+   <version>0.2.7</version>
    <description>
       Outputs audio to a speaker from a source node.
    </description>
