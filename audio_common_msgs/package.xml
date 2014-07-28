@@ -4,7 +4,7 @@
    <description>
       Messages for transmitting audio via ROS
    </description>
-   <maintainer email="ahendrix@willowgarage.com">Austin Hendrix</maintainer>
+   <maintainer email="namniart@gmail.com">Austin Hendrix</maintainer>
    <author>Nate Koenig</author>
    <license>BSD</license>
    <url type="website">http://ros.org/wiki/audio_common_msgs</url>

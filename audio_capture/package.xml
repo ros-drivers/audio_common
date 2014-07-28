@@ -6,7 +6,7 @@
       from a microphone or file. The destination can play the audio or save it
       to an mp3 file.
    </description>
-   <maintainer email="ahendrix@willowgarage.com">Austin Hendrix</maintainer>
+   <maintainer email="namniart@gmail.com">Austin Hendrix</maintainer>
    <author>Nate Koenig</author>
    <license>BSD</license>
    <url type="website">http://ros.org/wiki/audio_capture</url>
