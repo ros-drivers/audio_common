@@ -40,7 +40,7 @@ namespace audio_transport
           _audio = gst_bin_new("audiobin");
           _convert = gst_element_factory_make("audioconvert", "convert");
           audiopad = gst_element_get_static_pad(_convert, "sink");
-          _sink = gst_element_factory_make("alsasink", "sink");
+          _sink = gst_element_factory_make("autoaudiosink", "sink");
           gst_bin_add_many( GST_BIN(_audio), _convert, _sink, NULL);
           gst_element_link(_convert, _sink);
           gst_element_add_pad(_audio, gst_ghost_pad_new("sink", audiopad));
