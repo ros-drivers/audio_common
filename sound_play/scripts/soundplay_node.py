@@ -184,18 +184,33 @@ class soundplay:
                 self.stopall()
             else:
                 if data.sound == SoundRequest.PLAY_FILE:
-                    if not data.arg in self.filesounds.keys():
-                        rospy.logdebug('command for uncached wave: "%s"'%data.arg)
-                        try:
-                            self.filesounds[data.arg] = soundtype(data.arg)
-                        except:
-                            print "Exception"
-                            rospy.logerr('Error setting up to play "%s". Does this file exist on the machine on which sound_play is running?'%data.arg)
-                            return
+                    if not data.arg2:
+                        if not data.arg in self.filesounds.keys():
+                            rospy.logdebug('command for uncached wave: "%s"'%data.arg)
+                            try:
+                                self.filesounds[data.arg] = soundtype(data.arg)
+                            except:
+                                print "Exception"
+                                rospy.logerr('Error setting up to play "%s". Does this file exist on the machine on which sound_play is running?'%data.arg)
+                                return
+                        else:
+                            print "cached"
+                            rospy.logdebug('command for cached wave: "%s"'%data.arg)
+                        sound = self.filesounds[data.arg]
                     else:
-                        print "cached"
-                        rospy.logdebug('command for cached wave: "%s"'%data.arg)
-                    sound = self.filesounds[data.arg]
+                        absfilename = os.path.join(roslib.packages.get_pkg_dir(data.arg2), data.arg)
+                        if not absfilename in self.filesounds.keys():
+                            rospy.logdebug('command for uncached wave: "%s"'%absfilename)
+                            try:
+                                self.filesounds[absfilename] = soundtype(absfilename)
+                            except:
+                                print "Exception"
+                                rospy.logerr('Error setting up to play "%s" from package "%s". Does this file exist on the machine on which sound_play is running?'%(data.arg, data.arg2))
+                                return
+                        else:
+                            print "cached"
+                            rospy.logdebug('command for cached wave: "%s"'%absfilename)
+                        sound = self.filesounds[absfilename]
                 elif data.sound == SoundRequest.SAY:
                     if not data.arg in self.voicesounds.keys():
                         rospy.logdebug('command for uncached text: "%s"' % data.arg)
