@@ -32,7 +32,6 @@
 *  POSSIBILITY OF SUCH DAMAGE.
 *********************************************************************/
 
-
 #include <sound_play/sound_play.h>
 #include <unistd.h>
 
@@ -93,5 +92,11 @@ int main(int argc, char **argv)
 		s3.play();
 		sleepok(1, nh);
 		s3.stop();
+
+		sleepok(2, nh);
+		sound_play::Sound s4 = sc.waveSoundFromPkg("sound_play", "sounds/BACKINGUP.ogg");
+		s4.play();
+		sleepok(1, nh);
+		s4.stop();
   }
 }

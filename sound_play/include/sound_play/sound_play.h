@@ -68,13 +68,15 @@ public:
 	private:
 		int snd_;
 		std::string arg_;
+		std::string arg2_;
 		SoundClient *client_;
 
-		Sound(SoundClient *sc, int snd, const std::string &arg)
+		Sound(SoundClient *sc, int snd, const std::string &arg, const std::string arg2 = std::string())
 		{
 			client_ = sc;
 			snd_ = snd;
 			arg_ = arg;
+			arg2_ = arg2;
 		}
 
 	public:
@@ -86,7 +88,7 @@ public:
 
 		void play()
 		{
-			client_->sendMsg(snd_, SoundRequest::PLAY_ONCE, arg_);
+			client_->sendMsg(snd_, SoundRequest::PLAY_ONCE, arg_, arg2_);
 		}
 
 		/**
@@ -98,7 +100,7 @@ public:
 
 		void repeat()
 		{
-			client_->sendMsg(snd_, SoundRequest::PLAY_START, arg_);
+			client_->sendMsg(snd_, SoundRequest::PLAY_START, arg_, arg2_);
 		}
 
 		/**
@@ -109,7 +111,7 @@ public:
 
 		void stop()
 		{
-			client_->sendMsg(snd_, SoundRequest::PLAY_STOP, arg_);
+			client_->sendMsg(snd_, SoundRequest::PLAY_STOP, arg_, arg2_);
 		}
 	};
 	
@@ -163,6 +165,21 @@ public:
   Sound waveSound(const std::string &s)
 	{
 		return Sound(this, SoundRequest::PLAY_FILE, s);
+	}
+
+/**
+ * \brief Create a wave Sound from a package.
+ *
+ * Creates a Sound corresponding to indicated file.
+ *
+ * \param p Package containing the sound file.
+ * \param s Filename of the WAV or OGG file. Must be an path relative to the package valid
+ * on the computer on which the sound_play node is running
+ */
+
+  Sound waveSoundFromPkg(const std::string &p, const std::string &s)
+	{
+		return Sound(this, SoundRequest::PLAY_FILE, s, p);
 	}
 
 /**
@@ -254,6 +271,50 @@ public:
   void stopWave(const std::string &s)
   {
     sendMsg(SoundRequest::PLAY_FILE, SoundRequest::PLAY_STOP, s);
+  }
+
+/** \brief Plays a WAV or OGG file from a package
+ *
+ * Plays a WAV or OGG file once. The playback can be stopped by stopWaveFromPkg or
+ * stopAll.
+ *
+ * \param p Package name containing the sound file.
+ * \param s Filename of the WAV or OGG file. Must be an path relative to the package valid
+ * on the computer on which the sound_play node is running
+ */
+
+  void playWaveFromPkg(const std::string &p, const std::string &s)
+  {
+    sendMsg(SoundRequest::PLAY_FILE, SoundRequest::PLAY_ONCE, s, p);
+  }
+
+/** \brief Plays a WAV or OGG file repeatedly
+ *
+ * Plays a WAV or OGG file repeatedly until stopWaveFromPkg or stopAll is used.
+ *
+ * \param p Package name containing the sound file.
+ * \param s Filename of the WAV or OGG file. Must be an path relative to the package valid
+ * on the computer on which the sound_play node is running
+ */
+
+  void startWaveFromPkg(const std::string &p, const std::string &s)
+  {
+    sendMsg(SoundRequest::PLAY_FILE, SoundRequest::PLAY_START, s, p);
+  }
+
+/** \brief Stop playing a WAV or OGG file
+ *
+ * Stops playing a file that was previously started by playWaveFromPkg or
+ * startWaveFromPkg.
+ *
+ * \param p Package name containing the sound file.
+ * \param s Filename of the WAV or OGG file. Must be an path relative to the package valid
+ * on the computer on which the sound_play node is running
+ */
+
+  void stopWaveFromPkg(const std::string &p, const std::string &s)
+  {
+    sendMsg(SoundRequest::PLAY_FILE, SoundRequest::PLAY_STOP, s, p);
   }
 
 /** \brief Play a buildin sound
