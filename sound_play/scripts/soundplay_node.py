@@ -39,13 +39,14 @@
 import roslib
 import rospy
 import threading
-from sound_play.msg import SoundRequest
 import os
 import logging
 import sys
 import traceback
 import tempfile
 from diagnostic_msgs.msg import DiagnosticStatus, KeyValue, DiagnosticArray
+from sound_play.msg import SoundRequest, SoundRequestAction, SoundRequestResult, SoundRequestFeedback
+import actionlib
 
 try:
     import pygst
@@ -92,21 +93,31 @@ class soundtype:
         self.staleness = 1
         self.file = file
 
+        self.bus = self.sound.get_bus()
+        self.bus.add_signal_watch()
+        self.bus.connect("message", self.on_stream_end)
+
+    def on_stream_end(self, bus, message):
+        if message.type == gst.MESSAGE_EOS:
+            self.state = self.STOPPED
+
     def __del__(self):
         # stop our GST object so that it gets garbage-collected
         self.stop()
 
-    def loop(self):  
+    def update(self):
+        self.bus.poll(gst.MESSAGE_ERROR, 10)
+
+    def loop(self):
         self.lock.acquire()
         try:
             self.staleness = 0
             if self.state == self.COUNTING:
                 self.stop()
-            
+
             if self.state == self.STOPPED:
               self.sound.seek_simple(gst.FORMAT_TIME, gst.SEEK_FLAG_FLUSH, 0)
               self.sound.set_state(gst.STATE_PLAYING)
-            
             self.state = self.LOOPING
         finally:
             self.lock.release()
@@ -127,10 +138,9 @@ class soundtype:
             self.staleness = 0
             if self.state == self.LOOPING:
                 self.stop()
-            
+
             self.sound.seek_simple(gst.FORMAT_TIME, gst.SEEK_FLAG_FLUSH, 0)
             self.sound.set_state(gst.STATE_PLAYING)
-        
             self.state = self.COUNTING
         finally:
             self.lock.release()
@@ -162,7 +172,13 @@ class soundtype:
             self.staleness = self.staleness + 1
         return self.staleness
 
+    def get_playing(self):
+        return self.state == self.COUNTING
+
 class soundplay:
+    _feedback = SoundRequestFeedback()
+    _result   = SoundRequestResult()
+
     def stopdict(self,dict):
         for sound in dict.values():
             sound.stop()
@@ -172,83 +188,86 @@ class soundplay:
         self.stopdict(self.filesounds)
         self.stopdict(self.voicesounds)
 
+    def select_sound(self, data):
+        if data.sound == SoundRequest.PLAY_FILE:
+            if not data.arg2:
+                if not data.arg in self.filesounds.keys():
+                    rospy.logdebug('command for uncached wave: "%s"'%data.arg)
+                    try:
+                        self.filesounds[data.arg] = soundtype(data.arg)
+                    except:
+                        print "Exception"
+                        rospy.logerr('Error setting up to play "%s". Does this file exist on the machine on which sound_play is running?'%data.arg)
+                        return
+                else:
+                            print "cached"
+                            rospy.logdebug('command for cached wave: "%s"'%data.arg)
+                sound = self.filesounds[data.arg]
+            else:
+                absfilename = os.path.join(roslib.packages.get_pkg_dir(data.arg2), data.arg)
+                if not absfilename in self.filesounds.keys():
+                    rospy.logdebug('command for uncached wave: "%s"'%absfilename)
+                    try:
+                        self.filesounds[absfilename] = soundtype(absfilename)
+                    except:
+                        print "Exception"
+                        rospy.logerr('Error setting up to play "%s" from package "%s". Does this file exist on the machine on which sound_play is running?'%(data.arg, data.arg2))
+                        return
+                else:
+                    print "cached"
+                    rospy.logdebug('command for cached wave: "%s"'%absfilename)
+                sound = self.filesounds[absfilename]
+        elif data.sound == SoundRequest.SAY:
+            if not data.arg in self.voicesounds.keys():
+                rospy.logdebug('command for uncached text: "%s"' % data.arg)
+                txtfile = tempfile.NamedTemporaryFile(prefix='sound_play', suffix='.txt')
+                (wavfile,wavfilename) = tempfile.mkstemp(prefix='sound_play', suffix='.wav')
+                txtfilename=txtfile.name
+                os.close(wavfile)
+                voice = data.arg2
+                try:
+                    txtfile.write(data.arg)
+                    txtfile.flush()
+                    os.system("text2wave -eval '("+voice+")' "+txtfilename+" -o "+wavfilename)
+                    try:
+                        if os.stat(wavfilename).st_size == 0:
+                            raise OSError # So we hit the same catch block
+                    except OSError:
+                        rospy.logerr('Sound synthesis failed. Is festival installed? Is a festival voice installed? Try running "rosdep satisfy sound_play|sh". Refer to http://pr.willowgarage.com/wiki/sound_play/Troubleshooting')
+                        return
+                    self.voicesounds[data.arg] = soundtype(wavfilename)
+                finally:
+                    txtfile.close()
+            else:
+                rospy.logdebug('command for cached text: "%s"'%data.arg)
+            sound = self.voicesounds[data.arg]
+        else:
+            rospy.logdebug('command for builtin wave: %i'%data.sound)
+            if not data.sound in self.builtinsounds:
+                params = self.builtinsoundparams[data.sound]
+                self.builtinsounds[data.sound] = soundtype(params[0], params[1])
+            sound = self.builtinsounds[data.sound]
+        if sound.staleness != 0 and data.command != SoundRequest.PLAY_STOP:
+            # This sound isn't counted in active_sounds
+            rospy.logdebug("activating %i %s"%(data.sound,data.arg))
+            self.active_sounds = self.active_sounds + 1
+            sound.staleness = 0
+            #                    if self.active_sounds > self.num_channels:
+            #                        mixer.set_num_channels(self.active_sounds)
+            #                        self.num_channels = self.active_sounds
+        return sound
+
     def callback(self,data):
         if not self.initialized:
             return
         self.mutex.acquire()
-        
         # Force only one sound at a time
         self.stopall()
         try:
             if data.sound == SoundRequest.ALL and data.command == SoundRequest.PLAY_STOP:
                 self.stopall()
             else:
-                if data.sound == SoundRequest.PLAY_FILE:
-                    if not data.arg2:
-                        if not data.arg in self.filesounds.keys():
-                            rospy.logdebug('command for uncached wave: "%s"'%data.arg)
-                            try:
-                                self.filesounds[data.arg] = soundtype(data.arg)
-                            except:
-                                print "Exception"
-                                rospy.logerr('Error setting up to play "%s". Does this file exist on the machine on which sound_play is running?'%data.arg)
-                                return
-                        else:
-                            print "cached"
-                            rospy.logdebug('command for cached wave: "%s"'%data.arg)
-                        sound = self.filesounds[data.arg]
-                    else:
-                        absfilename = os.path.join(roslib.packages.get_pkg_dir(data.arg2), data.arg)
-                        if not absfilename in self.filesounds.keys():
-                            rospy.logdebug('command for uncached wave: "%s"'%absfilename)
-                            try:
-                                self.filesounds[absfilename] = soundtype(absfilename)
-                            except:
-                                print "Exception"
-                                rospy.logerr('Error setting up to play "%s" from package "%s". Does this file exist on the machine on which sound_play is running?'%(data.arg, data.arg2))
-                                return
-                        else:
-                            print "cached"
-                            rospy.logdebug('command for cached wave: "%s"'%absfilename)
-                        sound = self.filesounds[absfilename]
-                elif data.sound == SoundRequest.SAY:
-                    if not data.arg in self.voicesounds.keys():
-                        rospy.logdebug('command for uncached text: "%s"' % data.arg)
-                        txtfile = tempfile.NamedTemporaryFile(prefix='sound_play', suffix='.txt')
-                        (wavfile,wavfilename) = tempfile.mkstemp(prefix='sound_play', suffix='.wav')
-                        txtfilename=txtfile.name
-                        os.close(wavfile)
-                        voice = data.arg2
-                        try:
-                            txtfile.write(data.arg)
-                            txtfile.flush()
-                            os.system("text2wave -eval '("+voice+")' "+txtfilename+" -o "+wavfilename)
-                            try:
-                                if os.stat(wavfilename).st_size == 0:
-                                    raise OSError # So we hit the same catch block
-                            except OSError:
-                                rospy.logerr('Sound synthesis failed. Is festival installed? Is a festival voice installed? Try running "rosdep satisfy sound_play|sh". Refer to http://pr.willowgarage.com/wiki/sound_play/Troubleshooting')
-                                return
-                            self.voicesounds[data.arg] = soundtype(wavfilename)
-                        finally:
-                            txtfile.close()
-                    else:
-                        rospy.logdebug('command for cached text: "%s"'%data.arg)
-                    sound = self.voicesounds[data.arg]
-                else:
-                    rospy.logdebug('command for builtin wave: %i'%data.sound)
-                    if not data.sound in self.builtinsounds:
-                        params = self.builtinsoundparams[data.sound]
-                        self.builtinsounds[data.sound] = soundtype(params[0], params[1])
-                    sound = self.builtinsounds[data.sound]
-                if sound.staleness != 0 and data.command != SoundRequest.PLAY_STOP:
-                    # This sound isn't counted in active_sounds
-                    rospy.logdebug("activating %i %s"%(data.sound,data.arg))
-                    self.active_sounds = self.active_sounds + 1
-                    sound.staleness = 0
-#                    if self.active_sounds > self.num_channels:
-#                        mixer.set_num_channels(self.active_sounds)
-#                        self.num_channels = self.active_sounds
+                sound = self.select_sound(data)
                 sound.command(data.command)
         except Exception, e:
             rospy.logerr('Exception in callback: %s'%str(e))
@@ -312,10 +331,53 @@ class soundplay:
         except Exception, e:
             rospy.loginfo('Exception in diagnostics: %s'%str(e))
 
+    def execute_cb(self, data):
+        data = data.sound_request
+        if not self.initialized:
+            return
+        self.mutex.acquire()
+        # Force only one sound at a time
+        self.stopall()
+        try:
+            if data.sound == SoundRequest.ALL and data.command == SoundRequest.PLAY_STOP:
+                self.stopall()
+            else:
+                sound = self.select_sound(data)
+                sound.command(data.command)
+
+                r = rospy.Rate(1)
+                start_time = rospy.get_rostime()
+                success = True
+                while sound.get_playing():
+                    sound.update()
+                    if self._as.is_preempt_requested():
+                        rospy.loginfo('sound_play action: Preempted')
+                        sound.stop()
+                        self._as.set_preempted()
+                        success = False
+                        break
+
+                    self._feedback.playing = sound.get_playing()
+                    self._feedback.stamp = rospy.get_rostime() - start_time
+                    self._as.publish_feedback(self._feedback)
+                    r.sleep()
+
+                if success:
+                    self._result.playing = self._feedback.playing
+                    self._result.stamp = self._feedback.stamp
+                    rospy.loginfo('sound_play action: Succeeded')
+                    self._as.set_succeeded(self._result)
+
+        except Exception, e:
+            rospy.logerr('Exception in actionlib callback: %s'%str(e))
+            rospy.loginfo(traceback.format_exc())
+        finally:
+            self.mutex.release()
+            rospy.logdebug("done actionlib callback")
+
     def __init__(self):
         rospy.init_node('sound_play')
         self.diagnostic_pub = rospy.Publisher("/diagnostics", DiagnosticArray)
-
         rootdir = os.path.join(roslib.packages.get_pkg_dir('sound_play'),'sounds')
         
         self.builtinsoundparams = {
@@ -328,6 +390,9 @@ class soundplay:
         
         self.mutex = threading.Lock()
         sub = rospy.Subscriber("robotsound", SoundRequest, self.callback)
+        self._as = actionlib.SimpleActionServer('sound_play', SoundRequestAction, execute_cb=self.execute_cb, auto_start = False)
+        self._as.start()
+
         self.mutex.acquire()
         self.no_error = True
         self.initialized = False
