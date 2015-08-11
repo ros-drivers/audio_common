@@ -86,7 +86,7 @@ class Sound:
 
 class SoundClient:
     def __init__(self):
-        self.pub = rospy.Publisher('robotsound', SoundRequest)
+        self.pub = rospy.Publisher('robotsound', SoundRequest, queue_size=5)
 
 ## \brief Create a voice Sound.
 ##
