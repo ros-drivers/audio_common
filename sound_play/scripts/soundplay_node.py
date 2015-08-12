@@ -196,12 +196,10 @@ class soundplay:
                     try:
                         self.filesounds[data.arg] = soundtype(data.arg)
                     except:
-                        print "Exception"
                         rospy.logerr('Error setting up to play "%s". Does this file exist on the machine on which sound_play is running?'%data.arg)
                         return
                 else:
-                            print "cached"
-                            rospy.logdebug('command for cached wave: "%s"'%data.arg)
+                    rospy.logdebug('command for cached wave: "%s"'%data.arg)
                 sound = self.filesounds[data.arg]
             else:
                 absfilename = os.path.join(roslib.packages.get_pkg_dir(data.arg2), data.arg)
@@ -210,11 +208,9 @@ class soundplay:
                     try:
                         self.filesounds[absfilename] = soundtype(absfilename)
                     except:
-                        print "Exception"
                         rospy.logerr('Error setting up to play "%s" from package "%s". Does this file exist on the machine on which sound_play is running?'%(data.arg, data.arg2))
                         return
                 else:
-                    print "cached"
                     rospy.logdebug('command for cached wave: "%s"'%absfilename)
                 sound = self.filesounds[absfilename]
         elif data.sound == SoundRequest.SAY:
