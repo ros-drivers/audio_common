@@ -66,16 +66,18 @@ public:
 	friend class SoundClient;
     private:
 	int snd_;
+	float vol_;
 	std::string arg_;
 	std::string arg2_;
 	SoundClient *client_;
 
-	Sound(SoundClient *sc, int snd, const std::string &arg, const std::string arg2 = std::string())
+	Sound(SoundClient *sc, int snd, const std::string &arg, const std::string arg2 = std::string(), const float vol = 1.0f)
 	{
 	    client_ = sc;
 	    snd_ = snd;
 	    arg_ = arg;
 	    arg2_ = arg2;
+	    vol_ = vol;
 	}
 
     public:
@@ -86,7 +88,7 @@ public:
 
 	void play()
 	{
-	    client_->sendMsg(snd_, SoundRequest::PLAY_ONCE, arg_, arg2_);
+	    client_->sendMsg(snd_, SoundRequest::PLAY_ONCE, arg_, arg2_, vol_);
 	}
 
 	/** \brief Play the Sound repeatedly.
@@ -97,7 +99,7 @@ public:
 
 	void repeat()
 	{
-	    client_->sendMsg(snd_, SoundRequest::PLAY_START, arg_, arg2_);
+	    client_->sendMsg(snd_, SoundRequest::PLAY_START, arg_, arg2_, vol_);
 	}
 
 	/** \brief Stop Sound playback.
@@ -107,7 +109,7 @@ public:
 
 	void stop()
 	{
-	    client_->sendMsg(snd_, SoundRequest::PLAY_STOP, arg_, arg2_);
+	    client_->sendMsg(snd_, SoundRequest::PLAY_STOP, arg_, arg2_, vol_);
 	}
     };
 	
@@ -141,11 +143,12 @@ public:
  * Creates a Sound corresponding to saying the indicated text.
  *
  * \param s Text to say
+ * \param volume Volume at which to play the sound. 0 is mute, 1.0 is 100%.
  */
 
-    Sound voiceSound(const std::string &s)
+    Sound voiceSound(const std::string &s, float volume = 1.0f)
     {
-	return Sound(this, SoundRequest::SAY, s);
+	return Sound(this, SoundRequest::SAY, s, "", volume);
     }
 
 /** \brief Create a wave Sound.
@@ -154,11 +157,12 @@ public:
  *
  * \param s File to play. Should be an absolute path that exists on the
  * machine running the sound_play node.
+ * \param volume Volume at which to play the sound. 0 is mute, 1.0 is 100%.
  */
 
-    Sound waveSound(const std::string &s)
+    Sound waveSound(const std::string &s, float volume = 1.0f)
     {
-	return Sound(this, SoundRequest::PLAY_FILE, s);
+	return Sound(this, SoundRequest::PLAY_FILE, s, "", volume);
     }
 
 /** \brief Create a wave Sound from a package.
@@ -168,11 +172,12 @@ public:
  * \param p Package containing the sound file.
  * \param s Filename of the WAV or OGG file. Must be an path relative to the package valid
  * on the computer on which the sound_play node is running
+ * \param volume Volume at which to play the sound. 0 is mute, 1.0 is 100%.
  */
 
-    Sound waveSoundFromPkg(const std::string &p, const std::string &s)
+    Sound waveSoundFromPkg(const std::string &p, const std::string &s, float volume = 1.0f)
     {
-	return Sound(this, SoundRequest::PLAY_FILE, s, p);
+	return Sound(this, SoundRequest::PLAY_FILE, s, p, volume);
     }
 
 /** \brief Create a builtin Sound.
@@ -180,11 +185,12 @@ public:
  * Creates a Sound corresponding to indicated builtin wave.
  *
  * \param id Identifier of the sound to play.
+ * \param volume Volume at which to play the sound. 0 is mute, 1.0 is 100%.
  */
 
-    Sound builtinSound(int id)
+    Sound builtinSound(int id, float volume = 1.0f)
     {
-	return Sound(this, id, "");
+	return Sound(this, id, "", "", volume);
     }
 
 /** \brief Say a string
@@ -193,11 +199,12 @@ public:
  * stopped using stopSaying or stopAll.
  *
  * \param s String to say
+ * \param volume Volume at which to play the sound. 0 is mute, 1.0 is 100%.
  */
 	
-    void say(const std::string &s, const std::string &voice="voice_kal_diphone")
+    void say(const std::string &s, const std::string &voice="voice_kal_diphone", float volume = 1.0f)
     {
-	sendMsg(SoundRequest::SAY, SoundRequest::PLAY_ONCE, s, voice);
+	sendMsg(SoundRequest::SAY, SoundRequest::PLAY_ONCE, s, voice, volume);
     }
 
 /** \brief Say a string repeatedly
@@ -205,11 +212,12 @@ public:
  * The string is said repeatedly until stopSaying or stopAll is used.
  *
  * \param s String to say repeatedly
+ * \param volume Volume at which to play the sound. 0 is mute, 1.0 is 100%.
  */
 	
-    void repeat(const std::string &s)
+    void repeat(const std::string &s, float volume = 1.0f)
     {
-	sendMsg(SoundRequest::SAY, SoundRequest::PLAY_START, s);
+	sendMsg(SoundRequest::SAY, SoundRequest::PLAY_START, s, "", volume);
     }
 
 /** \brief Stop saying a string
@@ -222,7 +230,7 @@ public:
 
     void stopSaying(const std::string &s)
     {
-	sendMsg(SoundRequest::SAY, SoundRequest::PLAY_STOP, s);
+	sendMsg(SoundRequest::SAY, SoundRequest::PLAY_STOP, s, "");
     }
 
 /** \brief Plays a WAV or OGG file
@@ -232,11 +240,12 @@ public:
  *
  * \param s Filename of the WAV or OGG file. Must be an absolute path valid
  * on the computer on which the sound_play node is running
+ * \param volume Volume at which to play the sound. 0 is mute, 1.0 is 100%.
  */
 
-    void playWave(const std::string &s)
+    void playWave(const std::string &s, float volume = 1.0f)
     {
-	sendMsg(SoundRequest::PLAY_FILE, SoundRequest::PLAY_ONCE, s);
+	sendMsg(SoundRequest::PLAY_FILE, SoundRequest::PLAY_ONCE, s, "", volume);
     }
 
 /** \brief Plays a WAV or OGG file repeatedly
@@ -245,11 +254,12 @@ public:
  *
  * \param s Filename of the WAV or OGG file. Must be an absolute path valid
  * on the computer on which the sound_play node is running.
+ * \param volume Volume at which to play the sound. 0 is mute, 1.0 is 100%.
  */
 
-    void startWave(const std::string &s)
+    void startWave(const std::string &s, float volume = 1.0f)
     {
-	sendMsg(SoundRequest::PLAY_FILE, SoundRequest::PLAY_START, s);
+	sendMsg(SoundRequest::PLAY_FILE, SoundRequest::PLAY_START, s, "", volume);
     }
 
 /** \brief Stop playing a WAV or OGG file
@@ -273,11 +283,12 @@ public:
  * \param p Package name containing the sound file.
  * \param s Filename of the WAV or OGG file. Must be an path relative to the package valid
  * on the computer on which the sound_play node is running
+ * \param volume Volume at which to play the sound. 0 is mute, 1.0 is 100%.
  */
 
-    void playWaveFromPkg(const std::string &p, const std::string &s)
+    void playWaveFromPkg(const std::string &p, const std::string &s, float volume = 1.0f)
     {
-	sendMsg(SoundRequest::PLAY_FILE, SoundRequest::PLAY_ONCE, s, p);
+	sendMsg(SoundRequest::PLAY_FILE, SoundRequest::PLAY_ONCE, s, p, volume);
     }
 
 /** \brief Plays a WAV or OGG file repeatedly
@@ -287,11 +298,12 @@ public:
  * \param p Package name containing the sound file.
  * \param s Filename of the WAV or OGG file. Must be an path relative to the package valid
  * on the computer on which the sound_play node is running
+ * \param volume Volume at which to play the sound. 0 is mute, 1.0 is 100%.
  */
 
-    void startWaveFromPkg(const std::string &p, const std::string &s)
+    void startWaveFromPkg(const std::string &p, const std::string &s, float volume = 1.0f)
     {
-	sendMsg(SoundRequest::PLAY_FILE, SoundRequest::PLAY_START, s, p);
+	sendMsg(SoundRequest::PLAY_FILE, SoundRequest::PLAY_START, s, p, volume);
     }
 
 /** \brief Stop playing a WAV or OGG file
@@ -315,11 +327,12 @@ public:
  * in \ref SoundRequest.msg. Playback can be stopped by stopAll.
  *
  * \param sound Identifier of the sound to play.
+ * \param volume Volume at which to play the sound. 0 is mute, 1.0 is 100%.
  */
 	
-    void play(int sound)
+    void play(int sound, float volume = 1.0f)
     {
-	sendMsg(sound, SoundRequest::PLAY_ONCE);
+	sendMsg(sound, SoundRequest::PLAY_ONCE, "", "", volume);
     }
 
 /** \brief Play a buildin sound repeatedly
@@ -328,11 +341,12 @@ public:
  * is used. Built-in sounds are documented in \ref SoundRequest.msg.
  *
  * \param sound Identifier of the sound to play.
+ * \param volume Volume at which to play the sound. 0 is mute, 1.0 is 100%.
  */
 	
-    void start(int sound) 
+    void start(int sound, float volume = 1.0f) 
     { 
-	sendMsg(sound, SoundRequest::PLAY_START); 
+	sendMsg(sound, SoundRequest::PLAY_START, "", "", volume); 
     }
 
 /** \brief Stop playing a built-in sound
@@ -379,7 +393,7 @@ private:
 	quiet_ = false;
     }
 
-    void sendMsg(int snd, int cmd, const std::string &s = "", const std::string &arg2 = "")
+    void sendMsg(int snd, int cmd, const std::string &s = "", const std::string &arg2 = "", const float &vol = 1.0f)
     {
 	boost::mutex::scoped_lock lock(mutex_);
 
@@ -391,6 +405,15 @@ private:
 	msg.command = cmd;
 	msg.arg = s;
 	msg.arg2 = arg2;
+
+	// ensure volume is in the correct range
+	if (vol < 0)
+	    msg.volume = 0;
+	else if (vol > 1.0)
+	    msg.volume = 1.0f;
+	else
+	    msg.volume = vol;
+	
 	pub_.publish(msg);
 
 	if (pub_.getNumSubscribers() == 0 && !quiet_)

@@ -53,17 +53,18 @@ from sound_play.msg import SoundRequest
 ##   message can be invoked.
 
 class Sound:
-    def __init__(self, client, snd, arg):
+    def __init__(self, client, snd, arg, volume=1.0):
         self.client = client
         self.snd = snd
         self.arg = arg
+        self.vol = volume
     
 ## \brief Play the Sound.
 ## 
 ## This method causes the Sound to be played once.
 
     def play(self):
-        self.client.sendMsg(self.snd, SoundRequest.PLAY_ONCE, self.arg)
+        self.client.sendMsg(self.snd, SoundRequest.PLAY_ONCE, self.arg, vol=self.vol)
 
 ## \brief Play the Sound repeatedly.
 ##
@@ -71,7 +72,7 @@ class Sound:
 ## called.
     
     def repeat(self):
-       self.client.sendMsg(self.snd, SoundRequest.PLAY_START, self.arg)
+       self.client.sendMsg(self.snd, SoundRequest.PLAY_START, self.arg, vol=self.vol)
 
 ## \brief Stop Sound playback.
 ##
@@ -94,8 +95,8 @@ class SoundClient:
 ##
 ## \param s Text to say
  
-    def voiceSound(self, s):
-        return Sound(self, SoundRequest.SAY, s)
+    def voiceSound(self, s, volume=1.0):
+        return Sound(self, SoundRequest.SAY, s, volume=volume)
 
 ## \brief Create a wave Sound.
 ##
@@ -103,11 +104,11 @@ class SoundClient:
 ##
 ## \param s File to play. Should be an absolute path that exists on the
 ## machine running the sound_play node.
-    def waveSound(self, sound):
+    def waveSound(self, sound, volume=1.0):
         if sound[0] != "/":
           rootdir = os.path.join(roslib.packages.get_pkg_dir('sound_play'),'sounds')
           sound = rootdir + "/" + sound
-        return Sound(self, SoundRequest.PLAY_FILE, sound)
+        return Sound(self, SoundRequest.PLAY_FILE, sound, volume=volume)
     
 ## \brief Create a builtin Sound.
 ##
@@ -115,8 +116,8 @@ class SoundClient:
 ##
 ## \param id Identifier of the sound to play.
 
-    def builtinSound(self, id):
-        return Sound(self, id, "")
+    def builtinSound(self, id, volume=1.0):
+        return Sound(self, id, "", volume)
 
 ## \brief Say a string
 ## 
@@ -125,8 +126,8 @@ class SoundClient:
 ## 
 ## \param text String to say
 
-    def say(self,text, voice=''):
-        self.sendMsg(SoundRequest.SAY, SoundRequest.PLAY_ONCE, text, voice)
+    def say(self,text, voice='', volume=1.0):
+        self.sendMsg(SoundRequest.SAY, SoundRequest.PLAY_ONCE, text, voice, volume)
 
 ## \brief Say a string repeatedly
 ## 
@@ -134,8 +135,8 @@ class SoundClient:
 ## 
 ## \param text String to say repeatedly
 
-    def repeat(self,text):
-        self.sendMsg(SoundRequest.SAY, SoundRequest.PLAY_START, text)
+    def repeat(self,text, volume=1.0):
+        self.sendMsg(SoundRequest.SAY, SoundRequest.PLAY_START, text, vol=volume)
 
 ## \brief Stop saying a string
 ## 
@@ -155,11 +156,11 @@ class SoundClient:
 ## \param sound Filename of the WAV or OGG file. Must be an absolute path valid
 ## on the computer on which the sound_play node is running
 
-    def playWave(self, sound):
+    def playWave(self, sound, volume=1.0):
         if sound[0] != "/":
           rootdir = os.path.join(roslib.packages.get_pkg_dir('sound_play'),'sounds')
           sound = rootdir + "/" + sound
-        self.sendMsg(SoundRequest.PLAY_FILE, SoundRequest.PLAY_ONCE, sound)
+        self.sendMsg(SoundRequest.PLAY_FILE, SoundRequest.PLAY_ONCE, sound, vol=volume)
     
 ## \brief Plays a WAV or OGG file repeatedly
 ## 
@@ -168,11 +169,11 @@ class SoundClient:
 ## \param sound Filename of the WAV or OGG file. Must be an absolute path valid
 ## on the computer on which the sound_play node is running.
 
-    def startWave(self, sound):
+    def startWave(self, sound, volume=1.0):
         if sound[0] != "/":
           rootdir = os.path.join(roslib.packages.get_pkg_dir('sound_play'),'sounds')
           sound = rootdir + "/" + sound
-        self.sendMsg(SoundRequest.PLAY_FILE, SoundRequest.PLAY_START, sound)
+        self.sendMsg(SoundRequest.PLAY_FILE, SoundRequest.PLAY_START, sound, vol=volume)
 
 ##  \brief Stop playing a WAV or OGG file
 ## 
@@ -196,8 +197,8 @@ class SoundClient:
 ## \param sound Filename of the WAV or OGG file. Must be an path relative to the package valid
 ## on the computer on which the sound_play node is running
 
-    def playWaveFromPkg(self, package, sound):
-        self.sendMsg(SoundRequest.PLAY_FILE, SoundRequest.PLAY_ONCE, sound, package)
+    def playWaveFromPkg(self, package, sound, volume=1.0):
+        self.sendMsg(SoundRequest.PLAY_FILE, SoundRequest.PLAY_ONCE, sound, package, volume)
 
 ## \brief Plays a WAV or OGG file repeatedly
 ## 
@@ -207,8 +208,8 @@ class SoundClient:
 ## \param sound Filename of the WAV or OGG file. Must be an path relative to the package valid
 ## on the computer on which the sound_play node is running
 
-    def startWaveFromPkg(self, package, sound):
-        self.sendMsg(SoundRequest.PLAY_FILE, SoundRequest.PLAY_START, sound, package)
+    def startWaveFromPkg(self, package, sound, volume=1.0):
+        self.sendMsg(SoundRequest.PLAY_FILE, SoundRequest.PLAY_START, sound, package, volume)
 
 ##  \brief Stop playing a WAV or OGG file
 ## 
@@ -229,8 +230,8 @@ class SoundClient:
 ##
 ## \param sound Identifier of the sound to play.
 
-    def play(self,sound):
-        self.sendMsg(sound, SoundRequest.PLAY_ONCE, "")
+    def play(self,sound, volume=1.0):
+        self.sendMsg(sound, SoundRequest.PLAY_ONCE, "", vol=volume)
 
 ## \brief Play a buildin sound repeatedly
 ##
@@ -239,8 +240,8 @@ class SoundClient:
 ##
 ## \param sound Identifier of the sound to play.
     
-    def start(self,sound):
-        self.sendMsg(sound, SoundRequest.PLAY_START, "")
+    def start(self,sound, volume=1.0):
+        self.sendMsg(sound, SoundRequest.PLAY_START, "", vol=volume)
 
 ## \brief Stop playing a built-in sound
 ##
@@ -258,13 +259,21 @@ class SoundClient:
     def stopAll(self):
         self.stop(SoundRequest.ALL)
 
-    def sendMsg(self, snd, cmd, s, arg2=""):
+    def sendMsg(self, snd, cmd, s, arg2="", vol=1.0):
         msg = SoundRequest()
         msg.sound = snd
+        
+        if vol < 0:
+            msg.volume = 0
+        elif vol > 1.0:
+            msg.volume = 1.0
+        else:
+            msg.volume = vol
+        
         msg.command = cmd
         msg.arg = s
         msg.arg2 = arg2 
         self.pub.publish(msg)
-        ## @todo this should be a warn once warns become visible on the console.
+
         if self.pub.get_num_connections() < 1:
-            rospy.logerr("Sound command issued, but no node is subscribed to the topic. Perhaps you forgot to run soundplay_node.py");
+            rospy.logwarn("Sound command issued, but no node is subscribed to the topic. Perhaps you forgot to run soundplay_node.py?");
