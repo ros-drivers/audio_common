@@ -46,8 +46,7 @@
 namespace sound_play
 {
 
-/**
- * \brief Class that publishes messages to the sound_play node.
+/** \brief Class that publishes messages to the sound_play node.
  *
  * This class is a helper class for communicating with the sound_play node
  * via the \ref sound_play::SoundRequest message. It has two ways of being used:
@@ -62,58 +61,55 @@ namespace sound_play
 class SoundClient
 {
 public:
-	class Sound
+    class Sound
+    {
+	friend class SoundClient;
+    private:
+	int snd_;
+	std::string arg_;
+	std::string arg2_;
+	SoundClient *client_;
+
+	Sound(SoundClient *sc, int snd, const std::string &arg, const std::string arg2 = std::string())
 	{
-		friend class SoundClient;
-	private:
-		int snd_;
-		std::string arg_;
-		std::string arg2_;
-		SoundClient *client_;
+	    client_ = sc;
+	    snd_ = snd;
+	    arg_ = arg;
+	    arg2_ = arg2;
+	}
 
-		Sound(SoundClient *sc, int snd, const std::string &arg, const std::string arg2 = std::string())
-		{
-			client_ = sc;
-			snd_ = snd;
-			arg_ = arg;
-			arg2_ = arg2;
-		}
+    public:
+	/** \brief Play the Sound.
+	 *
+	 * This method causes the Sound to be played once.
+	 */
 
-	public:
-		/**
-		 * \brief Play the Sound.
-		 *
-		 * This method causes the Sound to be played once.
-		 */
+	void play()
+	{
+	    client_->sendMsg(snd_, SoundRequest::PLAY_ONCE, arg_, arg2_);
+	}
 
-		void play()
-		{
-			client_->sendMsg(snd_, SoundRequest::PLAY_ONCE, arg_, arg2_);
-		}
+	/** \brief Play the Sound repeatedly.
+	 *
+	 * This method causes the Sound to be played repeatedly until stop() is
+	 * called.
+	 */
 
-		/**
-		 * \brief Play the Sound repeatedly.
-		 *
-		 * This method causes the Sound to be played repeatedly until stop() is
-		 * called.
-		 */
+	void repeat()
+	{
+	    client_->sendMsg(snd_, SoundRequest::PLAY_START, arg_, arg2_);
+	}
 
-		void repeat()
-		{
-			client_->sendMsg(snd_, SoundRequest::PLAY_START, arg_, arg2_);
-		}
+	/** \brief Stop Sound playback.
+	 *
+	 * This method causes the Sound to stop playing.
+	 */
 
-		/**
-		 * \brief Stop Sound playback.
-		 *
-		 * This method causes the Sound to stop playing.
-		 */
-
-		void stop()
-		{
-			client_->sendMsg(snd_, SoundRequest::PLAY_STOP, arg_, arg2_);
-		}
-	};
+	void stop()
+	{
+	    client_->sendMsg(snd_, SoundRequest::PLAY_STOP, arg_, arg2_);
+	}
+    };
 	
 /** \brief Create a SoundClient that publishes on the given topic
  *
@@ -125,36 +121,34 @@ public:
  * \param topic Topic to publish to.
  */
 
-	SoundClient(ros::NodeHandle &nh, const std::string &topic)
+    SoundClient(ros::NodeHandle &nh, const std::string &topic)
     {
-		init(nh, topic);
-	}
+	init(nh, topic);
+    }
 
 /** \brief Create a SoundClient with the default topic
  *
  * Creates a SoundClient that publishes to "robotsound".
  */
 
-	SoundClient()
-  {
-		init(ros::NodeHandle(), "robotsound");
-  }
+    SoundClient()
+    {
+	init(ros::NodeHandle(), "robotsound");
+    }
 
-/**
- * \brief Create a voice Sound.
+/** \brief Create a voice Sound.
  *
  * Creates a Sound corresponding to saying the indicated text.
  *
  * \param s Text to say
  */
 
-  Sound voiceSound(const std::string &s)
-	{
-		return Sound(this, SoundRequest::SAY, s);
-	}
+    Sound voiceSound(const std::string &s)
+    {
+	return Sound(this, SoundRequest::SAY, s);
+    }
 
-/**
- * \brief Create a wave Sound.
+/** \brief Create a wave Sound.
  *
  * Creates a Sound corresponding to indicated file.
  *
@@ -162,13 +156,12 @@ public:
  * machine running the sound_play node.
  */
 
-  Sound waveSound(const std::string &s)
-	{
-		return Sound(this, SoundRequest::PLAY_FILE, s);
-	}
+    Sound waveSound(const std::string &s)
+    {
+	return Sound(this, SoundRequest::PLAY_FILE, s);
+    }
 
-/**
- * \brief Create a wave Sound from a package.
+/** \brief Create a wave Sound from a package.
  *
  * Creates a Sound corresponding to indicated file.
  *
@@ -177,23 +170,22 @@ public:
  * on the computer on which the sound_play node is running
  */
 
-  Sound waveSoundFromPkg(const std::string &p, const std::string &s)
-	{
-		return Sound(this, SoundRequest::PLAY_FILE, s, p);
-	}
+    Sound waveSoundFromPkg(const std::string &p, const std::string &s)
+    {
+	return Sound(this, SoundRequest::PLAY_FILE, s, p);
+    }
 
-/**
- * \brief Create a builtin Sound.
+/** \brief Create a builtin Sound.
  *
  * Creates a Sound corresponding to indicated builtin wave.
  *
  * \param id Identifier of the sound to play.
  */
 
-  Sound builtinSound(int id)
-	{
-		return Sound(this, id, "");
-	}
+    Sound builtinSound(int id)
+    {
+	return Sound(this, id, "");
+    }
 
 /** \brief Say a string
  *
@@ -203,10 +195,10 @@ public:
  * \param s String to say
  */
 	
-	void say(const std::string &s, const std::string &voice="voice_kal_diphone")
-  {
-    sendMsg(SoundRequest::SAY, SoundRequest::PLAY_ONCE, s, voice);
-  }
+    void say(const std::string &s, const std::string &voice="voice_kal_diphone")
+    {
+	sendMsg(SoundRequest::SAY, SoundRequest::PLAY_ONCE, s, voice);
+    }
 
 /** \brief Say a string repeatedly
  *
@@ -215,10 +207,10 @@ public:
  * \param s String to say repeatedly
  */
 	
-  void repeat(const std::string &s)
-  {
-    sendMsg(SoundRequest::SAY, SoundRequest::PLAY_START, s);
-  }
+    void repeat(const std::string &s)
+    {
+	sendMsg(SoundRequest::SAY, SoundRequest::PLAY_START, s);
+    }
 
 /** \brief Stop saying a string
  *
@@ -228,10 +220,10 @@ public:
  * \param s Same string as in the say or repeat command
  */
 
-  void stopSaying(const std::string &s)
-  {
-    sendMsg(SoundRequest::SAY, SoundRequest::PLAY_STOP, s);
-  }
+    void stopSaying(const std::string &s)
+    {
+	sendMsg(SoundRequest::SAY, SoundRequest::PLAY_STOP, s);
+    }
 
 /** \brief Plays a WAV or OGG file
  *
@@ -242,10 +234,10 @@ public:
  * on the computer on which the sound_play node is running
  */
 
-  void playWave(const std::string &s)
-  {
-    sendMsg(SoundRequest::PLAY_FILE, SoundRequest::PLAY_ONCE, s);
-  }
+    void playWave(const std::string &s)
+    {
+	sendMsg(SoundRequest::PLAY_FILE, SoundRequest::PLAY_ONCE, s);
+    }
 
 /** \brief Plays a WAV or OGG file repeatedly
  *
@@ -255,10 +247,10 @@ public:
  * on the computer on which the sound_play node is running.
  */
 
-  void startWave(const std::string &s)
-  {
-    sendMsg(SoundRequest::PLAY_FILE, SoundRequest::PLAY_START, s);
-  }
+    void startWave(const std::string &s)
+    {
+	sendMsg(SoundRequest::PLAY_FILE, SoundRequest::PLAY_START, s);
+    }
 
 /** \brief Stop playing a WAV or OGG file
  *
@@ -268,10 +260,10 @@ public:
  * \param s Same string as in the playWave or startWave command
  */
 
-  void stopWave(const std::string &s)
-  {
-    sendMsg(SoundRequest::PLAY_FILE, SoundRequest::PLAY_STOP, s);
-  }
+    void stopWave(const std::string &s)
+    {
+	sendMsg(SoundRequest::PLAY_FILE, SoundRequest::PLAY_STOP, s);
+    }
 
 /** \brief Plays a WAV or OGG file from a package
  *
@@ -283,10 +275,10 @@ public:
  * on the computer on which the sound_play node is running
  */
 
-  void playWaveFromPkg(const std::string &p, const std::string &s)
-  {
-    sendMsg(SoundRequest::PLAY_FILE, SoundRequest::PLAY_ONCE, s, p);
-  }
+    void playWaveFromPkg(const std::string &p, const std::string &s)
+    {
+	sendMsg(SoundRequest::PLAY_FILE, SoundRequest::PLAY_ONCE, s, p);
+    }
 
 /** \brief Plays a WAV or OGG file repeatedly
  *
@@ -297,10 +289,10 @@ public:
  * on the computer on which the sound_play node is running
  */
 
-  void startWaveFromPkg(const std::string &p, const std::string &s)
-  {
-    sendMsg(SoundRequest::PLAY_FILE, SoundRequest::PLAY_START, s, p);
-  }
+    void startWaveFromPkg(const std::string &p, const std::string &s)
+    {
+	sendMsg(SoundRequest::PLAY_FILE, SoundRequest::PLAY_START, s, p);
+    }
 
 /** \brief Stop playing a WAV or OGG file
  *
@@ -312,10 +304,10 @@ public:
  * on the computer on which the sound_play node is running
  */
 
-  void stopWaveFromPkg(const std::string &p, const std::string &s)
-  {
-    sendMsg(SoundRequest::PLAY_FILE, SoundRequest::PLAY_STOP, s, p);
-  }
+    void stopWaveFromPkg(const std::string &p, const std::string &s)
+    {
+	sendMsg(SoundRequest::PLAY_FILE, SoundRequest::PLAY_STOP, s, p);
+    }
 
 /** \brief Play a buildin sound
  *
@@ -325,10 +317,10 @@ public:
  * \param sound Identifier of the sound to play.
  */
 	
-	void play(int sound)
-  {
-    sendMsg(sound, SoundRequest::PLAY_ONCE);
-  }
+    void play(int sound)
+    {
+	sendMsg(sound, SoundRequest::PLAY_ONCE);
+    }
 
 /** \brief Play a buildin sound repeatedly
  *
@@ -338,10 +330,10 @@ public:
  * \param sound Identifier of the sound to play.
  */
 	
-	void start(int sound) 
-	{ 
-		sendMsg(sound, SoundRequest::PLAY_START); 
-	}
+    void start(int sound) 
+    { 
+	sendMsg(sound, SoundRequest::PLAY_START); 
+    }
 
 /** \brief Stop playing a built-in sound
  *
@@ -350,65 +342,65 @@ public:
  * \param sound Same sound that was used to start playback.
  */ 
 
-  void stop(int sound)
-  {
-    sendMsg(sound, SoundRequest::PLAY_STOP);
-  }
+    void stop(int sound)
+    {
+	sendMsg(sound, SoundRequest::PLAY_STOP);
+    }
 
 /** \brief Stop all currently playing sounds
  *
  * This method stops all speech, wave file, and built-in sound playback.
  */
 
-  void stopAll()
-	{
-		stop(SoundRequest::ALL);
-	}
+    void stopAll()
+    {
+	stop(SoundRequest::ALL);
+    }
   
-  /** \brief Turns warning messages on or off.
-	 *  
-	 * If a message is sent when no node is subscribed to the topic, a
-	 * warning message is printed. This method can be used to enable or
-	 * disable warnings.
-	 *
-	 * \param state True to turn off messages, false to turn them on.
-	 */
+/** \brief Turns warning messages on or off.
+ *  
+ * If a message is sent when no node is subscribed to the topic, a
+ * warning message is printed. This method can be used to enable or
+ * disable warnings.
+ *
+ * \param state True to turn off messages, false to turn them on.
+ */
 
-  void setQuiet(bool state)
-	{
-		quiet_ = state;
-	}
-
-private:
-	void init(ros::NodeHandle nh, const std::string &topic)
-	{
-        nh_ = nh;
-		pub_ = nh.advertise<sound_play::SoundRequest>(topic, 5);
-		quiet_ = false;
+    void setQuiet(bool state)
+    {
+	quiet_ = state;
     }
 
-	void sendMsg(int snd, int cmd, const std::string &s = "", const std::string &arg2 = "")
-  {
-    boost::mutex::scoped_lock lock(mutex_);
+private:
+    void init(ros::NodeHandle nh, const std::string &topic)
+    {
+        nh_ = nh;
+	pub_ = nh.advertise<sound_play::SoundRequest>(topic, 5);
+	quiet_ = false;
+    }
 
-    if (!nh_.ok())
-      return;
+    void sendMsg(int snd, int cmd, const std::string &s = "", const std::string &arg2 = "")
+    {
+	boost::mutex::scoped_lock lock(mutex_);
 
-    SoundRequest msg;
-    msg.sound = snd;
-    msg.command = cmd;
-    msg.arg = s;
-    msg.arg2 = arg2;
-    pub_.publish(msg);
+	if (!nh_.ok())
+	    return;
 
-    if (pub_.getNumSubscribers() == 0 && !quiet_)
-      ROS_WARN("Sound command issued, but no node is subscribed to the topic. Perhaps you forgot to run soundplay_node.py");
-  }
+	SoundRequest msg;
+	msg.sound = snd;
+	msg.command = cmd;
+	msg.arg = s;
+	msg.arg2 = arg2;
+	pub_.publish(msg);
+
+	if (pub_.getNumSubscribers() == 0 && !quiet_)
+	    ROS_WARN("Sound command issued, but no node is subscribed to the topic. Perhaps you forgot to run soundplay_node.py");
+    }
 
     bool quiet_;
-	ros::NodeHandle nh_;
+    ros::NodeHandle nh_;
     ros::Publisher pub_;
-	boost::mutex mutex_;
+    boost::mutex mutex_;
 };
 
 typedef SoundClient::Sound Sound;
