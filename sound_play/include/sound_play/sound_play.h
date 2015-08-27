@@ -61,369 +61,346 @@ namespace sound_play
 class SoundClient
 {
 public:
-    class Sound
+  class Sound
+  {
+    friend class SoundClient;
+  private:
+    int snd_;
+    float vol_;
+    std::string arg_;
+    std::string arg2_;
+    SoundClient *client_;
+
+    Sound(SoundClient *sc, int snd, const std::string &arg, const std::string arg2 = std::string(), const float vol = 1.0f)
     {
-	friend class SoundClient;
-    private:
-	int snd_;
-	float vol_;
-	std::string arg_;
-	std::string arg2_;
-	SoundClient *client_;
-
-	Sound(SoundClient *sc, int snd, const std::string &arg, const std::string arg2 = std::string(), const float vol = 1.0f)
-	{
-	    client_ = sc;
-	    snd_ = snd;
-	    arg_ = arg;
-	    arg2_ = arg2;
-	    vol_ = vol;
-	}
-
-    public:
-	/** \brief Play the Sound.
-	 *
-	 * This method causes the Sound to be played once.
-	 */
-
-	void play()
-	{
-	    client_->sendMsg(snd_, SoundRequest::PLAY_ONCE, arg_, arg2_, vol_);
-	}
-
-	/** \brief Play the Sound repeatedly.
-	 *
-	 * This method causes the Sound to be played repeatedly until stop() is
-	 * called.
-	 */
-
-	void repeat()
-	{
-	    client_->sendMsg(snd_, SoundRequest::PLAY_START, arg_, arg2_, vol_);
-	}
-
-	/** \brief Stop Sound playback.
-	 *
-	 * This method causes the Sound to stop playing.
-	 */
-
-	void stop()
-	{
-	    client_->sendMsg(snd_, SoundRequest::PLAY_STOP, arg_, arg2_, vol_);
-	}
-    };
-	
-/** \brief Create a SoundClient that publishes on the given topic
- *
- * Creates a SoundClient that publishes to the given topic relative to the
- * given NodeHandle.
- *
- * \param nh Node handle to use when creating the topic.
- *
- * \param topic Topic to publish to.
- */
-
-    SoundClient(ros::NodeHandle &nh, const std::string &topic)
-    {
-	init(nh, topic);
+      client_ = sc;
+      snd_ = snd;
+      arg_ = arg;
+      arg2_ = arg2;
+      vol_ = vol;
     }
 
-/** \brief Create a SoundClient with the default topic
- *
- * Creates a SoundClient that publishes to "robotsound".
- */
-
-    SoundClient()
+  public:
+    /** \brief Play the Sound.
+     *
+     * This method causes the Sound to be played once.
+     */
+    void play()
     {
-	init(ros::NodeHandle(), "robotsound");
+      client_->sendMsg(snd_, SoundRequest::PLAY_ONCE, arg_, arg2_, vol_);
     }
 
-/** \brief Create a voice Sound.
- *
- * Creates a Sound corresponding to saying the indicated text.
- *
- * \param s Text to say
- * \param volume Volume at which to play the sound. 0 is mute, 1.0 is 100%.
- */
-
-    Sound voiceSound(const std::string &s, float volume = 1.0f)
+    /** \brief Play the Sound repeatedly.
+     *
+     * This method causes the Sound to be played repeatedly until stop() is
+     * called.
+     */
+    void repeat()
     {
-	return Sound(this, SoundRequest::SAY, s, "", volume);
+      client_->sendMsg(snd_, SoundRequest::PLAY_START, arg_, arg2_, vol_);
     }
 
-/** \brief Create a wave Sound.
- *
- * Creates a Sound corresponding to indicated file.
- *
- * \param s File to play. Should be an absolute path that exists on the
- * machine running the sound_play node.
- * \param volume Volume at which to play the sound. 0 is mute, 1.0 is 100%.
- */
-
-    Sound waveSound(const std::string &s, float volume = 1.0f)
+    /** \brief Stop Sound playback.
+     *
+     * This method causes the Sound to stop playing.
+     */
+    void stop()
     {
-	return Sound(this, SoundRequest::PLAY_FILE, s, "", volume);
+      client_->sendMsg(snd_, SoundRequest::PLAY_STOP, arg_, arg2_, vol_);
     }
+  };
 
-/** \brief Create a wave Sound from a package.
- *
- * Creates a Sound corresponding to indicated file.
- *
- * \param p Package containing the sound file.
- * \param s Filename of the WAV or OGG file. Must be an path relative to the package valid
- * on the computer on which the sound_play node is running
- * \param volume Volume at which to play the sound. 0 is mute, 1.0 is 100%.
- */
+  /** \brief Create a SoundClient that publishes on the given topic
+   *
+   * Creates a SoundClient that publishes to the given topic relative to the
+   * given NodeHandle.
+   *
+   * \param nh Node handle to use when creating the topic.
+   *
+   * \param topic Topic to publish to.
+   */
+  SoundClient(ros::NodeHandle &nh, const std::string &topic)
+  {
+    init(nh, topic);
+  }
 
-    Sound waveSoundFromPkg(const std::string &p, const std::string &s, float volume = 1.0f)
-    {
-	return Sound(this, SoundRequest::PLAY_FILE, s, p, volume);
-    }
+  /** \brief Create a SoundClient with the default topic
+   *
+   * Creates a SoundClient that publishes to "robotsound".
+   */
+  SoundClient()
+  {
+    init(ros::NodeHandle(), "robotsound");
+  }
 
-/** \brief Create a builtin Sound.
- *
- * Creates a Sound corresponding to indicated builtin wave.
- *
- * \param id Identifier of the sound to play.
- * \param volume Volume at which to play the sound. 0 is mute, 1.0 is 100%.
- */
+  /** \brief Create a voice Sound.
+   *
+   * Creates a Sound corresponding to saying the indicated text.
+   *
+   * \param s Text to say
+   * \param volume Volume at which to play the sound. 0 is mute, 1.0 is 100%.
+   */
+  Sound voiceSound(const std::string &s, float volume = 1.0f)
+  {
+    return Sound(this, SoundRequest::SAY, s, "", volume);
+  }
 
-    Sound builtinSound(int id, float volume = 1.0f)
-    {
-	return Sound(this, id, "", "", volume);
-    }
+  /** \brief Create a wave Sound.
+   *
+   * Creates a Sound corresponding to indicated file.
+   *
+   * \param s File to play. Should be an absolute path that exists on the
+   * machine running the sound_play node.
+   * \param volume Volume at which to play the sound. 0 is mute, 1.0 is 100%.
+   */
+  Sound waveSound(const std::string &s, float volume = 1.0f)
+  {
+    return Sound(this, SoundRequest::PLAY_FILE, s, "", volume);
+  }
 
-/** \brief Say a string
- *
- * Send a string to be said by the sound_node. The vocalization can be
- * stopped using stopSaying or stopAll.
- *
- * \param s String to say
- * \param volume Volume at which to play the sound. 0 is mute, 1.0 is 100%.
- */
-	
-    void say(const std::string &s, const std::string &voice="voice_kal_diphone", float volume = 1.0f)
-    {
-	sendMsg(SoundRequest::SAY, SoundRequest::PLAY_ONCE, s, voice, volume);
-    }
+  /** \brief Create a wave Sound from a package.
+   *
+   * Creates a Sound corresponding to indicated file.
+   *
+   * \param p Package containing the sound file.
+   * \param s Filename of the WAV or OGG file. Must be an path relative to the package valid
+   * on the computer on which the sound_play node is running
+   * \param volume Volume at which to play the sound. 0 is mute, 1.0 is 100%.
+   */
+  Sound waveSoundFromPkg(const std::string &p, const std::string &s, float volume = 1.0f)
+  {
+    return Sound(this, SoundRequest::PLAY_FILE, s, p, volume);
+  }
 
-/** \brief Say a string repeatedly
- *
- * The string is said repeatedly until stopSaying or stopAll is used.
- *
- * \param s String to say repeatedly
- * \param volume Volume at which to play the sound. 0 is mute, 1.0 is 100%.
- */
-	
-    void repeat(const std::string &s, float volume = 1.0f)
-    {
-	sendMsg(SoundRequest::SAY, SoundRequest::PLAY_START, s, "", volume);
-    }
+  /** \brief Create a builtin Sound.
+   *
+   * Creates a Sound corresponding to indicated builtin wave.
+   *
+   * \param id Identifier of the sound to play.
+   * \param volume Volume at which to play the sound. 0 is mute, 1.0 is 100%.
+   */
+  Sound builtinSound(int id, float volume = 1.0f)
+  {
+    return Sound(this, id, "", "", volume);
+  }
 
-/** \brief Stop saying a string
- *
- * Stops saying a string that was previously started by say or repeat. The
- * argument indicates which string to stop saying.
- *
- * \param s Same string as in the say or repeat command
- */
+  /** \brief Say a string
+   *
+   * Send a string to be said by the sound_node. The vocalization can be
+   * stopped using stopSaying or stopAll.
+   *
+   * \param s String to say
+   * \param volume Volume at which to play the sound. 0 is mute, 1.0 is 100%.
+   */
+  void say(const std::string &s, const std::string &voice="voice_kal_diphone", float volume = 1.0f)
+  {
+    sendMsg(SoundRequest::SAY, SoundRequest::PLAY_ONCE, s, voice, volume);
+  }
 
-    void stopSaying(const std::string &s)
-    {
-	sendMsg(SoundRequest::SAY, SoundRequest::PLAY_STOP, s, "");
-    }
+  /** \brief Say a string repeatedly
+   *
+   * The string is said repeatedly until stopSaying or stopAll is used.
+   *
+   * \param s String to say repeatedly
+   * \param volume Volume at which to play the sound. 0 is mute, 1.0 is 100%.
+   */
+  void repeat(const std::string &s, float volume = 1.0f)
+  {
+    sendMsg(SoundRequest::SAY, SoundRequest::PLAY_START, s, "", volume);
+  }
 
-/** \brief Plays a WAV or OGG file
- *
- * Plays a WAV or OGG file once. The playback can be stopped by stopWave or
- * stopAll.
- *
- * \param s Filename of the WAV or OGG file. Must be an absolute path valid
- * on the computer on which the sound_play node is running
- * \param volume Volume at which to play the sound. 0 is mute, 1.0 is 100%.
- */
+  /** \brief Stop saying a string
+   *
+   * Stops saying a string that was previously started by say or repeat. The
+   * argument indicates which string to stop saying.
+   *
+   * \param s Same string as in the say or repeat command
+   */
+  void stopSaying(const std::string &s)
+  {
+    sendMsg(SoundRequest::SAY, SoundRequest::PLAY_STOP, s, "");
+  }
 
-    void playWave(const std::string &s, float volume = 1.0f)
-    {
-	sendMsg(SoundRequest::PLAY_FILE, SoundRequest::PLAY_ONCE, s, "", volume);
-    }
+  /** \brief Plays a WAV or OGG file
+   *
+   * Plays a WAV or OGG file once. The playback can be stopped by stopWave or
+   * stopAll.
+   *
+   * \param s Filename of the WAV or OGG file. Must be an absolute path valid
+   * on the computer on which the sound_play node is running
+   * \param volume Volume at which to play the sound. 0 is mute, 1.0 is 100%.
+   */
+  void playWave(const std::string &s, float volume = 1.0f)
+  {
+    sendMsg(SoundRequest::PLAY_FILE, SoundRequest::PLAY_ONCE, s, "", volume);
+  }
 
-/** \brief Plays a WAV or OGG file repeatedly
- *
- * Plays a WAV or OGG file repeatedly until stopWave or stopAll is used.
- *
- * \param s Filename of the WAV or OGG file. Must be an absolute path valid
- * on the computer on which the sound_play node is running.
- * \param volume Volume at which to play the sound. 0 is mute, 1.0 is 100%.
- */
+  /** \brief Plays a WAV or OGG file repeatedly
+   *
+   * Plays a WAV or OGG file repeatedly until stopWave or stopAll is used.
+   *
+   * \param s Filename of the WAV or OGG file. Must be an absolute path valid
+   * on the computer on which the sound_play node is running.
+   * \param volume Volume at which to play the sound. 0 is mute, 1.0 is 100%.
+   */
+  void startWave(const std::string &s, float volume = 1.0f)
+  {
+    sendMsg(SoundRequest::PLAY_FILE, SoundRequest::PLAY_START, s, "", volume);
+  }
 
-    void startWave(const std::string &s, float volume = 1.0f)
-    {
-	sendMsg(SoundRequest::PLAY_FILE, SoundRequest::PLAY_START, s, "", volume);
-    }
+  /** \brief Stop playing a WAV or OGG file
+   *
+   * Stops playing a file that was previously started by playWave or
+   * startWave.
+   *
+   * \param s Same string as in the playWave or startWave command
+   */
+  void stopWave(const std::string &s)
+  {
+    sendMsg(SoundRequest::PLAY_FILE, SoundRequest::PLAY_STOP, s);
+  }
 
-/** \brief Stop playing a WAV or OGG file
- *
- * Stops playing a file that was previously started by playWave or
- * startWave.
- *
- * \param s Same string as in the playWave or startWave command
- */
+  /** \brief Plays a WAV or OGG file from a package
+   *
+   * Plays a WAV or OGG file once. The playback can be stopped by stopWaveFromPkg or
+   * stopAll.
+   *
+   * \param p Package name containing the sound file.
+   * \param s Filename of the WAV or OGG file. Must be an path relative to the package valid
+   * on the computer on which the sound_play node is running
+   * \param volume Volume at which to play the sound. 0 is mute, 1.0 is 100%.
+   */
+  void playWaveFromPkg(const std::string &p, const std::string &s, float volume = 1.0f)
+  {
+    sendMsg(SoundRequest::PLAY_FILE, SoundRequest::PLAY_ONCE, s, p, volume);
+  }
 
-    void stopWave(const std::string &s)
-    {
-	sendMsg(SoundRequest::PLAY_FILE, SoundRequest::PLAY_STOP, s);
-    }
+  /** \brief Plays a WAV or OGG file repeatedly
+   *
+   * Plays a WAV or OGG file repeatedly until stopWaveFromPkg or stopAll is used.
+   *
+   * \param p Package name containing the sound file.
+   * \param s Filename of the WAV or OGG file. Must be an path relative to the package valid
+   * on the computer on which the sound_play node is running
+   * \param volume Volume at which to play the sound. 0 is mute, 1.0 is 100%.
+   */
+  void startWaveFromPkg(const std::string &p, const std::string &s, float volume = 1.0f)
+  {
+    sendMsg(SoundRequest::PLAY_FILE, SoundRequest::PLAY_START, s, p, volume);
+  }
 
-/** \brief Plays a WAV or OGG file from a package
- *
- * Plays a WAV or OGG file once. The playback can be stopped by stopWaveFromPkg or
- * stopAll.
- *
- * \param p Package name containing the sound file.
- * \param s Filename of the WAV or OGG file. Must be an path relative to the package valid
- * on the computer on which the sound_play node is running
- * \param volume Volume at which to play the sound. 0 is mute, 1.0 is 100%.
- */
+  /** \brief Stop playing a WAV or OGG file
+   *
+   * Stops playing a file that was previously started by playWaveFromPkg or
+   * startWaveFromPkg.
+   *
+   * \param p Package name containing the sound file.
+   * \param s Filename of the WAV or OGG file. Must be an path relative to the package valid
+   * on the computer on which the sound_play node is running
+   */
+  void stopWaveFromPkg(const std::string &p, const std::string &s)
+  {
+    sendMsg(SoundRequest::PLAY_FILE, SoundRequest::PLAY_STOP, s, p);
+  }
 
-    void playWaveFromPkg(const std::string &p, const std::string &s, float volume = 1.0f)
-    {
-	sendMsg(SoundRequest::PLAY_FILE, SoundRequest::PLAY_ONCE, s, p, volume);
-    }
+  /** \brief Play a buildin sound
+   *
+   * Starts playing one of the built-in sounds. built-ing sounds are documented
+   * in \ref SoundRequest.msg. Playback can be stopped by stopAll.
+   *
+   * \param sound Identifier of the sound to play.
+   * \param volume Volume at which to play the sound. 0 is mute, 1.0 is 100%.
+   */
+  void play(int sound, float volume = 1.0f)
+  {
+    sendMsg(sound, SoundRequest::PLAY_ONCE, "", "", volume);
+  }
 
-/** \brief Plays a WAV or OGG file repeatedly
- *
- * Plays a WAV or OGG file repeatedly until stopWaveFromPkg or stopAll is used.
- *
- * \param p Package name containing the sound file.
- * \param s Filename of the WAV or OGG file. Must be an path relative to the package valid
- * on the computer on which the sound_play node is running
- * \param volume Volume at which to play the sound. 0 is mute, 1.0 is 100%.
- */
+  /** \brief Play a buildin sound repeatedly
+   *
+   * Starts playing one of the built-in sounds repeatedly until stop or stopAll 
+   * is used. Built-in sounds are documented in \ref SoundRequest.msg.
+   *
+   * \param sound Identifier of the sound to play.
+   * \param volume Volume at which to play the sound. 0 is mute, 1.0 is 100%.
+   */
+  void start(int sound, float volume = 1.0f)
+  {
+    sendMsg(sound, SoundRequest::PLAY_START, "", "", volume); 
+  }
 
-    void startWaveFromPkg(const std::string &p, const std::string &s, float volume = 1.0f)
-    {
-	sendMsg(SoundRequest::PLAY_FILE, SoundRequest::PLAY_START, s, p, volume);
-    }
+  /** \brief Stop playing a built-in sound
+   *
+   * Stops playing a built-in sound started with play or start.
+   *
+   * \param sound Same sound that was used to start playback.
+   */
+  void stop(int sound)
+  {
+    sendMsg(sound, SoundRequest::PLAY_STOP);
+  }
 
-/** \brief Stop playing a WAV or OGG file
- *
- * Stops playing a file that was previously started by playWaveFromPkg or
- * startWaveFromPkg.
- *
- * \param p Package name containing the sound file.
- * \param s Filename of the WAV or OGG file. Must be an path relative to the package valid
- * on the computer on which the sound_play node is running
- */
+  /** \brief Stop all currently playing sounds
+   *
+   * This method stops all speech, wave file, and built-in sound playback.
+   */
+  void stopAll()
+  {
+    stop(SoundRequest::ALL);
+  }
 
-    void stopWaveFromPkg(const std::string &p, const std::string &s)
-    {
-	sendMsg(SoundRequest::PLAY_FILE, SoundRequest::PLAY_STOP, s, p);
-    }
-
-/** \brief Play a buildin sound
- *
- * Starts playing one of the built-in sounds. built-ing sounds are documented
- * in \ref SoundRequest.msg. Playback can be stopped by stopAll.
- *
- * \param sound Identifier of the sound to play.
- * \param volume Volume at which to play the sound. 0 is mute, 1.0 is 100%.
- */
-	
-    void play(int sound, float volume = 1.0f)
-    {
-	sendMsg(sound, SoundRequest::PLAY_ONCE, "", "", volume);
-    }
-
-/** \brief Play a buildin sound repeatedly
- *
- * Starts playing one of the built-in sounds repeatedly until stop or stopAll 
- * is used. Built-in sounds are documented in \ref SoundRequest.msg.
- *
- * \param sound Identifier of the sound to play.
- * \param volume Volume at which to play the sound. 0 is mute, 1.0 is 100%.
- */
-	
-    void start(int sound, float volume = 1.0f) 
-    { 
-	sendMsg(sound, SoundRequest::PLAY_START, "", "", volume); 
-    }
-
-/** \brief Stop playing a built-in sound
- *
- * Stops playing a built-in sound started with play or start.
- *
- * \param sound Same sound that was used to start playback.
- */ 
-
-    void stop(int sound)
-    {
-	sendMsg(sound, SoundRequest::PLAY_STOP);
-    }
-
-/** \brief Stop all currently playing sounds
- *
- * This method stops all speech, wave file, and built-in sound playback.
- */
-
-    void stopAll()
-    {
-	stop(SoundRequest::ALL);
-    }
-  
-/** \brief Turns warning messages on or off.
- *  
- * If a message is sent when no node is subscribed to the topic, a
- * warning message is printed. This method can be used to enable or
- * disable warnings.
- *
- * \param state True to turn off messages, false to turn them on.
- */
-
-    void setQuiet(bool state)
-    {
-	quiet_ = state;
-    }
+  /** \brief Turns warning messages on or off.
+   *
+   * If a message is sent when no node is subscribed to the topic, a
+   * warning message is printed. This method can be used to enable or
+   * disable warnings.
+   *
+   * \param state True to turn off messages, false to turn them on.
+   */
+  void setQuiet(bool state)
+  {
+    quiet_ = state;
+  }
 
 private:
-    void init(ros::NodeHandle nh, const std::string &topic)
-    {
-        nh_ = nh;
-	pub_ = nh.advertise<sound_play::SoundRequest>(topic, 5);
-	quiet_ = false;
-    }
+  void init(ros::NodeHandle nh, const std::string &topic)
+  {
+    nh_ = nh;
+    pub_ = nh.advertise<sound_play::SoundRequest>(topic, 5);
+    quiet_ = false;
+  }
 
-    void sendMsg(int snd, int cmd, const std::string &s = "", const std::string &arg2 = "", const float &vol = 1.0f)
-    {
-	boost::mutex::scoped_lock lock(mutex_);
+  void sendMsg(int snd, int cmd, const std::string &s = "", const std::string &arg2 = "", const float &vol = 1.0f)
+  {
+    boost::mutex::scoped_lock lock(mutex_);
 
-	if (!nh_.ok())
-	    return;
+    if (!nh_.ok())
+      return;
 
-	SoundRequest msg;
-	msg.sound = snd;
-	msg.command = cmd;
-	msg.arg = s;
-	msg.arg2 = arg2;
+    SoundRequest msg;
+    msg.sound = snd;
+    msg.command = cmd;
+    msg.arg = s;
+    msg.arg2 = arg2;
 
-	// ensure volume is in the correct range
-	if (vol < 0)
-	    msg.volume = 0;
-	else if (vol > 1.0)
-	    msg.volume = 1.0f;
-	else
-	    msg.volume = vol;
-	
-	pub_.publish(msg);
+    // ensure volume is in the correct range
+    if (vol < 0)
+      msg.volume = 0;
+    else if (vol > 1.0)
+      msg.volume = 1.0f;
+    else
+      msg.volume = vol;
 
-	if (pub_.getNumSubscribers() == 0 && !quiet_)
-	    ROS_WARN("Sound command issued, but no node is subscribed to the topic. Perhaps you forgot to run soundplay_node.py");
-    }
+    pub_.publish(msg);
 
-    bool quiet_;
-    ros::NodeHandle nh_;
-    ros::Publisher pub_;
-    boost::mutex mutex_;
+    if (pub_.getNumSubscribers() == 0 && !quiet_)
+      ROS_WARN("Sound command issued, but no node is subscribed to the topic. Perhaps you forgot to run soundplay_node.py");
+  }
+
+  bool quiet_;
+  ros::NodeHandle nh_;
+  ros::Publisher pub_;
+  boost::mutex mutex_;
 };
 
 typedef SoundClient::Sound Sound;
