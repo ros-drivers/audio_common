@@ -191,10 +191,10 @@ class soundplay:
     def select_sound(self, data):
         if data.sound == SoundRequest.PLAY_FILE:
             if not data.arg2:
-                if not data.arg in self.filesounds.keys():
+                if not data.arg in self.filesounds.keys() or self.filesounds[data.arg].volume != data.volume:
                     rospy.logdebug('command for uncached wave: "%s"'%data.arg)
                     try:
-                        self.filesounds[data.arg] = soundtype(data.arg)
+                        self.filesounds[data.arg] = soundtype(data.arg, data.volume)
                     except:
                         rospy.logerr('Error setting up to play "%s". Does this file exist on the machine on which sound_play is running?'%data.arg)
                         return
@@ -203,10 +203,10 @@ class soundplay:
                 sound = self.filesounds[data.arg]
             else:
                 absfilename = os.path.join(roslib.packages.get_pkg_dir(data.arg2), data.arg)
-                if not absfilename in self.filesounds.keys():
+                if not absfilename in self.filesounds.keys() or self.filesounds[absfilename].volume != data.volume:
                     rospy.logdebug('command for uncached wave: "%s"'%absfilename)
                     try:
-                        self.filesounds[absfilename] = soundtype(absfilename)
+                        self.filesounds[absfilename] = soundtype(absfilename, data.volume)
                     except:
                         rospy.logerr('Error setting up to play "%s" from package "%s". Does this file exist on the machine on which sound_play is running?'%(data.arg, data.arg2))
                         return
@@ -214,7 +214,8 @@ class soundplay:
                     rospy.logdebug('command for cached wave: "%s"'%absfilename)
                 sound = self.filesounds[absfilename]
         elif data.sound == SoundRequest.SAY:
-            if not data.arg in self.voicesounds.keys():
+            print data
+            if not data.arg in self.voicesounds.keys() or self.voicesounds[data.arg].volume != data.volume:
                 rospy.logdebug('command for uncached text: "%s"' % data.arg)
                 txtfile = tempfile.NamedTemporaryFile(prefix='sound_play', suffix='.txt')
                 (wavfile,wavfilename) = tempfile.mkstemp(prefix='sound_play', suffix='.wav')
@@ -231,7 +232,7 @@ class soundplay:
                     except OSError:
                         rospy.logerr('Sound synthesis failed. Is festival installed? Is a festival voice installed? Try running "rosdep satisfy sound_play|sh". Refer to http://pr.willowgarage.com/wiki/sound_play/Troubleshooting')
                         return
-                    self.voicesounds[data.arg] = soundtype(wavfilename)
+                    self.voicesounds[data.arg] = soundtype(wavfilename, data.volume)
                 finally:
                     txtfile.close()
             else:
@@ -239,9 +240,12 @@ class soundplay:
             sound = self.voicesounds[data.arg]
         else:
             rospy.logdebug('command for builtin wave: %i'%data.sound)
-            if not data.sound in self.builtinsounds:
+            if data.sound not in self.builtinsounds or (data.sound in self.builtinsounds and data.volume != self.builtinsounds[data.sound].volume):
                 params = self.builtinsoundparams[data.sound]
-                self.builtinsounds[data.sound] = soundtype(params[0], params[1])
+                volume = data.volume
+                if params[1] != 1: # use the second param as a scaling for the input volume
+                    volume = (volume + params[1])/2
+                self.builtinsounds[data.sound] = soundtype(params[0], volume)
             sound = self.builtinsounds[data.sound]
         if sound.staleness != 0 and data.command != SoundRequest.PLAY_STOP:
             # This sound isn't counted in active_sounds
