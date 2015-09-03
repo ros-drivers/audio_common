@@ -38,7 +38,7 @@ namespace audio_transport
           _sink = gst_element_factory_make("appsink", "sink");
           g_object_set(G_OBJECT(_sink), "emit-signals", true, NULL);
           g_object_set(G_OBJECT(_sink), "max-buffers", 100, NULL);
-          g_signal_connect( G_OBJECT(_sink), "new-buffer", 
+          g_signal_connect( G_OBJECT(_sink), "new-sample",
                             G_CALLBACK(onNewBuffer), this);
         }
         else
@@ -51,10 +51,10 @@ namespace audio_transport
         _source = gst_element_factory_make("alsasrc", "source");
         _convert = gst_element_factory_make("audioconvert", "convert");
 
-        _encode = gst_element_factory_make("lame", "encoder");
-        g_object_set( G_OBJECT(_encode), "preset", 1001, NULL);
+        _encode = gst_element_factory_make("lamemp3enc", "encoder");
+        g_object_set( G_OBJECT(_encode), "quality", 2.0, NULL);
         g_object_set( G_OBJECT(_encode), "bitrate", _bitrate, NULL);
-          
+        
         gst_bin_add_many( GST_BIN(_pipeline), _source, _convert, _encode, _sink, NULL);
         gst_element_link_many(_source, _convert, _encode, _sink, NULL);
         /*}
@@ -82,13 +82,18 @@ namespace audio_transport
       static GstFlowReturn onNewBuffer (GstAppSink *appsink, gpointer userData)
       {
         RosGstCapture *server = reinterpret_cast<RosGstCapture*>(userData);
+        GstMapInfo map;
+        
+        GstSample *sample;
+        g_signal_emit_by_name(appsink, "pull-sample", &sample);
 
-        GstBuffer *buffer;
-        g_signal_emit_by_name(appsink, "pull-buffer", &buffer);
-
+        GstBuffer *buffer = gst_sample_get_buffer(sample);
+       
         audio_common_msgs::AudioData msg;
-        msg.data.resize( buffer->size );
-        memcpy( &msg.data[0], buffer->data, buffer->size);
+        gst_buffer_map(buffer, &map, GST_MAP_READ);
+        msg.data.resize( map.size );
+        
+        memcpy( &msg.data[0], map.data, map.size );
 
         server->publish(msg);
 
