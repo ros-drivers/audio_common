@@ -15,15 +15,15 @@
 
    <build_depend>roscpp</build_depend>
    <build_depend>audio_common_msgs</build_depend>
-   <build_depend>libgstreamer0.10-dev</build_depend>
-   <build_depend>libgstreamer-plugins-base0.10-dev</build_depend>
+   <build_depend>libgstreamer1.0-dev</build_depend>
+   <build_depend>libgstreamer-plugins-base1.0-dev</build_depend>
 
    <run_depend>roscpp</run_depend>
    <run_depend>audio_common_msgs</run_depend>
-   <run_depend>libgstreamer0.10-0</run_depend>
-   <run_depend>libgstreamer-plugins-base0.10-0</run_depend>
-   <run_depend>gstreamer0.10-plugins-ugly</run_depend>
-   <run_depend>gstreamer0.10-plugins-good</run_depend>
+   <run_depend>libgstreamer1.0-0</run_depend>
+   <run_depend>libgstreamer-plugins-base1.0-0</run_depend>
+   <run_depend>gstreamer1.0-plugins-ugly</run_depend>
+   <run_depend>gstreamer1.0-plugins-good</run_depend>
 
 </package>
 
