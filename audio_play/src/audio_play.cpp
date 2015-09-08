@@ -123,7 +123,7 @@ namespace audio_transport
                    guint       unused_size,
                    gpointer    user_data)
      {
-       ROS_DEBUG("need-data signal emitted! Pausing the pipeline");
+       ROS_WARN("need-data signal emitted! Pausing the pipeline");
        RosGstPlay *client = reinterpret_cast<RosGstPlay*>(user_data);
        gst_element_set_state(GST_ELEMENT(client->_pipeline), GST_STATE_PAUSED);
        client->_paused = true;
