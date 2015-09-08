@@ -62,16 +62,24 @@ if __name__ == '__main__':
     #soundhandle.playWave('17')
     #soundhandle.playWave('dummy')
         
-    #print 'say'
-    #soundhandle.say('Hello world!')
-    #sleep(3)
-    #    
+    # print 'say'
+    # soundhandle.say('Hello world!')
+    # sleep(3)
+       
     print 'wave'
     soundhandle.playWave('say-beep.wav')
+    sleep(2)
+    
+    print 'quiet wave'
+    soundhandle.playWave('say-beep.wav', 0.3)
     sleep(2)
         
     print 'plugging'
     soundhandle.play(SoundRequest.NEEDS_PLUGGING)
+    sleep(2)
+
+    print 'quiet plugging'
+    soundhandle.play(SoundRequest.NEEDS_PLUGGING, 0.3)
     sleep(2)
 
     print 'unplugging'
@@ -89,17 +97,32 @@ if __name__ == '__main__':
     s1 = soundhandle.builtinSound(SoundRequest.NEEDS_UNPLUGGING_BADLY)
     s2 = soundhandle.waveSound("say-beep.wav")
     s3 = soundhandle.voiceSound("Testing the new A P I")
+    s4 = soundhandle.builtinSound(SoundRequest.NEEDS_UNPLUGGING_BADLY, 0.3)
+    s5 = soundhandle.waveSound("say-beep.wav", 0.3)
+    s6 = soundhandle.voiceSound("Testing the new A P I", 0.3)
 
     print "New API start voice"
     s3.repeat()
     sleep(3)
 
+    print "New API start voice quiet"
+    s6.play()
+    sleep(3)
+    
     print "New API wave"
-    s2.play()
+    s2.repeat()
+    sleep(2)
+
+    print "New API wave quiet"
+    s5.play()
     sleep(2)
 
     print "New API builtin"
     s1.play()
+    sleep(2)
+
+    print "New API builtin quiet"
+    s4.play()
     sleep(2)
 
     print "New API stop"

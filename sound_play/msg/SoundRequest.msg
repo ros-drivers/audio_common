@@ -23,5 +23,8 @@ int8 PLAY_START = 2 # Play the sound in a loop until a stop request occurs
 
 int8 command # Indicates what to do with the sound
 
+# Volume at which to play the sound, with 0 as mute and 1.0 as 100%.
+float32 volume
+
 string arg # file name or text to say
 string arg2 # other arguments

@@ -39,10 +39,10 @@
 import sys
 
 if __name__ == '__main__':
-    if len(sys.argv) != 2 or sys.argv[1] == '--help':
-        print 'Usage: %s <sound_id>'%sys.argv[0]
+    if len(sys.argv) < 2 or len(sys.argv) > 3 or sys.argv[1] == '--help':
+        print 'Usage: %s <sound_id> [volume]'%sys.argv[0]
         print
-        print 'Plays one of the built-in sounds based on its integer ID. Look at the sound_play/SoundRequest message definition for IDs.'
+        print 'Plays one of the built-in sounds based on its integer ID. Look at the sound_play/SoundRequest message definition for IDs.\n The (optional) volume parameter sets the volume for the sound as a value between 0 and 1.0, where 0 is mute.'
         exit(1)
 
     # Import here so that usage is fast.
@@ -53,13 +53,13 @@ if __name__ == '__main__':
     rospy.init_node('play', anonymous = True)
     
     soundhandle = SoundClient()
-    
     rospy.sleep(1)
     
     num = int(sys.argv[1])
+    volume = float(sys.argv[2]) if len(sys.argv) == 3 else 1.0
 
     print 'Playing sound %i.'%num
 
-    soundhandle.play(num)
+    soundhandle.play(num, volume)
 
     rospy.sleep(1)

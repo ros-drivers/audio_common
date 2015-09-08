@@ -40,10 +40,10 @@
 import sys
 
 if __name__ == '__main__':
-    if len(sys.argv) != 3 or sys.argv[1] == '--help':
-        print 'Usage: %s package sound_to_play.(ogg|wav)'%sys.argv[0]
+    if len(sys.argv) < 3 or len(sys.argv) > 4 or sys.argv[1] == '--help':
+        print 'Usage: %s package sound_to_play.(ogg|wav) [volume]'%sys.argv[0]
         print
-        print 'Plays an .OGG or .WAV file. The path to the file should be relative to the package, and be valid on the computer on which sound_play is running.'
+        print 'Plays an .OGG or .WAV file. The path to the file should be relative to the package, and be valid on the computer on which sound_play is running. \n The (optional) volume parameter sets the volume for the sound as a value between 0 and 1.0, where 0 is mute.'
         exit(1)
     
     # Import after printing usage for speed.
@@ -53,8 +53,10 @@ if __name__ == '__main__':
 
     rospy.init_node('play', anonymous = True)
     soundhandle = SoundClient()
+
+    volume = float(sys.argv[3]) if len(sys.argv) == 4 else 1.0
     
     rospy.sleep(1)
     print 'Playing "%s" from pkg "%s".'%(sys.argv[2], sys.argv[1])
-    soundhandle.playWaveFromPkg(sys.argv[1], sys.argv[2])
+    soundhandle.playWaveFromPkg(sys.argv[1], sys.argv[2], volume)
     rospy.sleep(1)
