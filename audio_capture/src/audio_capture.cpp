@@ -11,7 +11,7 @@ namespace audio_transport
 {
   class RosGstCapture
   {
-    public: 
+    public:
       RosGstCapture()
       {
         _bitrate = 192;
@@ -54,7 +54,7 @@ namespace audio_transport
         _encode = gst_element_factory_make("lamemp3enc", "encoder");
         g_object_set( G_OBJECT(_encode), "quality", 2.0, NULL);
         g_object_set( G_OBJECT(_encode), "bitrate", _bitrate, NULL);
-        
+
         gst_bin_add_many( GST_BIN(_pipeline), _source, _convert, _encode, _sink, NULL);
         gst_element_link_many(_source, _convert, _encode, _sink, NULL);
         /*}
@@ -83,20 +83,21 @@ namespace audio_transport
       {
         RosGstCapture *server = reinterpret_cast<RosGstCapture*>(userData);
         GstMapInfo map;
-        
+
         GstSample *sample;
         g_signal_emit_by_name(appsink, "pull-sample", &sample);
 
         GstBuffer *buffer = gst_sample_get_buffer(sample);
-       
+
         audio_common_msgs::AudioData msg;
         gst_buffer_map(buffer, &map, GST_MAP_READ);
         msg.data.resize( map.size );
-        
+
         memcpy( &msg.data[0], map.data, map.size );
 
         server->publish(msg);
 
+        gst_buffer_unref(buffer);
         return GST_FLOW_OK;
       }
 
