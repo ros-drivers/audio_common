@@ -92,6 +92,7 @@ namespace audio_transport
 
         server->publish(msg);
 
+        gst_buffer_unref(buffer);
         return GST_FLOW_OK;
       }
 
