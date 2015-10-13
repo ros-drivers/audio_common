@@ -229,7 +229,7 @@ class soundplay:
                         if os.stat(wavfilename).st_size == 0:
                             raise OSError # So we hit the same catch block
                     except OSError:
-                        rospy.logerr('Sound synthesis failed. Is festival installed? Is a festival voice installed? Try running "rosdep satisfy sound_play|sh". Refer to http://pr.willowgarage.com/wiki/sound_play/Troubleshooting')
+                        rospy.logerr('Sound synthesis failed. Is festival installed? Is a festival voice installed? Try running "rosdep satisfy sound_play|sh". Refer to http://wiki.ros.org/sound_play/Troubleshooting')
                         return
                     self.voicesounds[data.arg] = soundtype(wavfilename)
                 finally:
@@ -320,7 +320,7 @@ class soundplay:
                 ds.message = "Sound device not open yet."
             else:
                 ds.level = DiagnosticStatus.ERROR
-                ds.message = "Can't open sound device. See http://pr.willowgarage.com/wiki/sound_play/Troubleshooting"
+                ds.message = "Can't open sound device. See http://wiki.ros.org/sound_play/Troubleshooting"
             da.status.append(ds)
             da.header.stamp = rospy.get_rostime()
             self.diagnostic_pub.publish(da)
