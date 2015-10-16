@@ -1,4 +1,6 @@
 #include <stdio.h>
+#include <string>
+#include <sstream>
 #include <gst/gst.h>
 #include <gst/app/gstappsink.h>
 #include <boost/thread.hpp>
@@ -18,8 +20,16 @@ namespace audio_transport
 
         std::string dst_type;
 
+        // Need to encoding or publish raw wave data
+        ros::param::param<std::string>("~format", _format, "mp3");
+
         // The bitrate at which to encode the audio
         ros::param::param<int>("~bitrate", _bitrate, 192);
+
+        // only available for raw data
+        ros::param::param<int>("~channels", _channels, 1);
+        ros::param::param<int>("~depth", _depth, 16);
+        ros::param::param<int>("~sample_rate", _sample_rate, 16000);
 
         // The destination of the audio
         ros::param::param<std::string>("~dst", dst_type, "appsink");
@@ -51,12 +61,28 @@ namespace audio_transport
         _source = gst_element_factory_make("alsasrc", "source");
         _convert = gst_element_factory_make("audioconvert", "convert");
 
-        _encode = gst_element_factory_make("lame", "encoder");
-        g_object_set( G_OBJECT(_encode), "preset", 1001, NULL);
-        g_object_set( G_OBJECT(_encode), "bitrate", _bitrate, NULL);
-          
-        gst_bin_add_many( GST_BIN(_pipeline), _source, _convert, _encode, _sink, NULL);
-        gst_element_link_many(_source, _convert, _encode, _sink, NULL);
+        if (_format == "mp3"){
+          _encode = gst_element_factory_make("lame", "encoder");
+          g_object_set( G_OBJECT(_encode), "preset", 1001, NULL);
+          g_object_set( G_OBJECT(_encode), "bitrate", _bitrate, NULL);
+
+          gst_bin_add_many( GST_BIN(_pipeline), _source, _convert, _encode, _sink, NULL);
+          gst_element_link_many(_source, _convert, _encode, _sink, NULL);
+        } else if (_format == "wave") {
+          GstCaps *caps;
+          caps = gst_caps_new_simple("audio/x-raw-int",
+                                     "channels", G_TYPE_INT, _channels,
+                                     "width",    G_TYPE_INT, _depth,
+                                     "depth",    G_TYPE_INT, _depth,
+                                     "rate",     G_TYPE_INT, _sample_rate,
+                                     "signed",   G_TYPE_BOOLEAN, TRUE,
+                                     NULL);
+
+          g_object_set( G_OBJECT(_sink), "caps", caps, NULL);
+          gst_caps_unref(caps);
+          gst_bin_add_many( GST_BIN(_pipeline), _source, _sink, NULL);
+          gst_element_link_many( _source, _sink, NULL);
+        }
         /*}
         else
         {
@@ -103,7 +129,8 @@ namespace audio_transport
 
       GstElement *_pipeline, *_source, *_sink, *_convert, *_encode;
       GMainLoop *_loop;
-      int _bitrate;
+      int _bitrate, _channels, _depth, _sample_rate;
+      std::string _format;
   };
 }
 
