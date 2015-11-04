@@ -298,10 +298,10 @@ class SoundClient(object):
                               " soundplay_node.py?");
 
         if self.actionclient:  # Send request as an actionlib goal (blocking)
-            rospy.loginfo('Sending action client sound request [blocking]')
+            rospy.logdebug('Sending action client sound request [blocking]')
             self.actionclient.wait_for_server()
             goal = SoundRequestGoal()
             goal.sound_request = msg
             self.actionclient.send_goal(goal)
             self.actionclient.wait_for_result()
-            rospy.loginfo('sound request response received')
+            rospy.logdebug('sound request response received')
