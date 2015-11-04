@@ -56,7 +56,7 @@ try:
 except:
     str="""
 **************************************************************
-Error opening pygst. Is gstreamer installed? (sudo apt-get install python-gst0.10 
+Error opening pygst. Is gstreamer installed? (sudo apt-get install python-gst0.10
 **************************************************************
 """
     rospy.logfatal(str)
@@ -182,7 +182,7 @@ class soundplay:
     def stopdict(self,dict):
         for sound in dict.values():
             sound.stop()
-    
+
     def stopall(self):
         self.stopdict(self.builtinsounds)
         self.stopdict(self.filesounds)
@@ -293,7 +293,7 @@ class soundplay:
         for key in purgelist:
            rospy.logdebug('Purging %s from cache'%key)
            del dict[key]
-    
+
     def cleanup(self):
         self.mutex.acquire()
         try:
@@ -379,7 +379,7 @@ class soundplay:
         rospy.init_node('sound_play')
         self.diagnostic_pub = rospy.Publisher("/diagnostics", DiagnosticArray)
         rootdir = os.path.join(roslib.packages.get_pkg_dir('sound_play'),'sounds')
-        
+
         self.builtinsoundparams = {
                 SoundRequest.BACKINGUP              : (os.path.join(rootdir, 'BACKINGUP.ogg'), 0.1),
                 SoundRequest.NEEDS_UNPLUGGING       : (os.path.join(rootdir, 'NEEDS_UNPLUGGING.ogg'), 1),
@@ -387,7 +387,7 @@ class soundplay:
                 SoundRequest.NEEDS_UNPLUGGING_BADLY : (os.path.join(rootdir, 'NEEDS_UNPLUGGING_BADLY.ogg'), 1),
                 SoundRequest.NEEDS_PLUGGING_BADLY   : (os.path.join(rootdir, 'NEEDS_PLUGGING_BADLY.ogg'), 1),
                 }
-        
+
         self.mutex = threading.Lock()
         sub = rospy.Subscriber("robotsound", SoundRequest, self.callback)
         self._as = actionlib.SimpleActionServer('sound_play', SoundRequestAction, execute_cb=self.execute_cb, auto_start = False)
@@ -426,13 +426,13 @@ class soundplay:
         self.hotlist = []
         if not self.initialized:
             rospy.loginfo('sound_play node is ready to play sound')
-            
+
     def sleep(self, duration):
-        try:    
-            rospy.sleep(duration)   
+        try:
+            rospy.sleep(duration)
         except rospy.exceptions.ROSInterruptException:
             pass
-    
+
     def idle_loop(self):
         self.last_activity_time = rospy.get_time()
         while (rospy.get_time() - self.last_activity_time < 10 or
@@ -446,4 +446,3 @@ class soundplay:
 
 if __name__ == '__main__':
     soundplay()
-
