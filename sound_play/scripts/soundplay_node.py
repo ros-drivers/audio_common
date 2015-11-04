@@ -377,7 +377,7 @@ class soundplay:
 
     def __init__(self):
         rospy.init_node('sound_play')
-        self.diagnostic_pub = rospy.Publisher("/diagnostics", DiagnosticArray)
+        self.diagnostic_pub = rospy.Publisher("/diagnostics", DiagnosticArray, queue_size=1)
         rootdir = os.path.join(roslib.packages.get_pkg_dir('sound_play'),'sounds')
 
         self.builtinsoundparams = {
