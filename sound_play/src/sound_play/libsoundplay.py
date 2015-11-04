@@ -52,7 +52,7 @@ from sound_play.msg import SoundRequest
 ## - It provides methods for each way in which the sound_play.SoundRequest
 ##   message can be invoked.
 
-class Sound:
+class Sound(object):
     def __init__(self, client, snd, arg):
         self.client = client
         self.snd = snd
@@ -84,7 +84,7 @@ class Sound:
 ## via the \ref sound_play.SoundRequest message. There is a one-to-one mapping
 ## between methods and invocations of the \ref sound_play.SoundRequest message.
 
-class SoundClient:
+class SoundClient(object):
     def __init__(self):
         self.pub = rospy.Publisher('robotsound', SoundRequest, queue_size=5)
 
