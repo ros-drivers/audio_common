@@ -15,6 +15,7 @@ def play_blocking():
     Play various sounds, blocking until each is completed before going to the
     next.
     """
+    rospy.loginfo('Playing sounds in *blocking* mode.')
     soundhandle = SoundClient(blocking=True)
 
     rospy.loginfo('Playing say-beep at full volume.')
@@ -34,7 +35,7 @@ def play_nonblocking():
     """
     Play the same sounds with manual pauses between them.
     """
-
+    rospy.loginfo('Playing sounds in *non-blocking* mode.')
     # NOTE: you must sleep at the beginning to let the SoundClient publisher
     # establish a connection to the soundplay_node.
     soundhandle = SoundClient(blocking=False)
@@ -60,5 +61,5 @@ def play_nonblocking():
 
 if __name__ == '__main__':
     rospy.init_node('soundclient_example', anonymous=False)
-    # play_blocking()
+    play_blocking()
     play_nonblocking()
