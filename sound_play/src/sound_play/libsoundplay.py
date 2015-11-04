@@ -38,8 +38,11 @@
 
 import rospy
 import roslib
+import actionlib
 import os, sys
 from sound_play.msg import SoundRequest
+from sound_play.msg import SoundRequestGoal
+from sound_play.msg import SoundRequestAction
 
 ## \brief Class that publishes messages to the sound_play node.
 ##
@@ -85,8 +88,22 @@ class Sound(object):
 ## between methods and invocations of the \ref sound_play.SoundRequest message.
 
 class SoundClient(object):
-    def __init__(self):
-        self.pub = rospy.Publisher('robotsound', SoundRequest, queue_size=5)
+
+    def __init__(self, blocking=False):
+        # If blocking is false, the sound request is published directly to the
+        # soundplay_node and the methods return immediately. Otherwise, the
+        # SoundClient uses the actionlib interface (also provided by
+        # soundplay_node) to wait until the sound has finished playing
+        # completely before returning.
+
+        # NOTE: only one of these will be used at once.
+        self.pub = None
+        self.actionclient = None
+
+        if blocking:
+            self.actionclient = actionlib.SimpleActionClient('sound_play', SoundRequestAction)
+        else:
+            self.pub = rospy.Publisher('robotsound', SoundRequest, queue_size=5)
 
 ## \brief Create a voice Sound.
 ##
@@ -259,12 +276,28 @@ class SoundClient(object):
         self.stop(SoundRequest.ALL)
 
     def sendMsg(self, snd, cmd, s, arg2=""):
+        # Internal method that publishes the sound request, either directly as a
+        # SoundRequest to the soundplay_node or through the actionlib interface
+        # (which blocks until the sound has finished playing).
+
         msg = SoundRequest()
         msg.sound = snd
         msg.command = cmd
         msg.arg = s
         msg.arg2 = arg2
-        self.pub.publish(msg)
-        ## @todo this should be a warn once warns become visible on the console.
-        if self.pub.get_num_connections() < 1:
-            rospy.logerr("Sound command issued, but no node is subscribed to the topic. Perhaps you forgot to run soundplay_node.py");
+
+        if self.pub:  # Publish message directly.
+            self.pub.publish(msg)
+            if self.pub.get_num_connections() < 1:
+                rospy.logwarn("Sound command issued, but no node is subscribed"
+                              " to the topic. Perhaps you forgot to run"
+                              " soundplay_node.py?");
+
+        if self.actionclient:  # Send request as an actionlib goal (blocking)
+            rospy.loginfo('Sending action client sound request [blocking]')
+            self.actionclient.wait_for_server()
+            goal = SoundRequestGoal()
+            goal.sound_request = msg
+            self.actionclient.send_goal(goal)
+            self.actionclient.wait_for_result()
+            rospy.loginfo('sound request response received')
