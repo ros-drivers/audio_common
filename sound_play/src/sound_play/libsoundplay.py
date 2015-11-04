@@ -284,13 +284,8 @@ class SoundClient(object):
         msg = SoundRequest()
         msg.sound = snd
 
-        if vol < 0:
-            msg.volume = 0
-        elif vol > 1.0:
-            msg.volume = 1.0
-        else:
-            msg.volume = vol
-
+        # Threshold volume between 0 and 1.
+        msg.volume = max(0, min(1, vol))
         msg.command = cmd
         msg.arg = s
         msg.arg2 = arg2
