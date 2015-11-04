@@ -57,9 +57,9 @@ class Sound:
         self.client = client
         self.snd = snd
         self.arg = arg
-    
+
 ## \brief Play the Sound.
-## 
+##
 ## This method causes the Sound to be played once.
 
     def play(self):
@@ -69,7 +69,7 @@ class Sound:
 ##
 ## This method causes the Sound to be played repeatedly until stop() is
 ## called.
-    
+
     def repeat(self):
        self.client.sendMsg(self.snd, SoundRequest.PLAY_START, self.arg)
 
@@ -93,7 +93,7 @@ class SoundClient:
 ## Creates a Sound corresponding to saying the indicated text.
 ##
 ## \param s Text to say
- 
+
     def voiceSound(self, s):
         return Sound(self, SoundRequest.SAY, s)
 
@@ -108,7 +108,7 @@ class SoundClient:
           rootdir = os.path.join(roslib.packages.get_pkg_dir('sound_play'),'sounds')
           sound = rootdir + "/" + sound
         return Sound(self, SoundRequest.PLAY_FILE, sound)
-    
+
 ## \brief Create a builtin Sound.
 ##
 ## Creates a Sound corresponding to indicated builtin wave.
@@ -119,39 +119,39 @@ class SoundClient:
         return Sound(self, id, "")
 
 ## \brief Say a string
-## 
+##
 ## Send a string to be said by the sound_node. The vocalization can be
 ## stopped using stopSaying or stopAll.
-## 
+##
 ## \param text String to say
 
     def say(self,text, voice=''):
         self.sendMsg(SoundRequest.SAY, SoundRequest.PLAY_ONCE, text, voice)
 
 ## \brief Say a string repeatedly
-## 
+##
 ## The string is said repeatedly until stopSaying or stopAll is used.
-## 
+##
 ## \param text String to say repeatedly
 
     def repeat(self,text):
         self.sendMsg(SoundRequest.SAY, SoundRequest.PLAY_START, text)
 
 ## \brief Stop saying a string
-## 
+##
 ## Stops saying a string that was previously started by say or repeat. The
 ## argument indicates which string to stop saying.
-## 
+##
 ## \param text Same string as in the say or repeat command
 
     def stopSaying(self,text):
         self.sendMsg(SoundRequest.SAY, SoundRequest.PLAY_STOP, text)
-    
+
 ## \brief Plays a WAV or OGG file
-## 
+##
 ## Plays a WAV or OGG file once. The playback can be stopped by stopWave or
 ## stopAll.
-## 
+##
 ## \param sound Filename of the WAV or OGG file. Must be an absolute path valid
 ## on the computer on which the sound_play node is running
 
@@ -160,11 +160,11 @@ class SoundClient:
           rootdir = os.path.join(roslib.packages.get_pkg_dir('sound_play'),'sounds')
           sound = rootdir + "/" + sound
         self.sendMsg(SoundRequest.PLAY_FILE, SoundRequest.PLAY_ONCE, sound)
-    
+
 ## \brief Plays a WAV or OGG file repeatedly
-## 
+##
 ## Plays a WAV or OGG file repeatedly until stopWave or stopAll is used.
-## 
+##
 ## \param sound Filename of the WAV or OGG file. Must be an absolute path valid
 ## on the computer on which the sound_play node is running.
 
@@ -175,10 +175,10 @@ class SoundClient:
         self.sendMsg(SoundRequest.PLAY_FILE, SoundRequest.PLAY_START, sound)
 
 ##  \brief Stop playing a WAV or OGG file
-## 
+##
 ## Stops playing a file that was previously started by playWave or
 ## startWave.
-## 
+##
 ## \param sound Same string as in the playWave or startWave command
 
     def stopWave(self,sound):
@@ -188,10 +188,10 @@ class SoundClient:
         self.sendMsg(SoundRequest.PLAY_FILE, SoundRequest.PLAY_STOP, sound)
 
 ## \brief Plays a WAV or OGG file
-## 
+##
 ## Plays a WAV or OGG file once. The playback can be stopped by stopWaveFromPkg or
 ## stopAll.
-## 
+##
 ## \param package Package name containing the sound file.
 ## \param sound Filename of the WAV or OGG file. Must be an path relative to the package valid
 ## on the computer on which the sound_play node is running
@@ -200,9 +200,9 @@ class SoundClient:
         self.sendMsg(SoundRequest.PLAY_FILE, SoundRequest.PLAY_ONCE, sound, package)
 
 ## \brief Plays a WAV or OGG file repeatedly
-## 
+##
 ## Plays a WAV or OGG file repeatedly until stopWaveFromPkg or stopAll is used.
-## 
+##
 ## \param package Package name containing the sound file.
 ## \param sound Filename of the WAV or OGG file. Must be an path relative to the package valid
 ## on the computer on which the sound_play node is running
@@ -211,10 +211,10 @@ class SoundClient:
         self.sendMsg(SoundRequest.PLAY_FILE, SoundRequest.PLAY_START, sound, package)
 
 ##  \brief Stop playing a WAV or OGG file
-## 
+##
 ## Stops playing a file that was previously started by playWaveFromPkg or
 ## startWaveFromPkg.
-## 
+##
 ## \param package Package name containing the sound file.
 ## \param sound Filename of the WAV or OGG file. Must be an path relative to the package valid
 ## on the computer on which the sound_play node is running
@@ -238,23 +238,23 @@ class SoundClient:
 ## stopall is used. Built-in sounds are documented in \ref SoundRequest.msg.
 ##
 ## \param sound Identifier of the sound to play.
-    
+
     def start(self,sound):
         self.sendMsg(sound, SoundRequest.PLAY_START, "")
 
 ## \brief Stop playing a built-in sound
 ##
-## Stops playing a built-in sound started with play or start. 
+## Stops playing a built-in sound started with play or start.
 ##
 ## \param sound Same sound that was used to start playback
-    
+
     def stop(self,sound):
         self.sendMsg(sound, SoundRequest.PLAY_STOP, "")
 
 ## \brief Stop all currently playing sounds
 ##
 ## This method stops all speech, wave file, and built-in sound playback.
-  
+
     def stopAll(self):
         self.stop(SoundRequest.ALL)
 
@@ -263,7 +263,7 @@ class SoundClient:
         msg.sound = snd
         msg.command = cmd
         msg.arg = s
-        msg.arg2 = arg2 
+        msg.arg2 = arg2
         self.pub.publish(msg)
         ## @todo this should be a warn once warns become visible on the console.
         if self.pub.get_num_connections() < 1:
