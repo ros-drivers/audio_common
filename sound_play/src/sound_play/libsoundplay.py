@@ -65,16 +65,18 @@ class Sound(object):
 ##
 ## This method causes the Sound to be played once.
 
-    def play(self):
-        self.client.sendMsg(self.snd, SoundRequest.PLAY_ONCE, self.arg)
+    def play(self, **kwargs):
+        self.client.sendMsg(self.snd, SoundRequest.PLAY_ONCE, self.arg,
+                            **kwargs)
 
 ## \brief Play the Sound repeatedly.
 ##
 ## This method causes the Sound to be played repeatedly until stop() is
 ## called.
 
-    def repeat(self):
-       self.client.sendMsg(self.snd, SoundRequest.PLAY_START, self.arg)
+    def repeat(self, **kwargs):
+       self.client.sendMsg(self.snd, SoundRequest.PLAY_START, self.arg,
+                           **kwargs)
 
 ## \brief Stop Sound playback.
 ##
@@ -90,20 +92,30 @@ class Sound(object):
 class SoundClient(object):
 
     def __init__(self, blocking=False):
-        # If blocking is false, the sound request is published directly to the
-        # soundplay_node and the methods return immediately. Otherwise, the
-        # SoundClient uses the actionlib interface (also provided by
-        # soundplay_node) to wait until the sound has finished playing
-        # completely before returning.
+        """
 
-        # NOTE: only one of these will be used at once.
-        self.pub = None
-        self.actionclient = None
+        The SoundClient can send SoundRequests in two modes: non-blocking mode
+        (by publishing a message to the soundplay_node directly) which will
+        return as soon as the sound request has been sent, or blocking mode (by
+        using the actionlib interface) which will wait until the sound has
+        finished playing completely.
 
-        if blocking:
-            self.actionclient = actionlib.SimpleActionClient('sound_play', SoundRequestAction)
-        else:
-            self.pub = rospy.Publisher('robotsound', SoundRequest, queue_size=5)
+        The blocking parameter here is the standard behavior, but can be
+        over-ridden.  Each say/play/start/repeat method can take in an optional
+        `blocking=True|False` argument that will over-ride the class-wide
+        behavior. See soundclient_example.py for an example of this behavior.
+
+        :param blocking: Used as the default behavior unless over-ridden,
+        (default = false)
+        """
+
+        self._blocking = blocking
+
+        # NOTE: only one of these will be used at once, but we need to create
+        # both the publisher and actionlib client here.
+        self.actionclient = actionlib.SimpleActionClient(
+            'sound_play', SoundRequestAction)
+        self.pub = rospy.Publisher('robotsound', SoundRequest, queue_size=5)
 
 ## \brief Create a voice Sound.
 ##
@@ -142,8 +154,9 @@ class SoundClient(object):
 ##
 ## \param text String to say
 
-    def say(self,text, voice=''):
-        self.sendMsg(SoundRequest.SAY, SoundRequest.PLAY_ONCE, text, voice)
+    def say(self,text, voice='', **kwargs):
+        self.sendMsg(SoundRequest.SAY, SoundRequest.PLAY_ONCE, text, voice,
+                     **kwargs)
 
 ## \brief Say a string repeatedly
 ##
@@ -151,8 +164,9 @@ class SoundClient(object):
 ##
 ## \param text String to say repeatedly
 
-    def repeat(self,text):
-        self.sendMsg(SoundRequest.SAY, SoundRequest.PLAY_START, text)
+    def repeat(self,text, **kwargs):
+        self.sendMsg(SoundRequest.SAY, SoundRequest.PLAY_START, text,
+                     **kwargs)
 
 ## \brief Stop saying a string
 ##
@@ -172,11 +186,12 @@ class SoundClient(object):
 ## \param sound Filename of the WAV or OGG file. Must be an absolute path valid
 ## on the computer on which the sound_play node is running
 
-    def playWave(self, sound):
+    def playWave(self, sound, **kwargs):
         if sound[0] != "/":
           rootdir = os.path.join(roslib.packages.get_pkg_dir('sound_play'),'sounds')
           sound = rootdir + "/" + sound
-        self.sendMsg(SoundRequest.PLAY_FILE, SoundRequest.PLAY_ONCE, sound)
+        self.sendMsg(SoundRequest.PLAY_FILE, SoundRequest.PLAY_ONCE, sound,
+                     **kwargs)
 
 ## \brief Plays a WAV or OGG file repeatedly
 ##
@@ -185,11 +200,12 @@ class SoundClient(object):
 ## \param sound Filename of the WAV or OGG file. Must be an absolute path valid
 ## on the computer on which the sound_play node is running.
 
-    def startWave(self, sound):
+    def startWave(self, sound, **kwargs):
         if sound[0] != "/":
           rootdir = os.path.join(roslib.packages.get_pkg_dir('sound_play'),'sounds')
           sound = rootdir + "/" + sound
-        self.sendMsg(SoundRequest.PLAY_FILE, SoundRequest.PLAY_START, sound)
+        self.sendMsg(SoundRequest.PLAY_FILE, SoundRequest.PLAY_START, sound,
+                     **kwargs)
 
 ##  \brief Stop playing a WAV or OGG file
 ##
@@ -213,8 +229,9 @@ class SoundClient(object):
 ## \param sound Filename of the WAV or OGG file. Must be an path relative to the package valid
 ## on the computer on which the sound_play node is running
 
-    def playWaveFromPkg(self, package, sound):
-        self.sendMsg(SoundRequest.PLAY_FILE, SoundRequest.PLAY_ONCE, sound, package)
+    def playWaveFromPkg(self, package, sound, **kwargs):
+        self.sendMsg(SoundRequest.PLAY_FILE, SoundRequest.PLAY_ONCE, sound, package,
+                     **kwargs)
 
 ## \brief Plays a WAV or OGG file repeatedly
 ##
@@ -224,8 +241,9 @@ class SoundClient(object):
 ## \param sound Filename of the WAV or OGG file. Must be an path relative to the package valid
 ## on the computer on which the sound_play node is running
 
-    def startWaveFromPkg(self, package, sound):
-        self.sendMsg(SoundRequest.PLAY_FILE, SoundRequest.PLAY_START, sound, package)
+    def startWaveFromPkg(self, package, sound, **kwargs):
+        self.sendMsg(SoundRequest.PLAY_FILE, SoundRequest.PLAY_START, sound,
+                     package, **kwargs)
 
 ##  \brief Stop playing a WAV or OGG file
 ##
@@ -246,8 +264,8 @@ class SoundClient(object):
 ##
 ## \param sound Identifier of the sound to play.
 
-    def play(self,sound):
-        self.sendMsg(sound, SoundRequest.PLAY_ONCE, "")
+    def play(self,sound, **kwargs):
+        self.sendMsg(sound, SoundRequest.PLAY_ONCE, "", **kwargs)
 
 ## \brief Play a buildin sound repeatedly
 ##
@@ -256,8 +274,8 @@ class SoundClient(object):
 ##
 ## \param sound Identifier of the sound to play.
 
-    def start(self,sound):
-        self.sendMsg(sound, SoundRequest.PLAY_START, "")
+    def start(self,sound, **kwargs):
+        self.sendMsg(sound, SoundRequest.PLAY_START, "", **kwargs)
 
 ## \brief Stop playing a built-in sound
 ##
@@ -275,10 +293,19 @@ class SoundClient(object):
     def stopAll(self):
         self.stop(SoundRequest.ALL)
 
-    def sendMsg(self, snd, cmd, s, arg2=""):
-        # Internal method that publishes the sound request, either directly as a
-        # SoundRequest to the soundplay_node or through the actionlib interface
-        # (which blocks until the sound has finished playing).
+    def sendMsg(self, snd, cmd, s, arg2="", **kwargs):
+        """
+        Internal method that publishes the sound request, either directly as a
+        SoundRequest to the soundplay_node or through the actionlib interface
+        (which blocks until the sound has finished playing).
+
+        The blocking behavior is nominally the class-wide setting unless it has
+        been explicitly specified in the play call.
+        """
+
+        # Use the passed-in argument if it exists, otherwise fall back to the
+        # class-wide setting.
+        blocking = kwargs.get('blocking', self._blocking)
 
         msg = SoundRequest()
         msg.sound = snd
@@ -286,14 +313,25 @@ class SoundClient(object):
         msg.arg = s
         msg.arg2 = arg2
 
-        if self.pub:  # Publish message directly.
+        rospy.logdebug('Sending sound request with'
+                       ' blocking = {}'.format(blocking))
+
+        # Defensive check for the existence of the correct communicator.
+        if blocking and not self.pub:
+            rospy.logerr('Publisher for SoundRequest must exist')
+            return
+        if not blocking and not self.actionclient:
+            rospy.logerr('Action client for SoundRequest does not exist.')
+            return
+
+        if not blocking:  # Publish message directly and return immediately
             self.pub.publish(msg)
             if self.pub.get_num_connections() < 1:
                 rospy.logwarn("Sound command issued, but no node is subscribed"
                               " to the topic. Perhaps you forgot to run"
-                              " soundplay_node.py?");
-
-        if self.actionclient:  # Send request as an actionlib goal (blocking)
+                              " soundplay_node.py?")
+        else:  # Block until result comes back.
+            assert self.actionclient, 'Actionclient must exist'
             rospy.logdebug('Sending action client sound request [blocking]')
             self.actionclient.wait_for_server()
             goal = SoundRequestGoal()
@@ -301,3 +339,5 @@ class SoundClient(object):
             self.actionclient.send_goal(goal)
             self.actionclient.wait_for_result()
             rospy.logdebug('sound request response received')
+
+        return
