@@ -53,10 +53,10 @@ if __name__ == '__main__':
     import rospy
     from sound_play.msg import SoundRequest
     from sound_play.libsoundplay import SoundClient
-    
+
     if len(sys.argv) == 1:
         print 'Awaiting something to say on standard input.'
-        
+
     # Ordered this way to minimize wait time.
     rospy.init_node('say', anonymous = True)
     soundhandle = SoundClient()
@@ -64,7 +64,7 @@ if __name__ == '__main__':
 
     voice = 'voice_kal_diphone'
     volume = 1.0
-    
+
     if len(sys.argv) == 1:
         s = sys.stdin.read()
     else:
@@ -74,10 +74,10 @@ if __name__ == '__main__':
             voice = sys.argv[2]
         if len(sys.argv) > 3:
             volume = float(sys.argv[3])
-    
+
     print 'Saying: %s' % s
     print 'Voice: %s' % voice
     print 'Volume: %s' % volume
-    
+
     soundhandle.say(s, voice, volume)
     rospy.sleep(1)
