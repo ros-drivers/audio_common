@@ -16,6 +16,8 @@ generate_messages(DEPENDENCIES actionlib_msgs)
 catkin_package(CATKIN_DEPENDS message_runtime actionlib_msgs
                INCLUDE_DIRS include)
 
+catkin_add_nosetests(scripts/test)
+
 add_subdirectory(test)
 
 install(PROGRAMS
