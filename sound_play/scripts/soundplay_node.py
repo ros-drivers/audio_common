@@ -288,6 +288,7 @@ class soundplay:
                 self.active_sounds = self.active_sounds + 1
         for key in purgelist:
            rospy.logdebug('Purging %s from cache'%key)
+           dict[key].stop() # clean up resources
            del dict[key]
 
     def cleanup(self):
