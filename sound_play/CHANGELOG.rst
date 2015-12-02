@@ -2,8 +2,8 @@
 Changelog for package sound_play
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.2.9 (2015-12-02)
+------------------
 * [soundplay_node] fix resources not being released on dict cleanup
   This was resulting in the number of sink inputs reaching the maximum threshold,
   (32 on ubuntu 14.04 with pulseaudio 4.0) after which no more sounds could be

@@ -2,8 +2,8 @@
 Changelog for package audio_capture
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.2.9 (2015-12-02)
+------------------
 * [audio_capture] add error handler
 * [audio_capture] add option to publish captured audio data as wav format
 * Fixed memory leak (see `#18 <https://github.com/ros-drivers/audio_common/issues/18>`_).
