@@ -317,10 +317,10 @@ class SoundClient(object):
                        ' blocking = {}'.format(blocking))
 
         # Defensive check for the existence of the correct communicator.
-        if blocking and not self.pub:
+        if not blocking and not self.pub:
             rospy.logerr('Publisher for SoundRequest must exist')
             return
-        if not blocking and not self.actionclient:
+        if blocking and not self.actionclient:
             rospy.logerr('Action client for SoundRequest does not exist.')
             return
 
