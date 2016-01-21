@@ -2,8 +2,8 @@
 Changelog for package sound_play
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.2.10 (2016-01-21)
+-------------------
 * Issue: The error checks for missing publisher/action client in sendMsg were inverted.
   The non-blocking brach tested the action client while the blocking branch
   tested the publisher.
