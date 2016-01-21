@@ -2,6 +2,16 @@
 Changelog for package sound_play
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Issue: The error checks for missing publisher/action client in sendMsg were inverted.
+  The non-blocking brach tested the action client while the blocking branch
+  tested the publisher.
+  Fix: Inverted the blocking boolean for both branchs.
+* sound_play: Fix build with -DCATKIN_ENABLE_TESTING=OFF.
+  https://bugs.gentoo.org/show_bug.cgi?id=567466
+* Contributors: Alexis Ballier, Neowizard
+
 0.2.9 (2015-12-02)
 ------------------
 * [soundplay_node] fix resources not being released on dict cleanup

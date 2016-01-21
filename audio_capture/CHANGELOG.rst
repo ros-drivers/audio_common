@@ -2,6 +2,9 @@
 Changelog for package audio_capture
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 0.2.9 (2015-12-02)
 ------------------
 * [audio_capture] add error handler
