@@ -71,12 +71,9 @@ if __name__ == '__main__':
 
         if len(sys.argv) > 2:
             voice = sys.argv[2]
-        if len(sys.argv) > 3:
-            volume = float(sys.argv[3])
 
     print 'Saying: %s' % s
     print 'Voice: %s' % voice
-    print 'Volume: %s' % volume
 
-    soundhandle.say(s, voice, volume)
+    soundhandle.say(s, voice)
     rospy.sleep(1)
