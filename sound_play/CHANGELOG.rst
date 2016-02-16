@@ -2,8 +2,8 @@
 Changelog for package sound_play
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.2.11 (2016-02-16)
+-------------------
 * Fix bug in say.py. Fixes `#72 <https://github.com/ros-drivers/audio_common/issues/72>`_
 * Contributors: trainman419
 
