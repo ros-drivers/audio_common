@@ -2,6 +2,11 @@
 Changelog for package sound_play
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Fix bug in say.py. Fixes `#72 <https://github.com/ros-drivers/audio_common/issues/72>`_
+* Contributors: trainman419
+
 0.2.10 (2016-01-21)
 -------------------
 * Issue: The error checks for missing publisher/action client in sendMsg were inverted.
