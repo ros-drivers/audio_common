@@ -389,15 +389,16 @@ class soundplay:
                 SoundRequest.NEEDS_PLUGGING_BADLY   : (os.path.join(rootdir, 'NEEDS_PLUGGING_BADLY.ogg'), 1),
                 }
 
+        self.no_error = True
+        self.initialized = False
+        self.active_sounds = 0
+
         self.mutex = threading.Lock()
         sub = rospy.Subscriber("robotsound", SoundRequest, self.callback)
         self._as = actionlib.SimpleActionServer('sound_play', SoundRequestAction, execute_cb=self.execute_cb, auto_start = False)
         self._as.start()
 
         self.mutex.acquire()
-        self.no_error = True
-        self.initialized = False
-        self.active_sounds = 0
         self.sleep(0.5) # For ros startup race condition
         self.diagnostics(1)
 
