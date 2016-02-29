@@ -2,8 +2,8 @@
 Changelog for package sound_play
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.2.12 (2016-02-29)
+-------------------
 * remove chance of uninitialised variable being called in a subscriber callback.
 * Contributors: Daniel Stonier
 

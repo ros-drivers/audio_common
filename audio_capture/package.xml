@@ -1,6 +1,6 @@
 <package>
    <name>audio_capture</name>
-   <version>0.2.11</version>
+   <version>0.2.12</version>
    <description>
       Transports audio from a source to a destination. Audio sources can come
       from a microphone or file. The destination can play the audio or save it

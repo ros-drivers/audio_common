@@ -1,6 +1,6 @@
 <package>
    <name>audio_common_msgs</name>
-   <version>0.2.11</version>
+   <version>0.2.12</version>
    <description>
       Messages for transmitting audio via ROS
    </description>
