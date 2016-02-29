@@ -2,6 +2,11 @@
 Changelog for package sound_play
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* remove chance of uninitialised variable being called in a subscriber callback.
+* Contributors: Daniel Stonier
+
 0.2.11 (2016-02-16)
 -------------------
 * Fix bug in say.py. Fixes `#72 <https://github.com/ros-drivers/audio_common/issues/72>`_
