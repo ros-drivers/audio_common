@@ -19,8 +19,6 @@
    <build_depend>actionlib</build_depend>
    <build_depend>audio_common_msgs</build_depend>
    <build_depend>diagnostic_msgs</build_depend>
-   <build_depend>libgstreamer0.10-dev</build_depend>
-   <build_depend>libgstreamer-plugins-base0.10-dev</build_depend>
    <build_depend>message_generation</build_depend>
 
    <run_depend>roscpp</run_depend>
@@ -28,13 +26,15 @@
    <run_depend>actionlib_msgs</run_depend>
    <run_depend>audio_common_msgs</run_depend>
    <run_depend>diagnostic_msgs</run_depend>
-   <run_depend>libgstreamer0.10-0</run_depend>
-   <run_depend>libgstreamer-plugins-base0.10-0</run_depend>
-   <run_depend>gstreamer0.10-plugins-ugly</run_depend>
-   <run_depend>gstreamer0.10-plugins-good</run_depend>
+
+   <run_depend>python-gi</run_depend>
+   <run_depend>gir1.2-gstreamer-1.0</run_depend>
+   <run_depend>gir1.2-gst-plugins-base-1.0</run_depend>
+   <run_depend>gstreamer1.0-plugins-ugly</run_depend>
+   <run_depend>gstreamer1.0-plugins-good</run_depend>
+
    <run_depend>rospy</run_depend>
    <run_depend>festival</run_depend>
-   <run_depend>python-gst</run_depend>
    <run_depend>message_runtime</run_depend>
 
    <export>

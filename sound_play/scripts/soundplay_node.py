@@ -49,14 +49,13 @@ from sound_play.msg import SoundRequest, SoundRequestAction, SoundRequestResult,
 import actionlib
 
 try:
-    import pygst
-    pygst.require('0.10')
-    import gst
-    import gobject
+    import gi
+    gi.require_version('Gst', '1.0')
+    from gi.repository import Gst as Gst
 except:
     str="""
 **************************************************************
-Error opening pygst. Is gstreamer installed? (sudo apt-get install python-gst0.10
+Error opening pygst. Is gstreamer installed?
 **************************************************************
 """
     rospy.logfatal(str)
@@ -78,7 +77,11 @@ class soundtype:
     def __init__(self, file, volume = 1.0):
         self.lock = threading.RLock()
         self.state = self.STOPPED
-        self.sound = gst.element_factory_make("playbin","player")
+        #self.sound = Gst.ElementFactory.make("playbin", "player")
+        self.sound = Gst.ElementFactory.make("playbin", None)
+        if self.sound is None:
+            raise Exception("Could not create sound player")
+
         if (":" in file):
             uri = file
         elif os.path.isfile(file):
@@ -98,7 +101,7 @@ class soundtype:
         self.bus.connect("message", self.on_stream_end)
 
     def on_stream_end(self, bus, message):
-        if message.type == gst.MESSAGE_EOS:
+        if message.type == Gst.MessageType.EOS:
             self.state = self.STOPPED
 
     def __del__(self):
@@ -106,7 +109,7 @@ class soundtype:
         self.stop()
 
     def update(self):
-        self.bus.poll(gst.MESSAGE_ERROR, 10)
+        self.bus.poll(Gst.MessageType.ERROR, 10)
 
     def loop(self):
         self.lock.acquire()
@@ -116,8 +119,8 @@ class soundtype:
                 self.stop()
 
             if self.state == self.STOPPED:
-              self.sound.seek_simple(gst.FORMAT_TIME, gst.SEEK_FLAG_FLUSH, 0)
-              self.sound.set_state(gst.STATE_PLAYING)
+              self.sound.seek_simple(Gst.Format.TIME, Gst.SeekFlags.FLUSH, 0)
+              self.sound.set_state(Gst.State.PLAYING)
             self.state = self.LOOPING
         finally:
             self.lock.release()
@@ -126,7 +129,7 @@ class soundtype:
         if self.state != self.STOPPED:
             self.lock.acquire()
             try:
-                self.sound.set_state(gst.STATE_NULL)
+                self.sound.set_state(Gst.State.NULL)
                 self.state = self.STOPPED
             finally:
                 self.lock.release()
@@ -139,8 +142,8 @@ class soundtype:
             if self.state == self.LOOPING:
                 self.stop()
 
-            self.sound.seek_simple(gst.FORMAT_TIME, gst.SEEK_FLAG_FLUSH, 0)
-            self.sound.set_state(gst.STATE_PLAYING)
+            self.sound.seek_simple(Gst.Format.TIME, Gst.SeekFlags.FLUSH, 0)
+            self.sound.set_state(Gst.State.PLAYING)
             self.state = self.COUNTING
         finally:
             self.lock.release()
@@ -158,8 +161,8 @@ class soundtype:
         position = 0
         duration = 0
         try:
-            position = self.sound.query_position(gst.FORMAT_TIME)[0]
-            duration = self.sound.query_duration(gst.FORMAT_TIME)[0]
+            position = self.sound.query_position(Gst.Format.TIME)[0]
+            duration = self.sound.query_duration(Gst.Format.TIME)[0]
         except Exception, e:
             position = 0
             duration = 0
@@ -377,6 +380,7 @@ class soundplay:
             rospy.logdebug("done actionlib callback")
 
     def __init__(self):
+        Gst.init(None)
         rospy.init_node('sound_play')
         self.diagnostic_pub = rospy.Publisher("/diagnostics", DiagnosticArray, queue_size=1)
         rootdir = os.path.join(roslib.packages.get_pkg_dir('sound_play'),'sounds')
