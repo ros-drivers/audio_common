@@ -99,7 +99,7 @@ class soundtype:
 
     def on_stream_end(self, bus, message):
         if message.type == gst.MESSAGE_EOS:
-            self.state = self.STOPPED
+            self.stop()
 
     def __del__(self):
         # stop our GST object so that it gets garbage-collected
@@ -187,6 +187,14 @@ class soundplay:
         self.stopdict(self.builtinsounds)
         self.stopdict(self.filesounds)
         self.stopdict(self.voicesounds)
+
+    def update(self):
+        for sound in self.builtinsounds.values():
+            sound.update()
+        for sound in self.filesounds.values():
+            sound.update()
+        for sound in self.voicesounds.values():
+            sound.update()
 
     def select_sound(self, data):
         if data.sound == SoundRequest.PLAY_FILE:
@@ -437,6 +445,7 @@ class soundplay:
             #print "idle_loop"
             self.diagnostics(0)
             self.sleep(1)
+            self.update()
             self.cleanup()
         #print "idle_exiting"
 
