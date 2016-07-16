@@ -1,16 +1,19 @@
 <launch>
   <!-- arecord -l will show available input devices, use the car number as
       the first number and the subdevice number as the second in a string
-      like hw:1,0 -->
+      like hw:1,0
+      run pacmd list-sources to input specs
+      (but not all possible ones?)
+      -->
   <arg name="dst" default="appsink"/>
   <arg name="device" default=""/>
-  <arg name="format" default="mp3"/>
+  <arg name="format" default="mp3" doc="can only be mp3 or wave"/>
   <arg name="bitrate" default="128"/>
   <arg name="channels" default="1"/>
   <arg name="depth" default="16"/>
   <arg name="sample_rate" default="16000"/>
   <arg name="sample_format" default="S16LE"/>
-  <arg name="ns" default="audio"/>
+  <arg name="ns" default="audio" doc="namespace to run node in"/>
   <arg name="audio_topic" default="audio"/>
 
   <group ns="$(arg ns)">
