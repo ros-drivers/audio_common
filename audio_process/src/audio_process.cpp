@@ -15,11 +15,6 @@ namespace audio_transport
       {
         GstPad *audiopad;
 
-        std::string dst_type;
-
-        // The destination of the audio
-        ros::param::param<std::string>("~dst", dst_type, "appsink");
-
         _sub = _nh.subscribe("audio", 10, &RosGstProcess::onAudio, this);
 
         _loop = g_main_loop_new(NULL, false);
@@ -30,11 +25,8 @@ namespace audio_transport
 
         g_signal_connect(_source, "need-data", G_CALLBACK(cb_need_data),this);
 
+        // http://stackoverflow.com/questions/35310415/how-to-access-data-from-gmemoryoutputstream
         // https://github.com/jojva/gst-plugins-base/blob/master/tests/examples/app/appsink-src.c
-
-        //_playbin = gst_element_factory_make("playbin2", "uri_play");
-        //g_object_set( G_OBJECT(_playbin), "uri", "file:///home/test/test.mp3", NULL);
-        if (dst_type == "appsink")
         {
           _decoder = gst_element_factory_make("decodebin", "decoder");
           g_signal_connect(_decoder, "pad-added", G_CALLBACK(cb_newpad),this);
@@ -55,14 +47,6 @@ namespace audio_transport
           gst_object_unref(audiopad);
 
           gst_bin_add(GST_BIN(_pipeline), _audio);
-          
-        }
-        else
-        {
-          _sink = gst_element_factory_make("filesink", "sink");
-          g_object_set( G_OBJECT(_sink), "location", dst_type.c_str(), NULL);
-          gst_bin_add(GST_BIN(_pipeline), _sink);
-          gst_element_link(_source, _sink);
         }
 
         gst_element_set_state(GST_ELEMENT(_pipeline), GST_STATE_PLAYING);
@@ -111,7 +95,7 @@ namespace audio_transport
 				/* we don't need the appsink sample anymore */
 				gst_sample_unref (sample);
 
-				/* get source an push new buffer */
+				/* get source and push new buffer */
 				source = gst_bin_get_by_name (GST_BIN (client->_sink), "app_source");
 				return gst_app_src_push_buffer (GST_APP_SRC (source), app_buffer);
 			}

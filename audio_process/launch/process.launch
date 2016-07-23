@@ -1,0 +1,8 @@
+<launch>
+  <arg name="ns" default="audio"/>
+
+  <group ns="$(arg ns)">
+  <node name="audio_process" pkg="audio_process" type="audio_process" output="screen">
+  </node>
+  </group>
+</launch>
