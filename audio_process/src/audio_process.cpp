@@ -50,7 +50,6 @@ namespace audio_transport
         }
 
         gst_element_set_state(GST_ELEMENT(_pipeline), GST_STATE_PLAYING);
-        //gst_element_set_state(GST_ELEMENT(_playbin), GST_STATE_PLAYING);
 
         _gst_thread = boost::thread( boost::bind(g_main_loop_run, _loop) );
 
@@ -78,7 +77,7 @@ namespace audio_transport
 						o/ http://fossies.org/linux/gst-plugins-base/tests/examples/app/appsink-src.c
 		 * processing */
 			static GstFlowReturn
-			on_new_sample_from_sink (GstElement * elt, gpointer data)
+      on_new_sample_from_sink (GstElement * elt, gpointer data)
 			{
         RosGstProcess *client = reinterpret_cast<RosGstProcess*>(data);
 				GstSample *sample;
@@ -95,9 +94,21 @@ namespace audio_transport
 				/* we don't need the appsink sample anymore */
 				gst_sample_unref (sample);
 
+        ROS_INFO_STREAM("update "
+            << app_buffer->pts << " "
+            << app_buffer->dts << " "
+            << app_buffer->duration << " "
+            << app_buffer->offset << " "
+            << app_buffer->offset_end);
+
 				/* get source and push new buffer */
-				source = gst_bin_get_by_name (GST_BIN (client->_sink), "app_source");
-				return gst_app_src_push_buffer (GST_APP_SRC (source), app_buffer);
+        // it looks like I need to have another pipeline element
+        // that receives the app_buffer?
+				// source = gst_bin_get_by_name (GST_BIN (client->_sink), "app_source");
+        // return gst_app_src_push_buffer (GST_APP_SRC (source), app_buffer);
+        // this results in a bunch of need-data signals
+        return GST_FLOW_OK;
+        // return GST_FLOW_FLUSHING;
 			}
 
       static void cb_newpad (GstElement *decodebin, GstPad *pad,
