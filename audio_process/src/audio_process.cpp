@@ -16,6 +16,7 @@ namespace audio_transport
         GstPad *audiopad;
 
         _sub = _nh.subscribe("audio", 10, &RosGstProcess::onAudio, this);
+        //_pub = _nh.subscribe("audio", 10, &RosGstProcess::onAudio, this);
 
         _loop = g_main_loop_new(NULL, false);
 
@@ -76,7 +77,7 @@ namespace audio_transport
 		/* called when the appsink notifies us that there is a new buffer ready for
 						o/ http://fossies.org/linux/gst-plugins-base/tests/examples/app/appsink-src.c
 		 * processing */
-			static GstFlowReturn
+			static void  // GstFlowReturn
       on_new_sample_from_sink (GstElement * elt, gpointer data)
 			{
         RosGstProcess *client = reinterpret_cast<RosGstProcess*>(data);
@@ -89,25 +90,44 @@ namespace audio_transport
 				buffer = gst_sample_get_buffer (sample);
 
 				/* make a copy */
-				app_buffer = gst_buffer_copy (buffer);
+				// app_buffer = buffer;
+        // app_buffer = gst_buffer_copy (buffer);
         // TODO(lucasw) do something with the app_buffer- plot it
 				/* we don't need the appsink sample anymore */
-				gst_sample_unref (sample);
+
+        GstMapInfo map;
+
+        if (gst_buffer_map (buffer, &map, GST_MAP_READ))
+        {
+          ROS_INFO_STREAM("map "
+              << map.size << " "
+              << map.maxsize << " ");
+          // gst_util_dump_mem (map.data, map.size);
+          for (size_t i = 0; i < map.size && i < 10; ++i)
+          {
+            std::cout << int(map.data[i]) << " ";
+          }
+          gst_buffer_unmap (buffer, &map);
+        }
 
         ROS_INFO_STREAM("update "
-            << app_buffer->pts << " "
-            << app_buffer->dts << " "
-            << app_buffer->duration << " "
-            << app_buffer->offset << " "
-            << app_buffer->offset_end);
+            << buffer->pts << " "
+            << buffer->dts << " "
+            << buffer->duration << " "
+            << buffer->offset << " "
+            << buffer->offset_end << " ");
+				gst_sample_unref (sample);
 
 				/* get source and push new buffer */
         // it looks like I need to have another pipeline element
         // that receives the app_buffer?
 				// source = gst_bin_get_by_name (GST_BIN (client->_sink), "app_source");
         // return gst_app_src_push_buffer (GST_APP_SRC (source), app_buffer);
-        // this results in a bunch of need-data signals
-        return GST_FLOW_OK;
+        // this results in a bunch of need-data signals, and it appears
+        // this callback is called repeatedly with the same data rather than
+        // new data?
+        // return GST_FLOW_OK;
+        // This callback only runs once when this is returned
         // return GST_FLOW_FLUSHING;
 			}
 
