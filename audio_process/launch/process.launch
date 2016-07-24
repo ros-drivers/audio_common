@@ -1,9 +1,12 @@
 <launch>
   <arg name="ns" default="audio"/>
 
+  <include file="$(find audio_capture)/launch/capture.launch">
+  </include>
   <group ns="$(arg ns)">
   <node name="audio_process" pkg="audio_process" type="audio_process"
       output="screen">
   </node>
+  <node name="view" pkg="audio_process" type="view.py" />
   </group>
 </launch>

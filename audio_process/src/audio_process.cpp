@@ -16,7 +16,7 @@ namespace audio_transport
         GstPad *audiopad;
 
         _sub = _nh.subscribe("audio", 10, &RosGstProcess::onAudio, this);
-        //_pub = _nh.subscribe("audio", 10, &RosGstProcess::onAudio, this);
+        _pub = _nh.advertise<audio_common_msgs::AudioData>("decoded", 10);
 
         _loop = g_main_loop_new(NULL, false);
 
@@ -99,24 +99,32 @@ namespace audio_transport
 
         if (gst_buffer_map (buffer, &map, GST_MAP_READ))
         {
-          ROS_INFO_STREAM("map "
-              << map.size << " "
-              << map.maxsize << " ");
+          // ROS_INFO_STREAM("map "
+          //     << map.size << " "
+          //     << map.maxsize << " ");
           // gst_util_dump_mem (map.data, map.size);
+          audio_common_msgs::AudioData msg;
+          msg.data.resize(map.size);
+          // TODO(lucasw) copy this more efficiently
           for (size_t i = 0; i < map.size && i < 10; ++i)
           {
-            std::cout << int(map.data[i]) << " ";
+            msg.data[i] = map.data[i];
+            //std::cout << int(map.data[i]) << " ";
           }
           gst_buffer_unmap (buffer, &map);
+          client->_pub.publish(msg);
         }
 
+        if (false)
+        {
         ROS_INFO_STREAM("update "
             << buffer->pts << " "
             << buffer->dts << " "
             << buffer->duration << " "
             << buffer->offset << " "
             << buffer->offset_end << " ");
-				gst_sample_unref (sample);
+				}
+        gst_sample_unref (sample);
 
 				/* get source and push new buffer */
         // it looks like I need to have another pipeline element
@@ -169,7 +177,7 @@ namespace audio_transport
                    guint       unused_size,
                    gpointer    user_data)
      {
-       ROS_WARN("need-data signal emitted! Pausing the pipeline");
+       ROS_DEBUG("need-data signal emitted! Pausing the pipeline");
        RosGstProcess *client = reinterpret_cast<RosGstProcess*>(user_data);
        gst_element_set_state(GST_ELEMENT(client->_pipeline), GST_STATE_PAUSED);
        client->_paused = true;
@@ -177,10 +185,10 @@ namespace audio_transport
 
       ros::NodeHandle _nh;
       ros::Subscriber _sub;
+      ros::Publisher _pub;
       boost::thread _gst_thread;
 
       GstElement *_pipeline, *_source, *_sink, *_decoder, *_convert, *_audio;
-      GstElement *_playbin;
       GMainLoop *_loop;
 
       bool _paused;
