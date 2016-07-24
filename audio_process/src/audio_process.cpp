@@ -106,10 +106,9 @@ namespace audio_transport
           audio_common_msgs::AudioData msg;
           msg.data.resize(map.size);
           // TODO(lucasw) copy this more efficiently
-          for (size_t i = 0; i < map.size && i < 10; ++i)
+          for (size_t i = 0; i < map.size; ++i)
           {
             msg.data[i] = map.data[i];
-            //std::cout << int(map.data[i]) << " ";
           }
           gst_buffer_unmap (buffer, &map);
           client->_pub.publish(msg);
