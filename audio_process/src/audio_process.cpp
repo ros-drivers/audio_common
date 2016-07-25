@@ -5,6 +5,7 @@
 #include <boost/thread.hpp>
 
 #include "audio_common_msgs/AudioData.h"
+#include "sensor_msgs/ChannelFloat32.h"
 
 namespace audio_transport
 {
@@ -16,7 +17,7 @@ namespace audio_transport
         GstPad *audiopad;
 
         _sub = _nh.subscribe("audio", 10, &RosGstProcess::onAudio, this);
-        _pub = _nh.advertise<audio_common_msgs::AudioData>("decoded", 10);
+        _pub = _nh.advertise<sensor_msgs::ChannelFloat32>("decoded", 10);
 
         _loop = g_main_loop_new(NULL, false);
 
@@ -82,33 +83,32 @@ namespace audio_transport
 			{
         RosGstProcess *client = reinterpret_cast<RosGstProcess*>(data);
 				GstSample *sample;
-				GstBuffer *app_buffer, *buffer;
+				GstBuffer *buffer;
 				GstElement *source;
 
 				/* get the sample from appsink */
 				sample = gst_app_sink_pull_sample (GST_APP_SINK (elt));
 				buffer = gst_sample_get_buffer (sample);
 
-				/* make a copy */
-				// app_buffer = buffer;
-        // app_buffer = gst_buffer_copy (buffer);
-        // TODO(lucasw) do something with the app_buffer- plot it
-				/* we don't need the appsink sample anymore */
-
         GstMapInfo map;
-
         if (gst_buffer_map (buffer, &map, GST_MAP_READ))
         {
           // ROS_INFO_STREAM("map "
           //     << map.size << " "
           //     << map.maxsize << " ");
           // gst_util_dump_mem (map.data, map.size);
-          audio_common_msgs::AudioData msg;
-          msg.data.resize(map.size);
+          sensor_msgs::ChannelFloat32 msg;
+          msg.values.resize(map.size/2);
           // TODO(lucasw) copy this more efficiently
-          for (size_t i = 0; i < map.size; ++i)
+          for (size_t i = 0; i < map.size / 2; ++i)
           {
-            msg.data[i] = map.data[i];
+            // TODO(lucasw) can this format be assumed from
+            // default conversion settings here?
+            const int hi = (map.data[i * 2 + 1] + 128) % 256;
+            // TODO(lucasw) not sure about the + 128 here
+            const int lo = (map.data[i * 2] + 128) % 256;
+            msg.values[i] = (static_cast<float>(hi - 127) * 256.0 + lo) /
+                static_cast<float>(1 << 15);
           }
           gst_buffer_unmap (buffer, &map);
           client->_pub.publish(msg);
