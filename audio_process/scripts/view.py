@@ -25,7 +25,8 @@ class View():
             self.buffer.append(msg.values[i])
 
     def update(self, event):
-        self.im /= 2  # np.zeros((700, 1000, 3), np.uint8)
+        self.im[:, :, 1:3] = (self.im[:, :, 1:3] * 0.9).astype(np.uint8)
+        self.im[:, :, 0] = (self.im[:, :, 0] * 0.999).astype(np.uint8)
         width = self.im.shape[1]
         height = self.im.shape[0]
         for i in range(width):
