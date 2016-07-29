@@ -1,13 +1,34 @@
 <?xml version="1.0"?>
 <launch>
   <arg name="ns" default="audio"/>
+  <arg name="float_sample_rate" default="16000"/>
 
   <group ns="$(arg ns)">
     <node name="gen_float" pkg="float_to_audio" type="gen_float.py"
         output="screen">
+      <param name="sample_rate" value="$(arg float_sample_rate)"/>
     </node>
-    <node name="view" pkg="audio_process" type="view.py">
+    <node name="view_input" pkg="audio_process" type="view.py">
       <remap from="decoded" to="samples"/>
+      <remap from="image" to="image_input"/>
     </node>
+
+    <node name="float_to_audio" pkg="float_to_audio" type="float_to_audio"
+        output="screen">
+      <param name="input_sample_rate" value="$(arg float_sample_rate)"/>
+    </node>
+
+    <node name="audio_play" pkg="audio_play" type="audio_play" output="screen">
+      <param name="dst" value="alsasink"/>
+    </node>
+
+    <node name="audio_process" pkg="audio_process" type="audio_process"
+        output="screen">
+    </node>
+    <node name="view_output" pkg="audio_process" type="view.py">
+      <remap from="decoded" to="decoded"/>
+      <remap from="image" to="image_output"/>
+    </node>
+
   </group>
 </launch>

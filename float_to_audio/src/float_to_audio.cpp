@@ -1,41 +1,35 @@
 #include <stdio.h>
 #include <gst/gst.h>
+#include <gst/audio/audio-format.h>
 #include <gst/app/gstappsink.h>
+#include <gst/app/gstappsrc.h>
 #include <boost/thread.hpp>
 
 #include <ros/ros.h>
 
-#include "audio_common_msgs/AudioData.h"
+#include <audio_common_msgs/AudioData.h>
+#include <sensor_msgs/ChannelFloat32.h>
+// rostopic pub /samples sensor_msgs/ChannelFloat32 "{name: '', values: [-0.4, 0.0]}"
+
 
 namespace audio_transport
 {
-  class RosGstCapture
+  class RosFloatToGst
   {
     public:
-      RosGstCapture()
+      RosFloatToGst()
       {
-        _bitrate = 192;
-
-        std::string dst_type;
-
         // Need to encoding or publish raw wave data
         ros::param::param<std::string>("~format", _format, "mp3");
-
         // The bitrate at which to encode the audio
         ros::param::param<int>("~bitrate", _bitrate, 192);
-
         // only available for raw data
         ros::param::param<int>("~channels", _channels, 1);
         ros::param::param<int>("~depth", _depth, 16);
         ros::param::param<int>("~sample_rate", _sample_rate, 16000);
 
-        // The destination of the audio
-        ros::param::param<std::string>("~dst", dst_type, "appsink");
-
-        // The source of the audio
-        //ros::param::param<std::string>("~src", source_type, "alsasrc");
-        std::string device;
-        ros::param::param<std::string>("~device", device, "");
+        int input_sample_rate;
+        ros::param::param<int>("~input_sample_rate", input_sample_rate, 16000);
 
         _pub = _nh.advertise<audio_common_msgs::AudioData>("audio", 10, true);
 
@@ -48,33 +42,44 @@ namespace audio_transport
         g_object_unref(_bus);
 
         // We create the sink first, just for convenience
-        if (dst_type == "appsink")
+        _sink = gst_element_factory_make("appsink", "sink");
+        if (_sink == NULL)
         {
-          _sink = gst_element_factory_make("appsink", "sink");
-          g_object_set(G_OBJECT(_sink), "emit-signals", true, NULL);
-          g_object_set(G_OBJECT(_sink), "max-buffers", 100, NULL);
-          g_signal_connect( G_OBJECT(_sink), "new-sample",
-                            G_CALLBACK(onNewBuffer), this);
+          ROS_ERROR_STREAM("couldn't create sink");
+          return;
         }
-        else
-        {
-          printf("file sink\n");
-          _sink = gst_element_factory_make("filesink", "sink");
-          g_object_set( G_OBJECT(_sink), "location", dst_type.c_str(), NULL);
-        }
+        g_object_set(G_OBJECT(_sink), "emit-signals", true, NULL);
+        g_object_set(G_OBJECT(_sink), "max-buffers", 100, NULL);
+        g_signal_connect( G_OBJECT(_sink), "new-sample",
+                          G_CALLBACK(onNewBuffer), this);
 
-        _source = gst_element_factory_make("alsasrc", "source");
-        // if device isn't specified, it will use the default which is
-        // the alsa default source.
-        // A valid device will be of the foram hw:0,0 with other numbers
-        // than 0 and 0 as are available.
-        if (device != "")
+        _source = gst_element_factory_make("appsrc", "source");
+        if (_source == NULL)
         {
-          // ghcar *gst_device = device.c_str();
-          g_object_set(G_OBJECT(_source), "device", device.c_str(), NULL);
+          ROS_ERROR_STREAM("couldn't create source");
+          return;
+        }
+        {
+          GstCaps *caps;
+          caps = gst_caps_new_simple("audio/x-raw",
+                              "format", G_TYPE_INT, GST_AUDIO_FORMAT_F32LE,
+                              "channels", G_TYPE_INT, 1,
+                              // TODO(lwalter) what is width?
+                              "width",    G_TYPE_INT, 32,
+                              "depth",    G_TYPE_INT, 32,
+                              "endianness",    G_TYPE_INT, G_BYTE_ORDER,  // 1234?
+                              "rate",     G_TYPE_INT, input_sample_rate,
+                              NULL);
+          g_object_set( G_OBJECT(_source), "caps", caps, NULL);
+          gst_caps_unref(caps);
         }
 
         _filter = gst_element_factory_make("capsfilter", "filter");
+        if (_filter == NULL)
+        {
+          ROS_ERROR_STREAM("couldn't create filter");
+          return;
+        }
         {
           GstCaps *caps;
           caps = gst_caps_new_simple("audio/x-raw",
@@ -88,11 +93,21 @@ namespace audio_transport
         }
 
         _convert = gst_element_factory_make("audioconvert", "convert");
+        if (_convert == NULL)
+        {
+          ROS_ERROR_STREAM("couldn't create convert");
+          return;
+        }
 
         gboolean link_ok;
 
         if (_format == "mp3"){
           _encode = gst_element_factory_make("lamemp3enc", "encoder");
+          if (_encode == NULL)
+          {
+            ROS_ERROR_STREAM("couldn't create encode");
+            return;
+          }
           g_object_set( G_OBJECT(_encode), "quality", 2.0, NULL);
           g_object_set( G_OBJECT(_encode), "bitrate", _bitrate, NULL);
 
@@ -117,17 +132,6 @@ namespace audio_transport
           ROS_ERROR_STREAM("format must be \"wave\" or \"mp3\"");
           exitOnMainThread(1);
         }
-        /*}
-        else
-        {
-          _sleep_time = 10000;
-          _source = gst_element_factory_make("filesrc", "source");
-          g_object_set(G_OBJECT(_source), "location", source_type.c_str(), NULL);
-
-          gst_bin_add_many( GST_BIN(_pipeline), _source, _sink, NULL);
-          gst_element_link_many(_source, _sink, NULL);
-        }
-        */
 
         if (!link_ok) {
           ROS_ERROR_STREAM("Unsupported media type.");
@@ -137,9 +141,10 @@ namespace audio_transport
         gst_element_set_state(GST_ELEMENT(_pipeline), GST_STATE_PLAYING);
 
         _gst_thread = boost::thread( boost::bind(g_main_loop_run, _loop) );
+        _sub = _nh.subscribe("samples", 10, &RosFloatToGst::onFloat, this);
       }
 
-      ~RosGstCapture()
+      ~RosFloatToGst()
       {
         g_main_loop_quit(_loop);
         gst_element_set_state(_pipeline, GST_STATE_NULL);
@@ -159,7 +164,8 @@ namespace audio_transport
 
       static GstFlowReturn onNewBuffer (GstAppSink *appsink, gpointer userData)
       {
-        RosGstCapture *server = reinterpret_cast<RosGstCapture*>(userData);
+        ROS_INFO_STREAM("new buffer");
+        RosFloatToGst *server = reinterpret_cast<RosFloatToGst*>(userData);
         GstMapInfo map;
 
         GstSample *sample;
@@ -180,7 +186,7 @@ namespace audio_transport
 
       static gboolean onMessage (GstBus *bus, GstMessage *message, gpointer userData)
       {
-        RosGstCapture *server = reinterpret_cast<RosGstCapture*>(userData);
+        RosFloatToGst *server = reinterpret_cast<RosFloatToGst*>(userData);
         GError *err;
         gchar *debug;
 
@@ -193,9 +199,18 @@ namespace audio_transport
         return FALSE;
       }
 
+      void onFloat(const sensor_msgs::ChannelFloat32ConstPtr &msg)
+      {
+        GstBuffer *buffer = gst_buffer_new_and_alloc(msg->values.size() * 4);
+        gst_buffer_fill(buffer, 0, &msg->values[0], msg->values.size() * 4);
+        GstFlowReturn ret;
+        g_signal_emit_by_name(_source, "push-buffer", buffer, &ret);
+        ROS_INFO_STREAM("emitted push");
+      }
     private:
       ros::NodeHandle _nh;
       ros::Publisher _pub;
+      ros::Subscriber _sub;
 
       boost::thread _gst_thread;
 
@@ -212,6 +227,6 @@ int main (int argc, char **argv)
   ros::init(argc, argv, "audio_capture");
   gst_init(&argc, &argv);
 
-  audio_transport::RosGstCapture server;
+  audio_transport::RosFloatToGst server;
   ros::spin();
 }
