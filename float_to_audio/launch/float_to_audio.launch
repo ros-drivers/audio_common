@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<launch>
+  <arg name="ns" default="audio"/>
+
+  <group ns="$(arg ns)">
+    <node name="gen_float" pkg="float_to_audio" type="gen_float.py"
+        output="screen">
+    </node>
+    <node name="view" pkg="audio_process" type="view.py">
+      <remap from="decoded" to="samples"/>
+    </node>
+  </group>
+</launch>

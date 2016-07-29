@@ -29,14 +29,18 @@ class View():
         self.im[:, :, 0] = (self.im[:, :, 0] * 0.999).astype(np.uint8)
         width = self.im.shape[1]
         height = self.im.shape[0]
-        for i in range(width):
+        last_y = 0
+        for i in range(0, width):
             if i >= len(self.buffer):
                 break
             sample = self.buffer[i]
             sample *= height/2
             sample += height/2
             y = int(sample) % height
-            self.im[y, i, :] = 255
+            y0 = min(last_y, y)
+            y1 = max(last_y, y)
+            self.im[y0:y1+1, i, :] = 255
+            last_y = y
         self.pub.publish(self.bridge.cv2_to_imgmsg(self.im, "bgr8"))
 
 if __name__ == '__main__':
