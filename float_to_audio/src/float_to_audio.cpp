@@ -10,6 +10,7 @@
 #include <audio_common_msgs/AudioData.h>
 #include <sensor_msgs/ChannelFloat32.h>
 // rostopic pub /samples sensor_msgs/ChannelFloat32 "{name: '', values: [-0.4, 0.0]}"
+// GST_DEBUG="*:2" rosrun float_to_audio float_to_audio
 
 
 namespace audio_transport
@@ -202,10 +203,10 @@ namespace audio_transport
       void onFloat(const sensor_msgs::ChannelFloat32ConstPtr &msg)
       {
         GstBuffer *buffer = gst_buffer_new_and_alloc(msg->values.size() * 4);
-        gst_buffer_fill(buffer, 0, &msg->values[0], msg->values.size() * 4);
+        int num_bytes = gst_buffer_fill(buffer, 0, &msg->values[0], msg->values.size() * 4);
         GstFlowReturn ret;
         g_signal_emit_by_name(_source, "push-buffer", buffer, &ret);
-        ROS_INFO_STREAM("emitted push");
+        ROS_INFO_STREAM("emitted push " << num_bytes);
       }
     private:
       ros::NodeHandle _nh;
