@@ -13,10 +13,12 @@
       <remap from="image" to="image_input"/>
     </node>
 
+    <!--
     <node name="float_to_audio" pkg="float_to_audio" type="float_to_audio"
         output="screen">
       <param name="input_sample_rate" value="$(arg float_sample_rate)"/>
     </node>
+    -->
 
     <node name="audio_play" pkg="audio_play" type="audio_play" output="screen">
       <param name="dst" value="alsasink"/>
