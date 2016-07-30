@@ -67,20 +67,24 @@ namespace audio_transport
           GstCaps *caps;
           caps = gst_caps_new_simple("audio/x-raw",
                               // "format", G_TYPE_INT, GST_AUDIO_FORMAT_F32LE,
-                              "format", G_TYPE_STRING, "F32LE",
+                              // "format", G_TYPE_STRING, "F32LE",
+                              "format", G_TYPE_STRING, "S16LE",
                               "channels", G_TYPE_INT, 1,
-                              "layout", G_TYPE_INT, GST_AUDIO_LAYOUT_NON_INTERLEAVED,
-                              // TODO(lwalter) what is width?
+                              "layout", G_TYPE_INT, GST_AUDIO_LAYOUT_INTERLEAVED,
+                              // TODO(lucasw) what is width?
                               // "width - bits per sample
                               // depth - bits ACTUALLY USED FOR AUDIO per sample
                               // You can have 32-bit samples, but in each
                               // 32-bit group only 16 or 24 bits
                               // will be used.
                               // This is to achieve necessary alignment."
-                              "width",    G_TYPE_INT, 32,
-                              "depth",    G_TYPE_INT, 32,
-                              "endianness",    G_TYPE_INT, G_BYTE_ORDER,  // 1234?
+                              // "width",    G_TYPE_INT, 32,
+                              // "depth",    G_TYPE_INT, 32,
+                              "width",    G_TYPE_INT, _depth,
+                              "depth",    G_TYPE_INT, _depth,
+                              //"endianness",    G_TYPE_INT, G_BYTE_ORDER,  // 1234?
                               "rate",     G_TYPE_INT, input_sample_rate,
+                              "signed",   G_TYPE_BOOLEAN, TRUE,
                               NULL);
           g_object_set( G_OBJECT(_source), "caps", caps, NULL);
           gst_caps_unref(caps);
@@ -93,14 +97,17 @@ namespace audio_transport
           ROS_ERROR_STREAM("couldn't create filter");
           return;
         }
+        if (false)
         {
           GstCaps *caps;
           caps = gst_caps_new_simple("audio/x-raw",
-                                     "channels", G_TYPE_INT, _channels,
-                                     "width",    G_TYPE_INT, _depth,
-                                     "depth",    G_TYPE_INT, _depth,
+                                     // "format", G_TYPE_STRING, "S16LE"
+                                     // "channels", G_TYPE_INT, _channels,
+                                     // "layout", G_TYPE_INT, GST_AUDIO_LAYOUT_INTERLEAVED,
+                                     // "width",    G_TYPE_INT, _depth,
+                                     // "depth",    G_TYPE_INT, _depth,
                                      "rate",     G_TYPE_INT, _sample_rate,
-                                     "signed",   G_TYPE_BOOLEAN, TRUE,
+                                     // "signed",   G_TYPE_BOOLEAN, TRUE,
                               NULL);
           g_object_set( G_OBJECT(_filter), "caps", caps, NULL);
           gst_caps_unref(caps);
@@ -115,6 +122,11 @@ namespace audio_transport
 
         gboolean link_ok;
 
+        // mp3 
+        // audio/x-raw, format=(string)S16LE, layout=(string)interleaved,
+        // rate=(int){ 8000, 11025, 12000, 16000, 22050, 24000, 32000, 44100, 48000 },
+        // channels=(int)1
+
         if (_format == "mp3"){
           _encode = gst_element_factory_make("lamemp3enc", "encoder");
           if (_encode == NULL)
@@ -125,16 +137,41 @@ namespace audio_transport
           g_object_set( G_OBJECT(_encode), "quality", 2.0, NULL);
           g_object_set( G_OBJECT(_encode), "bitrate", _bitrate, NULL);
 
+          if (!gst_bin_add( GST_BIN(_pipeline), _source))
+          {
+            ROS_ERROR_STREAM("source");
+            return;
+          }
+          if (!gst_bin_add( GST_BIN(_pipeline), _filter))
+          {
+            ROS_ERROR_STREAM("filter");
+            return;
+          }
+          if (!gst_bin_add( GST_BIN(_pipeline), _convert))
+          {
+            ROS_ERROR_STREAM("convert");
+            return;
+          }
+          if (!gst_bin_add( GST_BIN(_pipeline), _encode))
+          {
+            ROS_ERROR_STREAM("encode");
+            return;
+          }
+          if (!gst_bin_add( GST_BIN(_pipeline), _sink))
+          {
+            ROS_ERROR_STREAM("sink");
+            return;
+          }
           // gst_bin_add_many( GST_BIN(_pipeline), _source, _filter, _convert, _encode, _sink, NULL);
-          gst_bin_add_many( GST_BIN(_pipeline), _source, _convert, _filter, _encode, _sink, NULL);
-          // link_ok = gst_element_link_many(_source, _filter,_convert, _encode, _sink, NULL);
-          link_ok = gst_element_link_many(_source, _convert, _filter, _encode, _sink, NULL);
+          // gst_bin_add_many( GST_BIN(_pipeline), _source, _convert, _filter, _encode, _sink, NULL);
+          link_ok = gst_element_link_many(_source, _filter,_convert, _encode, _sink, NULL);
+          // link_ok = gst_element_link_many(_source, _convert, _filter, _encode, _sink, NULL);
         } else if (_format == "wave") {
           GstCaps *caps;
-          // caps = gst_caps_new_simple("audio/x-raw-int",
           caps = gst_caps_new_simple("audio/x-raw",
-																		 //"format", G_TYPE_STRING,  ,
+																		 // "format", G_TYPE_STRING, "S16LE",
                                      "channels", G_TYPE_INT, _channels,
+                                     // "layout", G_TYPE_INT, GST_AUDIO_LAYOUT_INTERLEAVED,
                                      "width",    G_TYPE_INT, _depth,
                                      "depth",    G_TYPE_INT, _depth,
                                      "rate",     G_TYPE_INT, _sample_rate,
@@ -143,6 +180,7 @@ namespace audio_transport
 
           g_object_set( G_OBJECT(_sink), "caps", caps, NULL);
           gst_caps_unref(caps);
+
           gst_bin_add_many( GST_BIN(_pipeline), _source, _sink, NULL);
           link_ok = gst_element_link_many( _source, _sink, NULL);
         } else {
@@ -159,7 +197,7 @@ namespace audio_transport
 
         _sub = _nh.subscribe("samples", 10, &RosFloatToGst::onFloat, this);
         _gst_thread = boost::thread( boost::bind(g_main_loop_run, _loop) );
-				_paused = false;
+				_paused = true;
       }
 
       ~RosFloatToGst()
@@ -175,9 +213,22 @@ namespace audio_transport
         exit(code);
       }
 
-      void publish( const audio_common_msgs::AudioData &msg )
+      void onFloat(const sensor_msgs::ChannelFloat32ConstPtr &msg)
       {
-        _pub.publish(msg);
+        if (_paused)
+        {
+          gst_element_set_state(GST_ELEMENT(_pipeline), GST_STATE_PLAYING);
+          _paused = false;
+        }
+
+        GstBuffer *buffer = gst_buffer_new_and_alloc(msg->values.size() * 2);
+        int num_bytes = gst_buffer_fill(buffer, 0, &msg->values[0], msg->values.size() * 2);
+
+        // GstBuffer *buffer = gst_buffer_new_and_alloc(msg->values.size() * 4);
+        // int num_bytes = gst_buffer_fill(buffer, 0, &msg->values[0], msg->values.size() * 4);
+        GstFlowReturn ret;
+        g_signal_emit_by_name(_source, "push-buffer", buffer, &ret);
+        ROS_INFO_STREAM("emitted push " << num_bytes << " " << ret);
       }
 
       static GstFlowReturn onNewBuffer (GstAppSink *appsink, gpointer userData)
@@ -202,6 +253,11 @@ namespace audio_transport
         return GST_FLOW_OK;
       }
 
+      void publish( const audio_common_msgs::AudioData &msg )
+      {
+        _pub.publish(msg);
+      }
+
       static gboolean onMessage (GstBus *bus, GstMessage *message, gpointer userData)
       {
         RosFloatToGst *server = reinterpret_cast<RosFloatToGst*>(userData);
@@ -215,21 +271,6 @@ namespace audio_transport
         g_main_loop_quit(server->_loop);
         server->exitOnMainThread(1);
         return FALSE;
-      }
-
-      void onFloat(const sensor_msgs::ChannelFloat32ConstPtr &msg)
-      {
-        if (_paused)
-        {
-          gst_element_set_state(GST_ELEMENT(_pipeline), GST_STATE_PLAYING);
-          _paused = false;
-        }
-
-        GstBuffer *buffer = gst_buffer_new_and_alloc(msg->values.size() * 4);
-        int num_bytes = gst_buffer_fill(buffer, 0, &msg->values[0], msg->values.size() * 4);
-        GstFlowReturn ret;
-        g_signal_emit_by_name(_source, "push-buffer", buffer, &ret);
-        ROS_INFO_STREAM("emitted push " << num_bytes << " " << ret);
       }
 
 			static void cb_need_data (GstElement *appsrc,
