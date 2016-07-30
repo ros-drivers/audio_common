@@ -60,12 +60,23 @@ namespace audio_transport
           ROS_ERROR_STREAM("couldn't create source");
           return;
         }
+				g_signal_connect(_source, "need-data", G_CALLBACK(cb_need_data),this);
+
         {
+          // 'caps' -> capabilities
           GstCaps *caps;
           caps = gst_caps_new_simple("audio/x-raw",
-                              "format", G_TYPE_INT, GST_AUDIO_FORMAT_F32LE,
+                              // "format", G_TYPE_INT, GST_AUDIO_FORMAT_F32LE,
+                              "format", G_TYPE_STRING, "F32LE",
                               "channels", G_TYPE_INT, 1,
+                              "layout", G_TYPE_INT, GST_AUDIO_LAYOUT_NON_INTERLEAVED,
                               // TODO(lwalter) what is width?
+                              // "width - bits per sample
+                              // depth - bits ACTUALLY USED FOR AUDIO per sample
+                              // You can have 32-bit samples, but in each
+                              // 32-bit group only 16 or 24 bits
+                              // will be used.
+                              // This is to achieve necessary alignment."
                               "width",    G_TYPE_INT, 32,
                               "depth",    G_TYPE_INT, 32,
                               "endianness",    G_TYPE_INT, G_BYTE_ORDER,  // 1234?
@@ -75,6 +86,7 @@ namespace audio_transport
           gst_caps_unref(caps);
         }
 
+        // any caps set on filter enforces those as limitations on the stream
         _filter = gst_element_factory_make("capsfilter", "filter");
         if (_filter == NULL)
         {
@@ -84,10 +96,11 @@ namespace audio_transport
         {
           GstCaps *caps;
           caps = gst_caps_new_simple("audio/x-raw",
-                        //      "channels", G_TYPE_INT, _channels,
-                        //      "depth",    G_TYPE_INT, _depth,
-                              "rate",     G_TYPE_INT, _sample_rate,
-                        //       "signed",   G_TYPE_BOOLEAN, TRUE,
+                                     "channels", G_TYPE_INT, _channels,
+                                     "width",    G_TYPE_INT, _depth,
+                                     "depth",    G_TYPE_INT, _depth,
+                                     "rate",     G_TYPE_INT, _sample_rate,
+                                     "signed",   G_TYPE_BOOLEAN, TRUE,
                               NULL);
           g_object_set( G_OBJECT(_filter), "caps", caps, NULL);
           gst_caps_unref(caps);
@@ -112,12 +125,15 @@ namespace audio_transport
           g_object_set( G_OBJECT(_encode), "quality", 2.0, NULL);
           g_object_set( G_OBJECT(_encode), "bitrate", _bitrate, NULL);
 
-          gst_bin_add_many( GST_BIN(_pipeline), _source, _filter, _convert, _encode, _sink, NULL);
-          link_ok = gst_element_link_many(_source, _filter, _convert, _encode, _sink, NULL);
+          // gst_bin_add_many( GST_BIN(_pipeline), _source, _filter, _convert, _encode, _sink, NULL);
+          gst_bin_add_many( GST_BIN(_pipeline), _source, _convert, _filter, _encode, _sink, NULL);
+          // link_ok = gst_element_link_many(_source, _filter,_convert, _encode, _sink, NULL);
+          link_ok = gst_element_link_many(_source, _convert, _filter, _encode, _sink, NULL);
         } else if (_format == "wave") {
           GstCaps *caps;
           // caps = gst_caps_new_simple("audio/x-raw-int",
           caps = gst_caps_new_simple("audio/x-raw",
+																		 //"format", G_TYPE_STRING,  ,
                                      "channels", G_TYPE_INT, _channels,
                                      "width",    G_TYPE_INT, _depth,
                                      "depth",    G_TYPE_INT, _depth,
@@ -141,8 +157,9 @@ namespace audio_transport
 
         gst_element_set_state(GST_ELEMENT(_pipeline), GST_STATE_PLAYING);
 
-        _gst_thread = boost::thread( boost::bind(g_main_loop_run, _loop) );
         _sub = _nh.subscribe("samples", 10, &RosFloatToGst::onFloat, this);
+        _gst_thread = boost::thread( boost::bind(g_main_loop_run, _loop) );
+				_paused = false;
       }
 
       ~RosFloatToGst()
@@ -202,12 +219,29 @@ namespace audio_transport
 
       void onFloat(const sensor_msgs::ChannelFloat32ConstPtr &msg)
       {
+        if (_paused)
+        {
+          gst_element_set_state(GST_ELEMENT(_pipeline), GST_STATE_PLAYING);
+          _paused = false;
+        }
+
         GstBuffer *buffer = gst_buffer_new_and_alloc(msg->values.size() * 4);
         int num_bytes = gst_buffer_fill(buffer, 0, &msg->values[0], msg->values.size() * 4);
         GstFlowReturn ret;
         g_signal_emit_by_name(_source, "push-buffer", buffer, &ret);
-        ROS_INFO_STREAM("emitted push " << num_bytes);
+        ROS_INFO_STREAM("emitted push " << num_bytes << " " << ret);
       }
+
+			static void cb_need_data (GstElement *appsrc,
+					guint       unused_size,
+					gpointer    user_data)
+			{
+				ROS_WARN("need-data signal emitted! Pausing the pipeline");
+				RosFloatToGst *client = reinterpret_cast<RosFloatToGst*>(user_data);
+				gst_element_set_state(GST_ELEMENT(client->_pipeline), GST_STATE_PAUSED);
+				client->_paused = true;
+			}
+
     private:
       ros::NodeHandle _nh;
       ros::Publisher _pub;
@@ -220,6 +254,8 @@ namespace audio_transport
       int _bitrate, _channels, _depth, _sample_rate;
       GMainLoop *_loop;
       std::string _format;
+
+			bool _paused;
   };
 }
 

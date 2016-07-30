@@ -140,7 +140,7 @@ namespace audio_transport
         gst_buffer_unref(buffer);
       }
 
-     static void cb_newpad (GstElement *decodebin, GstPad *pad, 
+     static void cb_newpad (GstElement *decodebin, GstPad *pad,
                              gpointer data)
       {
         RosGstPlay *client = reinterpret_cast<RosGstPlay*>(data);
