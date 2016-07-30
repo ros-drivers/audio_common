@@ -85,7 +85,7 @@ namespace audio_transport
                               "format", G_TYPE_STRING, "F32LE",
                               // "format", G_TYPE_STRING, "S16LE",
                               "channels", G_TYPE_INT, 1,
-                              "layout", G_TYPE_INT, GST_AUDIO_LAYOUT_INTERLEAVED,
+                              "layout", G_TYPE_STRING, "interleaved",  // GST_AUDIO_LAYOUT_INTERLEAVED,
                               "channel-mask", GST_TYPE_BITMASK, 0x0000000000000001,
                               // "width - bits per sample
                               // depth - bits ACTUALLY USED FOR AUDIO per sample
@@ -97,7 +97,7 @@ namespace audio_transport
                               "depth",    G_TYPE_INT, 32,
                               //"width",    G_TYPE_INT, _depth,
                               //"depth",    G_TYPE_INT, _depth,
-                              //"endianness",    G_TYPE_INT, G_BYTE_ORDER,  // 1234?
+                              "endianness",    G_TYPE_INT, G_BYTE_ORDER,  // 1234?
                               "rate",     G_TYPE_INT, input_sample_rate,
                               "signed",   G_TYPE_BOOLEAN, TRUE,
                               NULL);
@@ -285,6 +285,11 @@ namespace audio_transport
 
         GstBuffer *buffer = gst_sample_get_buffer(sample);
 
+        if (buffer == NULL)
+        {
+          ROS_WARN_STREAM("buffer is null");
+          return GST_FLOW_ERROR;
+        }
         audio_common_msgs::AudioData msg;
         gst_buffer_map(buffer, &map, GST_MAP_READ);
         msg.data.resize( map.size );
