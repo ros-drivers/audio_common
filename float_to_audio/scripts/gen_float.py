@@ -23,7 +23,7 @@ class GenFloat():
         self.counter = int(0)
 
         # signal period for each 'voice'/channel
-        self.period = [50, 217, 100]
+        self.period = [200, 1017, 400]
         # in samples
         self.phase = [0, 0, 0]
         self.pub = rospy.Publisher("samples", ChannelFloat32, queue_size=10)

@@ -13,6 +13,8 @@ from sensor_msgs.msg import ChannelFloat32, Image
 class View():
     def __init__(self):
         self.bridge = CvBridge()
+        self.fade1 = rospy.get_param("~fade1", 0.9)
+        self.fade2 = rospy.get_param("~fade2", 0.99)
         self.buffer = collections.deque(maxlen=8192)
         self.im = np.zeros((256, 1300, 3), np.uint8)
         self.pub = rospy.Publisher("image", Image, queue_size=1)
@@ -25,8 +27,8 @@ class View():
             self.buffer.append(msg.values[i])
 
     def update(self, event):
-        self.im[:, :, 1:3] = (self.im[:, :, 1:3] * 0.9).astype(np.uint8)
-        self.im[:, :, 0] = (self.im[:, :, 0] * 0.999).astype(np.uint8)
+        self.im[:, :, 1:3] = (self.im[:, :, 1:3] * self.fade1).astype(np.uint8)
+        self.im[:, :, 0] = (self.im[:, :, 0] * self.fade2).astype(np.uint8)
         width = self.im.shape[1]
         height = self.im.shape[0]
         last_y = 0

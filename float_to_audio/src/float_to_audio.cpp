@@ -271,12 +271,12 @@ namespace audio_transport
         int num_bytes = gst_buffer_fill(buffer, 0, &msg->values[0], msg->values.size() * 4);
         GstFlowReturn ret;
         g_signal_emit_by_name(_source, "push-buffer", buffer, &ret);
-        ROS_INFO_STREAM("emitted push " << num_bytes << " " << ret);
+        ROS_DEBUG_STREAM("emitted push " << num_bytes << " " << ret);
       }
 
       static GstFlowReturn onNewBuffer (GstAppSink *appsink, gpointer userData)
       {
-        ROS_INFO_STREAM("new buffer");
+        ROS_DEBUG_STREAM("new buffer");
         RosFloatToGst *server = reinterpret_cast<RosFloatToGst*>(userData);
         GstMapInfo map;
 
@@ -325,7 +325,7 @@ namespace audio_transport
 					guint       unused_size,
 					gpointer    user_data)
 			{
-				ROS_WARN("need-data signal emitted! Pausing the pipeline");
+				ROS_DEBUG_STREAM("need-data signal emitted! Pausing the pipeline");
 				RosFloatToGst *client = reinterpret_cast<RosFloatToGst*>(user_data);
 				gst_element_set_state(GST_ELEMENT(client->_pipeline), GST_STATE_PAUSED);
 				client->_paused = true;
