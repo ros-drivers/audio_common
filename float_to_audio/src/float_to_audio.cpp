@@ -49,7 +49,7 @@ namespace audio_transport
         if (_sink == NULL)
         {
           ROS_ERROR_STREAM("couldn't create sink");
-          return;
+          exitOnMainThread(1);
         }
         g_object_set(G_OBJECT(_sink), "emit-signals", true, NULL);
         g_object_set(G_OBJECT(_sink), "max-buffers", 100, NULL);
@@ -60,21 +60,21 @@ namespace audio_transport
         if (_audioresample == NULL)
         {
           ROS_ERROR_STREAM("couldn't create audioresample");
-          return;
+          exitOnMainThread(1);
         }
 
         _audioconvert = gst_element_factory_make("audioconvert", "audioconvert");
         if (_audioconvert == NULL)
         {
           ROS_ERROR_STREAM("couldn't create audioconvert");
-          return;
+          exitOnMainThread(1);
         }
 
         _source = gst_element_factory_make("appsrc", "source");
         if (_source == NULL)
         {
           ROS_ERROR_STREAM("couldn't create source");
-          return;
+          exitOnMainThread(1);
         }
 				g_signal_connect(_source, "need-data", G_CALLBACK(cb_need_data),this);
 
@@ -111,7 +111,7 @@ namespace audio_transport
         if (_filter == NULL)
         {
           ROS_ERROR_STREAM("couldn't create filter");
-          return;
+          exitOnMainThread(1);
         }
         if (false)
         {
@@ -141,39 +141,33 @@ namespace audio_transport
           if (_encode == NULL)
           {
             ROS_ERROR_STREAM("couldn't create encode");
-            return;
+            exitOnMainThread(1);
           }
           g_object_set( G_OBJECT(_encode), "quality", 2.0, NULL);
           g_object_set( G_OBJECT(_encode), "bitrate", _bitrate, NULL);
 
-          #if 0
+          link_ok = addAllToPipeline();
+        } else if (_format == "wave") {
+          #if 1
           GstCaps *caps;
           caps = gst_caps_new_simple("audio/x-raw",
-                                     "channel-mask", GST_TYPE_BITMASK, 0x0000000000000001,
+																		 "format", G_TYPE_STRING, "S16LE",
+                                     // "channels", G_TYPE_INT, _channels,
+                                     // // "layout", G_TYPE_INT, GST_AUDIO_LAYOUT_INTERLEAVED,
+                                     // "width",    G_TYPE_INT, _depth,
+                                     // "depth",    G_TYPE_INT, _depth,
+                                     // "rate",     G_TYPE_INT, _sample_rate,
+                                     // "signed",   G_TYPE_BOOLEAN, TRUE,
                                      NULL);
 
           g_object_set( G_OBJECT(_sink), "caps", caps, NULL);
           gst_caps_unref(caps);
           #endif
 
-          link_ok = addAllToPipeline();
-        } else if (_format == "wave") {
-          GstCaps *caps;
-          caps = gst_caps_new_simple("audio/x-raw",
-																		 // "format", G_TYPE_STRING, "S16LE",
-                                     "channels", G_TYPE_INT, _channels,
-                                     // "layout", G_TYPE_INT, GST_AUDIO_LAYOUT_INTERLEAVED,
-                                     "width",    G_TYPE_INT, _depth,
-                                     "depth",    G_TYPE_INT, _depth,
-                                     "rate",     G_TYPE_INT, _sample_rate,
-                                     "signed",   G_TYPE_BOOLEAN, TRUE,
-                                     NULL);
-
-          g_object_set( G_OBJECT(_sink), "caps", caps, NULL);
-          gst_caps_unref(caps);
-
-          gst_bin_add_many( GST_BIN(_pipeline), _source, _audioconvert, _sink, NULL);
-          link_ok = gst_element_link_many( _source, _audioconvert, _sink, NULL);
+          gst_bin_add_many(GST_BIN(_pipeline), _source, _audioconvert,
+                           _audioresample, _sink, NULL);
+          link_ok = gst_element_link_many(_source, _audioconvert,
+                                          _audioresample, _sink, NULL);
         } else {
           ROS_ERROR_STREAM("format must be \"wave\" or \"mp3\"");
           exitOnMainThread(1);
@@ -216,6 +210,7 @@ namespace audio_transport
 
       void exitOnMainThread(int code)
       {
+        ros::shutdown();
         exit(code);
       }
 
@@ -226,11 +221,6 @@ namespace audio_transport
           ROS_ERROR_STREAM("source");
           return false;
         }
-        // if (!gst_bin_add( GST_BIN(_pipeline), _filter))
-        // {
-        //   ROS_ERROR_STREAM("filter");
-        //   return false;
-        // }
         if (!gst_bin_add( GST_BIN(_pipeline), _audioconvert))
         {
           ROS_ERROR_STREAM("audioconvert");
@@ -251,11 +241,8 @@ namespace audio_transport
           ROS_ERROR_STREAM("sink");
           return false;
         }
-        // gst_bin_add_many( GST_BIN(_pipeline), _source, _filter, _audioconvert, _encode, _sink, NULL);
-        // gst_bin_add_many( GST_BIN(_pipeline), _source, _audioconvert, _filter, _encode, _sink, NULL);
         gboolean link_ok = gst_element_link_many(_source, _audioconvert, _audioresample,
             _encode, _sink, NULL);
-        // link_ok = gst_element_link_many(_source, _audioconvert, _filter, _encode, _sink, NULL);
         return link_ok;
       }
 
@@ -271,12 +258,12 @@ namespace audio_transport
         int num_bytes = gst_buffer_fill(buffer, 0, &msg->values[0], msg->values.size() * 4);
         GstFlowReturn ret;
         g_signal_emit_by_name(_source, "push-buffer", buffer, &ret);
-        ROS_DEBUG_STREAM("emitted push " << num_bytes << " " << ret);
+        ROS_INFO_STREAM("emitted push " << num_bytes << " " << ret);
       }
 
       static GstFlowReturn onNewBuffer (GstAppSink *appsink, gpointer userData)
       {
-        ROS_DEBUG_STREAM("new buffer");
+        ROS_INFO_STREAM("new buffer");
         RosFloatToGst *server = reinterpret_cast<RosFloatToGst*>(userData);
         GstMapInfo map;
 
@@ -325,7 +312,7 @@ namespace audio_transport
 					guint       unused_size,
 					gpointer    user_data)
 			{
-				ROS_DEBUG_STREAM("need-data signal emitted! Pausing the pipeline");
+				ROS_INFO_STREAM("need-data signal emitted! Pausing the pipeline");
 				RosFloatToGst *client = reinterpret_cast<RosFloatToGst*>(user_data);
 				gst_element_set_state(GST_ELEMENT(client->_pipeline), GST_STATE_PAUSED);
 				client->_paused = true;

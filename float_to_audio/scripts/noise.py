@@ -38,7 +38,7 @@ class Noise():
         while loop:
             feedback = (self.shift_register & 0x1 > 0) != (self.shift_register & (1 << 6) > 0)
             # feedback = (self.shift_register & 0x1 > 0) != (self.shift_register & 0x2 > 0)
-            print self.counter, cycles, self.shift_register & 0x1, format(self.shift_register, "015b")
+            # print self.counter, cycles, self.shift_register & 0x1, format(self.shift_register, "015b")
             self.shift_register = self.shift_register >> 1
             self.shift_register |= feedback << 14
             for j in range(self.counter % period, period):
@@ -49,12 +49,12 @@ class Noise():
                 if not (self.shift_register & 0x1):
                     self.msg.values[ind] = sc
                 else:
-                    self.msg.values[ind] = 0
+                    self.msg.values[ind] = -sc
                 self.counter += 1
             cycles += 1
             # print ("%s" % (format(self.shift_register, "04x")))
         self.pub.publish(self.msg)
-        rospy.signal_shutdown("debug quit")
+        # rospy.signal_shutdown("debug quit")
 
 if __name__ == '__main__':
     rospy.init_node('noise')

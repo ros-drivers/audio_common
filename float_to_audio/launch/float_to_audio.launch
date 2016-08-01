@@ -1,6 +1,7 @@
 <?xml version="1.0"?>
 <launch>
-  <arg name="ns" default="audio"/>
+  <arg name="ns" default="audio" doc="namespace"/>
+  <arg name="format" default="mp3" doc="mp3 or wave"/>
   <arg name="float_sample_rate" default="16000"/>
 
   <group ns="$(arg ns)">
@@ -18,6 +19,7 @@
     <node name="float_to_audio" pkg="float_to_audio" type="float_to_audio"
         output="screen">
       <param name="input_sample_rate" value="$(arg float_sample_rate)"/>
+      <param name="format" value="$(arg format)"/>
     </node>
 
     <node name="audio_play" pkg="audio_play" type="audio_play" output="screen">
