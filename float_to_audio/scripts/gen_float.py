@@ -2,6 +2,15 @@
 # Lucas Walter
 # Generate a series of float arrays where number of samples * array rate = sample rate 
 # (e.g 1000 samples/msg * 16 msgs/sec = 16 KHz)
+#
+# TODO(lucasw)
+# Make this node generate a constant stream, but default to zero
+# then have it subscribe to an input topic that accepts arbitrary length
+# float arrays, it will mix these into the other stream as it receives them
+# receiving a high rate of incoming messages will cause them all to be summed
+# together.
+# In order to support this a fifo buffer will store all the samples to be
+# played back, and grow it as needed to support the longest sample received.
 
 import rospy
 
@@ -23,7 +32,7 @@ class GenFloat():
         self.counter = int(0)
 
         # signal period for each 'voice'/channel
-        self.period = [200, 1017, 400]
+        self.period = [200, 717, 400]
         # in samples
         self.phase = [0, 0, 0]
         self.pub = rospy.Publisher("samples", ChannelFloat32, queue_size=10)
