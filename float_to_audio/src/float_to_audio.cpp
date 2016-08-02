@@ -152,9 +152,9 @@ namespace audio_transport
         {
           _encode = gst_element_factory_make("flacenc", "encoder");
           link_ok = addAllToPipeline();
+        #if 0
         } else if (_format == "wave") {
           // TODO(lwalter) this isn't working
-          #if 1
           GstCaps *caps;
           caps = gst_caps_new_simple("audio/x-raw",
 																		 "format", G_TYPE_STRING, "S16LE",
@@ -168,14 +168,14 @@ namespace audio_transport
 
           g_object_set( G_OBJECT(_sink), "caps", caps, NULL);
           gst_caps_unref(caps);
-          #endif
 
           gst_bin_add_many(GST_BIN(_pipeline), _source, _audioconvert,
                            _audioresample, _sink, NULL);
           link_ok = gst_element_link_many(_source, _audioconvert,
                                           _audioresample, _sink, NULL);
+        #endif
         } else {
-          ROS_ERROR_STREAM("format must be \"wave\" or \"mp3\"");
+          ROS_ERROR_STREAM("format must be \"flac\" or \"mp3\"");
           exitOnMainThread(1);
         }
 

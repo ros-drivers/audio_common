@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <launch>
   <arg name="ns" default="audio" doc="namespace"/>
-  <arg name="format" default="mp3" doc="mp3 or wave or flac"/>
+  <arg name="format" default="mp3" doc="mp3 or flac"/>
   <arg name="float_sample_rate" default="16000"/>
 
   <group ns="$(arg ns)">
@@ -9,6 +9,10 @@
         output="screen">
       <param name="sample_rate" value="$(arg float_sample_rate)"/>
     </node>
+    <!--node name="noise" pkg="float_to_audio" type="noise.py"
+        output="screen">
+      <param name="sample_rate" value="$(arg float_sample_rate)"/>
+    </node-->
     <node name="view_input" pkg="audio_process" type="view.py">
       <remap from="decoded" to="samples"/>
       <remap from="image" to="image_input"/>
