@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <launch>
   <arg name="ns" default="audio" doc="namespace"/>
-  <arg name="format" default="mp3" doc="mp3 or wave"/>
+  <arg name="format" default="mp3" doc="mp3 or wave or flac"/>
   <arg name="float_sample_rate" default="16000"/>
 
   <group ns="$(arg ns)">
@@ -37,6 +37,8 @@
     </node>
 
     <!-- TODO(lucasw) rqt config/float_to_audio.perspective -->
+    <node name="rqt" pkg="rqt_gui" type="rqt_gui"
+        args="-p $(find float_to_audio)/config/float_to_audio.perspective"/>
 
   </group>
 </launch>
