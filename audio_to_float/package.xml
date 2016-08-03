@@ -1,11 +1,11 @@
 <package>
-   <name>audio_process</name>
+   <name>audio_to_float</name>
    <version>0.2.7</version>
    <description>
-      Outputs audio to a speaker from a source node.
+      Converts a stream of gstreamer AudioData messages to a stream of floating point arrays.
    </description>
-   <maintainer email="namniart@gmail.com">Austin Hendrix</maintainer>
-   <author>Nate Koenig</author>
+   <maintainer email="wsacul@gmail.com">Lucas Walter</maintainer>
+   <author>Lucas Walter</author>
    <license>BSD</license>
    <url type="website">http://ros.org/wiki/audio_play</url>
    <url type="repository">https://github.com/ros-drivers/audio_common</url>

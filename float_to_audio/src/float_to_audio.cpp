@@ -83,9 +83,8 @@ namespace audio_transport
           GstCaps *caps;
           caps = gst_caps_new_simple("audio/x-raw",
                               "format", G_TYPE_STRING, "F32LE",
-                              // "format", G_TYPE_STRING, "S16LE",
                               "channels", G_TYPE_INT, 1,
-                              "layout", G_TYPE_STRING, "interleaved",  // GST_AUDIO_LAYOUT_INTERLEAVED,
+                              "layout", G_TYPE_STRING, "interleaved",
                               "channel-mask", GST_TYPE_BITMASK, 0x0000000000000001,
                               // "width - bits per sample
                               // depth - bits ACTUALLY USED FOR AUDIO per sample
@@ -95,40 +94,13 @@ namespace audio_transport
                               // This is to achieve necessary alignment."
                               "width",    G_TYPE_INT, 32,
                               "depth",    G_TYPE_INT, 32,
-                              //"width",    G_TYPE_INT, _depth,
-                              //"depth",    G_TYPE_INT, _depth,
-                              "endianness",    G_TYPE_INT, G_BYTE_ORDER,  // 1234?
+                              "endianness",    G_TYPE_INT, G_BYTE_ORDER,  // 1234
                               "rate",     G_TYPE_INT, input_sample_rate,
                               "signed",   G_TYPE_BOOLEAN, TRUE,
                               NULL);
           g_object_set( G_OBJECT(_source), "caps", caps, NULL);
           gst_caps_unref(caps);
         }
-
-        #if 0
-        // any caps set on filter enforces those as limitations on the stream
-        _filter = gst_element_factory_make("capsfilter", "filter");
-        if (_filter == NULL)
-        {
-          ROS_ERROR_STREAM("couldn't create filter");
-          exitOnMainThread(1);
-        }
-        if (false)
-        {
-          GstCaps *caps;
-          caps = gst_caps_new_simple("audio/x-raw",
-                                     // "format", G_TYPE_STRING, "S16LE"
-                                     // "channels", G_TYPE_INT, _channels,
-                                     // "layout", G_TYPE_INT, GST_AUDIO_LAYOUT_INTERLEAVED,
-                                     // "width",    G_TYPE_INT, _depth,
-                                     // "depth",    G_TYPE_INT, _depth,
-                                     "rate",     G_TYPE_INT, _sample_rate,
-                                     // "signed",   G_TYPE_BOOLEAN, TRUE,
-                              NULL);
-          g_object_set( G_OBJECT(_filter), "caps", caps, NULL);
-          gst_caps_unref(caps);
-        }
-        #endif
 
         // mp3 
         // audio/x-raw, format=(string)S16LE, layout=(string)interleaved,
@@ -198,21 +170,6 @@ namespace audio_transport
         gst_object_unref(_pipeline);
         g_main_loop_unref(_loop);
       }
-
-      #if 0
-      void spin()
-      {
-        while (ros::ok())
-        {
-          ros::spinOnce();
-        }
-        ROS_WARN_STREAM("quitting");
-        g_main_loop_quit(_loop);
-        gst_element_set_state(_pipeline, GST_STATE_NULL);
-        gst_object_unref(_pipeline);
-        g_main_loop_unref(_loop);
-      }
-      #endif
 
       void exitOnMainThread(int code)
       {
@@ -335,7 +292,6 @@ namespace audio_transport
       GstElement* _source;
       GstElement* _audioconvert;
       GstElement* _audioresample;
-      // GstElement* _filter;
       GstElement* _encode;
       GstElement* _sink;
 
@@ -355,5 +311,4 @@ int main (int argc, char **argv)
 
   audio_transport::RosFloatToGst server;
   ros::spin();
-  // server.spin();
 }

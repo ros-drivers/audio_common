@@ -9,14 +9,14 @@
 
 namespace audio_transport
 {
-  class RosGstProcess
+  class RosGstToFloat
   {
     public:
-      RosGstProcess()
+      RosGstToFloat()
       {
         GstPad *audiopad;
 
-        _sub = _nh.subscribe("audio", 10, &RosGstProcess::onAudio, this);
+        _sub = _nh.subscribe("audio", 10, &RosGstToFloat::onAudio, this);
         _pub = _nh.advertise<sensor_msgs::ChannelFloat32>("decoded", 10);
 
         _loop = g_main_loop_new(NULL, false);
@@ -81,7 +81,7 @@ namespace audio_transport
 			static void  // GstFlowReturn
       on_new_sample_from_sink (GstElement * elt, gpointer data)
 			{
-        RosGstProcess *client = reinterpret_cast<RosGstProcess*>(data);
+        RosGstToFloat *client = reinterpret_cast<RosGstToFloat*>(data);
 				GstSample *sample;
 				GstBuffer *buffer;
 				GstElement *source;
@@ -113,35 +113,13 @@ namespace audio_transport
           gst_buffer_unmap (buffer, &map);
           client->_pub.publish(msg);
         }
-
-        if (false)
-        {
-        ROS_INFO_STREAM("update "
-            << buffer->pts << " "
-            << buffer->dts << " "
-            << buffer->duration << " "
-            << buffer->offset << " "
-            << buffer->offset_end << " ");
-				}
         gst_sample_unref (sample);
-
-				/* get source and push new buffer */
-        // it looks like I need to have another pipeline element
-        // that receives the app_buffer?
-				// source = gst_bin_get_by_name (GST_BIN (client->_sink), "app_source");
-        // return gst_app_src_push_buffer (GST_APP_SRC (source), app_buffer);
-        // this results in a bunch of need-data signals, and it appears
-        // this callback is called repeatedly with the same data rather than
-        // new data?
-        // return GST_FLOW_OK;
-        // This callback only runs once when this is returned
-        // return GST_FLOW_FLUSHING;
 			}
 
       static void cb_newpad (GstElement *decodebin, GstPad *pad,
                              gpointer data)
       {
-        RosGstProcess *client = reinterpret_cast<RosGstProcess*>(data);
+        RosGstToFloat *client = reinterpret_cast<RosGstToFloat*>(data);
 
         GstCaps *caps;
         GstStructure *str;
@@ -177,7 +155,7 @@ namespace audio_transport
                    gpointer    user_data)
      {
        ROS_DEBUG("need-data signal emitted! Pausing the pipeline");
-       RosGstProcess *client = reinterpret_cast<RosGstProcess*>(user_data);
+       RosGstToFloat *client = reinterpret_cast<RosGstToFloat*>(user_data);
        gst_element_set_state(GST_ELEMENT(client->_pipeline), GST_STATE_PAUSED);
        client->_paused = true;
      }
@@ -200,7 +178,7 @@ int main (int argc, char **argv)
   ros::init(argc, argv, "audio_play");
   gst_init(&argc, &argv);
 
-  audio_transport::RosGstProcess client;
+  audio_transport::RosGstToFloat client;
 
   ros::spin();
 }
