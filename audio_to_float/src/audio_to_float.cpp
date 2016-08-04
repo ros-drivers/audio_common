@@ -16,6 +16,9 @@ namespace audio_transport
       {
         GstPad *audiopad;
 
+        int output_sample_rate;
+        ros::param::param<int>("~output_sample_rate", output_sample_rate, 16000);
+
         _sub = _nh.subscribe("audio", 10, &RosGstToFloat::onAudio, this);
         _pub = _nh.advertise<sensor_msgs::ChannelFloat32>("decoded", 10);
 
@@ -31,19 +34,72 @@ namespace audio_transport
         // https://github.com/jojva/gst-plugins-base/blob/master/tests/examples/app/appsink-src.c
         {
           _decoder = gst_element_factory_make("decodebin", "decoder");
+          if (_decoder == NULL)
+          {
+            ROS_ERROR_STREAM("couldn't create _sink");
+            return;
+          }
           g_signal_connect(_decoder, "pad-added", G_CALLBACK(cb_newpad),this);
           gst_bin_add( GST_BIN(_pipeline), _decoder);
           gst_element_link(_source, _decoder);
 
           _audio = gst_bin_new("audiobin");
+          if (_audio == NULL)
+          {
+            ROS_ERROR_STREAM("couldn't create _sink");
+            return;
+          }
           _convert = gst_element_factory_make("audioconvert", "convert");
+          if (_convert == NULL)
+          {
+            ROS_ERROR_STREAM("couldn't create _sink");
+            return;
+          }
+					_resample = gst_element_factory_make("audioresample", "resample");
+          if (_resample == NULL)
+          {
+            ROS_ERROR_STREAM("couldn't create _sink");
+            return;
+          }
+          // TODO(lucasw) what is this for?
           audiopad = gst_element_get_static_pad(_convert, "sink");
           _sink = gst_element_factory_make("appsink", "sink");
+          if (_sink == NULL)
+          {
+            ROS_ERROR_STREAM("couldn't create _sink");
+            return;
+          }
+
+					{
+						// 'caps' -> capabilities
+						GstCaps *caps;
+						caps = gst_caps_new_simple("audio/x-raw",
+																"format", G_TYPE_STRING, "F32LE",
+																"channels", G_TYPE_INT, 1,
+																"layout", G_TYPE_STRING, "interleaved",
+																"channel-mask", GST_TYPE_BITMASK, 0x0000000000000001,
+																// "width - bits per sample
+																// depth - bits ACTUALLY USED FOR AUDIO per sample
+																// You can have 32-bit samples, but in each
+																// 32-bit group only 16 or 24 bits
+																// will be used.
+																// This is to achieve necessary alignment."
+																"width",    G_TYPE_INT, 32,
+																"depth",    G_TYPE_INT, 32,
+																"endianness",    G_TYPE_INT, G_BYTE_ORDER,  // 1234
+																"rate",     G_TYPE_INT, output_sample_rate,
+																"signed",   G_TYPE_BOOLEAN, TRUE,
+																NULL);
+						g_object_set( G_OBJECT(_sink), "caps", caps, NULL);
+						gst_caps_unref(caps);
+					}
+
           g_object_set (G_OBJECT (_sink), "emit-signals", TRUE, "sync", FALSE, NULL);
           g_signal_connect (_sink, "new-sample",
               G_CALLBACK (on_new_sample_from_sink), this);
 
-          gst_bin_add_many( GST_BIN(_audio), _convert, _sink, NULL);
+          gst_bin_add_many( GST_BIN(_audio), _resample, _convert, _sink, NULL);
+          // gst_bin_add_many( GST_BIN(_audio), _convert, _sink, NULL);
           gst_element_link(_convert, _sink);
           gst_element_add_pad(_audio, gst_ghost_pad_new("sink", audiopad));
           gst_object_unref(audiopad);
@@ -62,6 +118,7 @@ namespace audio_transport
 
       void onAudio(const audio_common_msgs::AudioDataConstPtr &msg)
       {
+        // ROS_DEBUG_STREAM("new audio " << msg->data.size());
         if(_paused)
         {
           gst_element_set_state(GST_ELEMENT(_pipeline), GST_STATE_PLAYING);
@@ -81,6 +138,7 @@ namespace audio_transport
 			static void  // GstFlowReturn
       on_new_sample_from_sink (GstElement * elt, gpointer data)
 			{
+        ROS_DEBUG_STREAM("new sample");
         RosGstToFloat *client = reinterpret_cast<RosGstToFloat*>(data);
 				GstSample *sample;
 				GstBuffer *buffer;
@@ -98,17 +156,21 @@ namespace audio_transport
           //     << map.maxsize << " ");
           // gst_util_dump_mem (map.data, map.size);
           sensor_msgs::ChannelFloat32 msg;
-          msg.values.resize(map.size/2);
+          const size_t sz = sizeof(float);
+          msg.values.resize(map.size / sz);
           // TODO(lucasw) copy this more efficiently
-          for (size_t i = 0; i < map.size / 2; ++i)
+          for (size_t i = 0; i < map.size / sz; ++i)
           {
             // TODO(lucasw) can this format be assumed from
             // default conversion settings here?
+            #if 0
             const int hi = (map.data[i * 2 + 1] + 128) % 256;
             // TODO(lucasw) not sure about the + 128 here
             const int lo = (map.data[i * 2] + 128) % 256;
             msg.values[i] = (static_cast<float>(hi - 127) * 256.0 + lo) /
                 static_cast<float>(1 << 15);
+            #endif
+            msg.values[i] = *(reinterpret_cast<float*>(&map.data[i * sz]));
           }
           gst_buffer_unmap (buffer, &map);
           client->_pub.publish(msg);
@@ -165,7 +227,7 @@ namespace audio_transport
       ros::Publisher _pub;
       boost::thread _gst_thread;
 
-      GstElement *_pipeline, *_source, *_sink, *_decoder, *_convert, *_audio;
+      GstElement *_pipeline, *_source, *_sink, *_decoder, *_convert, *_resample, *_audio;
       GMainLoop *_loop;
 
       bool _paused;
