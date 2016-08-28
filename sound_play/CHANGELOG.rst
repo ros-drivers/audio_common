@@ -2,7 +2,7 @@
 Changelog for package sound_play
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-0.3.0 (2016-08-28)
+0.3.1 (2016-08-28)
 ------------------
 * Update to new gstreamer rosdeps
 * Update sound_play to gstreamer 1.0

@@ -2,7 +2,7 @@
 Changelog for package audio_common_msgs
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-0.3.0 (2016-08-28)
+0.3.1 (2016-08-28)
 ------------------
 * Add changelogs
 * Update maintainer email
