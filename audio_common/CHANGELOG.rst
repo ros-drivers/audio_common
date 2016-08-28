@@ -2,8 +2,8 @@
 Changelog for package audio_common
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.3.0 (2016-08-28)
+------------------
 * Add changelogs
 * Update maintainer email
 * Contributors: trainman419

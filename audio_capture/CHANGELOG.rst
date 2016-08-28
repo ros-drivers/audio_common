@@ -2,8 +2,8 @@
 Changelog for package audio_capture
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.3.0 (2016-08-28)
+------------------
 * Update to new gstreamer rosdeps
 * #70 can launch these in different namespaces with different microphones, and both are operating.
 * #70 can switch between different microphones, but the first microphone doesn't like the hw:1, it only works with device:="" - so must be doing something wrong still.

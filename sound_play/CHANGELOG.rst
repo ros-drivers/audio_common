@@ -2,8 +2,8 @@
 Changelog for package sound_play
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.3.0 (2016-08-28)
+------------------
 * Update to new gstreamer rosdeps
 * Update sound_play to gstreamer 1.0
 * remove chance of uninitialised variable being called in a subscriber callback.

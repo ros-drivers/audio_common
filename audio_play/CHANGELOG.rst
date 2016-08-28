@@ -2,8 +2,8 @@
 Changelog for package audio_play
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.3.0 (2016-08-28)
+------------------
 * Update to new gstreamer rosdeps
 * #70 can launch these in different namespaces with different microphones, and both are operating.
 * Add changelogs
