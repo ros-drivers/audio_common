@@ -2,8 +2,8 @@
 Changelog for package audio_play
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.3.0 (2016-08-28)
+------------------
 * Changed message level to warning
 * Fixed problem that CMake uses gstreamer-0.1 instead of gstreamer-1.0
 * Fixed underflow.
