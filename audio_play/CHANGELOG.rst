@@ -4,6 +4,9 @@ Changelog for package audio_play
 
 Forthcoming
 -----------
+* Update to new gstreamer rosdeps
+* #70 can launch these in different namespaces with different microphones, and both are operating.
+* Add changelogs
 * Changed message level to warning
 * Fixed problem that CMake uses gstreamer-0.1 instead of gstreamer-1.0
 * Fixed underflow.
@@ -11,7 +14,9 @@ Forthcoming
 * Added gstreamer 1.0 dependecies
 * Ported to gstreamer 1.0
   package.xml dependencies still missing
-* Contributors: Benny
+* Change audio sink to autoaudiosink
+* Update maintainer email
+* Contributors: Benny, Hans Gaiser, Lucas Walter, trainman419
 
 0.2.11 (2016-02-16)
 -------------------

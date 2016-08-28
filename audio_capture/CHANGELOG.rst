@@ -4,17 +4,22 @@ Changelog for package audio_capture
 
 Forthcoming
 -----------
+* Update to new gstreamer rosdeps
+* #70 can launch these in different namespaces with different microphones, and both are operating.
+* #70 can switch between different microphones, but the first microphone doesn't like the hw:1, it only works with device:="" - so must be doing something wrong still.
+* Add changelogs
 * [audio_capture] add error handler
 * [audio_capture] add option to publish captured audio data as wav format
   Conflicts:
   audio_capture/src/audio_capture.cpp
-* Fixed memory leak (see `#18 <https://github.com/ros-drivers/audio_common/issues/18>`_).
+* Fixed memory leak (see #18).
 * Removed trailing whitespace.
 * Fixed problem that CMake uses gstreamer-0.1 instead of gstreamer-1.0
 * Added gstreamer 1.0 dependecies
 * Ported to gstreamer 1.0
   package.xml dependencies still missing
-* Contributors: Benny, Felix Duvallet, Furushchev
+* Update maintainer email
+* Contributors: Benny, Felix Duvallet, Furushchev, Lucas Walter, trainman419
 
 0.2.11 (2016-02-16)
 -------------------

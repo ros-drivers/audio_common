@@ -4,6 +4,10 @@ Changelog for package sound_play
 
 Forthcoming
 -----------
+* Update to new gstreamer rosdeps
+* Update sound_play to gstreamer 1.0
+* remove chance of uninitialised variable being called in a subscriber callback.
+* Add changelogs
 * Issue: The error checks for missing publisher/action client in sendMsg were inverted.
   The non-blocking brach tested the action client while the blocking branch
   tested the publisher.
@@ -20,7 +24,7 @@ Forthcoming
 * Example of using the explicit blocking parameter to override the class setting.
 * SoundClient can also explicitly specify whether or not to block while playing the sound.
   Each play/repeat/say/... method can take an option blocking=True|False argument (using **kwargs), which over-rides the class-wide setting.
-* Merge pull request `#62 <https://github.com/ros-drivers/audio_common/issues/62>`_ from felixduvallet/set_queue_size
+* Merge pull request #62 from felixduvallet/set_queue_size
   Set queue_size in soundplay_node Publisher
 * do both in same script.
 * Added script showing the various blocking/non-blocking ways of using SoundClient.
@@ -38,13 +42,21 @@ Forthcoming
   Removed warning message printed each time soundplay_node was started.
 * remove trailing whitespace only.
 * Change wiki urls
+* Fix test target name collision. Fixes #49
 * sound_play: cpp header conforms to the style guide
 * sound_play: update scripts to allow volume to be set
 * sound_play: updated tests to include volume changes
 * sound_play: add ability to specify volume at which to play sounds
   Also changed error to warning as per todo
 * sound_play: fix indentation and comment inconsistencies
-* Contributors: Alexis Ballier, Austin, David V. Lu, Felix Duvallet, Michal Staniaszek, Neowizard
+* sound_play: remove some raw prints cluttering output
+* sound_play: added queue_size to SoundClient init
+  Should prevent warning being displayed whenever the client is created.
+  Fixes issue #43
+* add simple-actionlib functionality to sound_play
+* sound_play: Added functions to play files relative to a package path
+* Update maintainer email
+* Contributors: Alexis Ballier, Austin, Daniel Stonier, David V. Lu, Felix Duvallet, Matthias Nieuwenhuisen, Michal Staniaszek, Neowizard, aginika, trainman419
 
 0.2.11 (2016-02-16)
 -------------------

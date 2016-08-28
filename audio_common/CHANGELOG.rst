@@ -4,6 +4,9 @@ Changelog for package audio_common
 
 Forthcoming
 -----------
+* Add changelogs
+* Update maintainer email
+* Contributors: trainman419
 
 0.2.11 (2016-02-16)
 -------------------
