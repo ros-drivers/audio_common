@@ -88,11 +88,19 @@ namespace audio_transport
         }
 
         _convert = gst_element_factory_make("audioconvert", "convert");
+        if (!_encode) {
+      	  ROS_ERROR_STREAM("Failed to create audioconvert element");
+      	  exitOnMainThread(1);
+        }
 
         gboolean link_ok;
 
         if (_format == "mp3"){
           _encode = gst_element_factory_make("lamemp3enc", "encoder");
+          if (!_encode) {
+        	  ROS_ERROR_STREAM("Failed to create encoder element");
+        	  exitOnMainThread(1);
+          }
           g_object_set( G_OBJECT(_encode), "quality", 2.0, NULL);
           g_object_set( G_OBJECT(_encode), "bitrate", _bitrate, NULL);
 
@@ -100,7 +108,7 @@ namespace audio_transport
           link_ok = gst_element_link_many(_source, _filter, _convert, _encode, _sink, NULL);
         } else if (_format == "wave") {
           GstCaps *caps;
-          caps = gst_caps_new_simple("audio/x-raw-int",
+          caps = gst_caps_new_simple("audio/x-raw",
                                      "channels", G_TYPE_INT, _channels,
                                      "width",    G_TYPE_INT, _depth,
                                      "depth",    G_TYPE_INT, _depth,
