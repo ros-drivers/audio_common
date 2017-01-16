@@ -1,7 +1,7 @@
 <launch>
   <!-- publish audio data as wav format -->
   <node name="audio_capture" pkg="audio_capture" type="audio_capture" output="screen">
-    <param name="device" value="hw:1,0" />
+    <param name="device" value="" />
     <param name="format" value="wave" />
     <param name="channels" value="1" />
     <param name="depth" value="16" />
