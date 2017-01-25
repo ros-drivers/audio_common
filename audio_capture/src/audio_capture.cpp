@@ -100,7 +100,7 @@ namespace audio_transport
           link_ok = gst_element_link_many(_source, _filter, _convert, _encode, _sink, NULL);
         } else if (_format == "wave") {
           GstCaps *caps;
-          caps = gst_caps_new_simple("audio/x-raw-int",
+          caps = gst_caps_new_simple("audio/x-raw",
                                      "channels", G_TYPE_INT, _channels,
                                      "width",    G_TYPE_INT, _depth,
                                      "depth",    G_TYPE_INT, _depth,
