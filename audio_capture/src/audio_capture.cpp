@@ -88,7 +88,7 @@ namespace audio_transport
         }
 
         _convert = gst_element_factory_make("audioconvert", "convert");
-        if (!_encode) {
+        if (!_convert) {
       	  ROS_ERROR_STREAM("Failed to create audioconvert element");
       	  exitOnMainThread(1);
         }
