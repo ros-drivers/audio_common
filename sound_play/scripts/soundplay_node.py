@@ -226,7 +226,7 @@ class soundplay:
                 os.close(wavfile)
                 voice = data.arg2
                 try:
-                    txtfile.write(data.arg)
+                    txtfile.write(data.arg.decode('UTF-8').encode('ISO-8859-15'))
                     txtfile.flush()
                     os.system("text2wave -eval '("+voice+")' "+txtfilename+" -o "+wavfilename)
                     try:
