@@ -79,7 +79,7 @@ class soundtype:
         self.lock = threading.RLock()
         self.state = self.STOPPED
         self.sound = gst.element_factory_make("playbin2","player")
-        if device is not None:
+        if device:
             self.sink = gst.element_factory_make("alsasink", "sink")
             self.sink.set_property("device", device)
             self.sound.set_property("audio-sink", self.sink)
@@ -378,7 +378,7 @@ class soundplay:
 
     def __init__(self):
         rospy.init_node('sound_play')
-        self.device = rospy.get_param("~device", None)
+        self.device = rospy.get_param("~device", str())
         self.diagnostic_pub = rospy.Publisher("/diagnostics", DiagnosticArray, queue_size=1)
         rootdir = os.path.join(roslib.packages.get_pkg_dir('sound_play'),'sounds')
 
