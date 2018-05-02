@@ -180,6 +180,9 @@ namespace audio_transport
 
         memcpy( &msg.data[0], map.data, map.size );
 
+        gst_buffer_unmap(buffer, &map);
+        gst_sample_unref(sample);
+
         server->publish(msg);
 
         return GST_FLOW_OK;
