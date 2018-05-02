@@ -2,8 +2,8 @@
 Changelog for package sound_play
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.2.13 (2018-05-02)
+-------------------
 * [sound_play] add option to select audio device to play / record (`#87 <https://github.com/ros-drivers/audio_common/issues/87>`_)
   * [sound_play] add option to select audio device to play
   * [sound_play] reformat README to markdown; add usage to set device via rosparam
