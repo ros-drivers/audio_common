@@ -2,6 +2,9 @@
 Changelog for package audio_common
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 0.3.1 (2016-08-28)
 ------------------
 * Add changelogs
