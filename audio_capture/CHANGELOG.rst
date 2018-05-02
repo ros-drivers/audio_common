@@ -2,6 +2,16 @@
 Changelog for package audio_capture
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* [sound_play] add option to select audio device to play / record (`#87 <https://github.com/ros-drivers/audio_common/issues/87>`_)
+  * [sound_play] add option to select audio device to play
+  * [sound_play] reformat README to markdown; add usage to set device via rosparam
+  * audio_capture: add option for selecting device to use
+  * audio_play: add option to select device for playing audio
+  * add device argument to launch files
+* Contributors: Yuki Furuta
+
 0.2.12 (2016-02-29)
 -------------------
 
