@@ -16,9 +16,11 @@ namespace audio_transport
         GstPad *audiopad;
 
         std::string dst_type;
+        std::string device;
 
         // The destination of the audio
         ros::param::param<std::string>("~dst", dst_type, "alsasink");
+        ros::param::param<std::string>("~device", device, std::string());
 
         _sub = _nh.subscribe("audio", 10, &RosGstPlay::onAudio, this);
 
@@ -43,13 +45,15 @@ namespace audio_transport
           _convert = gst_element_factory_make("audioconvert", "convert");
           audiopad = gst_element_get_static_pad(_convert, "sink");
           _sink = gst_element_factory_make("autoaudiosink", "sink");
+          if (!device.empty()) {
+            g_object_set(G_OBJECT(_sink), "device", device.c_str(), NULL);
+          }
           gst_bin_add_many( GST_BIN(_audio), _convert, _sink, NULL);
           gst_element_link(_convert, _sink);
           gst_element_add_pad(_audio, gst_ghost_pad_new("sink", audiopad));
           gst_object_unref(audiopad);
 
           gst_bin_add(GST_BIN(_pipeline), _audio);
-          
         }
         else
         {

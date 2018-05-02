@@ -17,6 +17,7 @@ namespace audio_transport
         _bitrate = 192;
 
         std::string dst_type;
+        std::string device;
 
         // Need to encoding or publish raw wave data
         ros::param::param<std::string>("~format", _format, "mp3");
@@ -34,6 +35,7 @@ namespace audio_transport
 
         // The source of the audio
         //ros::param::param<std::string>("~src", source_type, "alsasrc");
+        ros::param::param<std::string>("~device", device, std::string());
 
         _pub = _nh.advertise<audio_common_msgs::AudioData>("audio", 10, true);
 
@@ -63,6 +65,11 @@ namespace audio_transport
 
         _source = gst_element_factory_make("alsasrc", "source");
         _convert = gst_element_factory_make("audioconvert", "convert");
+
+        if (!device.empty())
+        {
+          g_object_set(G_OBJECT(_source), "device", device.c_str(), NULL);
+        }
 
         gboolean link_ok;
 

@@ -75,10 +75,14 @@ class soundtype:
     LOOPING = 1
     COUNTING = 2
 
-    def __init__(self, file, volume = 1.0):
+    def __init__(self, file, device, volume = 1.0):
         self.lock = threading.RLock()
         self.state = self.STOPPED
-        self.sound = gst.element_factory_make("playbin","player")
+        self.sound = gst.element_factory_make("playbin2","player")
+        if device:
+            self.sink = gst.element_factory_make("alsasink", "sink")
+            self.sink.set_property("device", device)
+            self.sound.set_property("audio-sink", self.sink)
         if (":" in file):
             uri = file
         elif os.path.isfile(file):
@@ -194,7 +198,7 @@ class soundplay:
                 if not data.arg in self.filesounds.keys():
                     rospy.logdebug('command for uncached wave: "%s"'%data.arg)
                     try:
-                        self.filesounds[data.arg] = soundtype(data.arg)
+                        self.filesounds[data.arg] = soundtype(data.arg, self.device)
                     except:
                         rospy.logerr('Error setting up to play "%s". Does this file exist on the machine on which sound_play is running?'%data.arg)
                         return
@@ -206,7 +210,7 @@ class soundplay:
                 if not absfilename in self.filesounds.keys():
                     rospy.logdebug('command for uncached wave: "%s"'%absfilename)
                     try:
-                        self.filesounds[absfilename] = soundtype(absfilename)
+                        self.filesounds[absfilename] = soundtype(absfilename, self.device)
                     except:
                         rospy.logerr('Error setting up to play "%s" from package "%s". Does this file exist on the machine on which sound_play is running?'%(data.arg, data.arg2))
                         return
@@ -231,7 +235,7 @@ class soundplay:
                     except OSError:
                         rospy.logerr('Sound synthesis failed. Is festival installed? Is a festival voice installed? Try running "rosdep satisfy sound_play|sh". Refer to http://wiki.ros.org/sound_play/Troubleshooting')
                         return
-                    self.voicesounds[data.arg] = soundtype(wavfilename)
+                    self.voicesounds[data.arg] = soundtype(wavfilename, self.device)
                 finally:
                     txtfile.close()
             else:
@@ -241,7 +245,7 @@ class soundplay:
             rospy.logdebug('command for builtin wave: %i'%data.sound)
             if not data.sound in self.builtinsounds:
                 params = self.builtinsoundparams[data.sound]
-                self.builtinsounds[data.sound] = soundtype(params[0], params[1])
+                self.builtinsounds[data.sound] = soundtype(params[0], self.device, params[1])
             sound = self.builtinsounds[data.sound]
         if sound.staleness != 0 and data.command != SoundRequest.PLAY_STOP:
             # This sound isn't counted in active_sounds
@@ -374,6 +378,7 @@ class soundplay:
 
     def __init__(self):
         rospy.init_node('sound_play')
+        self.device = rospy.get_param("~device", str())
         self.diagnostic_pub = rospy.Publisher("/diagnostics", DiagnosticArray, queue_size=1)
         rootdir = os.path.join(roslib.packages.get_pkg_dir('sound_play'),'sounds')
 
