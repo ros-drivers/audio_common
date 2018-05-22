@@ -77,12 +77,12 @@ class soundtype:
     def __init__(self, file, device, volume = 1.0):
         self.lock = threading.RLock()
         self.state = self.STOPPED
-        self.sound = gst.element_factory_make("playbin2",None)
+        self.sound = Gst.ElementFactory.make("playbin",None)
         if self.sound is None:
             raise Exception("Could not create sound player")
 
         if device:
-            self.sink = gst.element_factory_make("alsasink", "sink")
+            self.sink = Gst.ElementFactory.make("alsasink", "sink")
             self.sink.set_property("device", device)
             self.sound.set_property("audio-sink", self.sink)
 
