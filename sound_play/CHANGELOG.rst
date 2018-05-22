@@ -2,8 +2,8 @@
 Changelog for package sound_play
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.3.3 (2018-05-22)
+------------------
 * Fix gstreamer errors. Fixes `#108 <https://github.com/ros-drivers/audio_common/issues/108>`_
 * Contributors: trainman419
 
