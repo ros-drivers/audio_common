@@ -15,9 +15,11 @@ namespace audio_transport
         GstPad *audiopad;
 
         std::string dst_type;
+        std::string device;
 
         // The destination of the audio
         ros::param::param<std::string>("~dst", dst_type, "alsasink");
+        ros::param::param<std::string>("~device", device, std::string());
 
         _sub = _nh.subscribe("audio", 10, &RosGstPlay::onAudio, this);
 
@@ -25,9 +27,8 @@ namespace audio_transport
 
         _pipeline = gst_pipeline_new("app_pipeline");
         _source = gst_element_factory_make("appsrc", "app_source");
+        g_object_set(G_OBJECT(_source), "do-timestamp", TRUE, NULL);
         gst_bin_add( GST_BIN(_pipeline), _source);
-
-        g_signal_connect(_source, "need-data", G_CALLBACK(cb_need_data),this);
 
         //_playbin = gst_element_factory_make("playbin2", "uri_play");
         //g_object_set( G_OBJECT(_playbin), "uri", "file:///home/test/test.mp3", NULL);
@@ -42,13 +43,15 @@ namespace audio_transport
           _convert = gst_element_factory_make("audioconvert", "convert");
           audiopad = gst_element_get_static_pad(_convert, "sink");
           _sink = gst_element_factory_make("autoaudiosink", "sink");
+          if (!device.empty()) {
+            g_object_set(G_OBJECT(_sink), "device", device.c_str(), NULL);
+          }
           gst_bin_add_many( GST_BIN(_audio), _convert, _sink, NULL);
           gst_element_link(_convert, _sink);
           gst_element_add_pad(_audio, gst_ghost_pad_new("sink", audiopad));
           gst_object_unref(audiopad);
 
           gst_bin_add(GST_BIN(_pipeline), _audio);
-          
         }
         else
         {
@@ -62,20 +65,12 @@ namespace audio_transport
         //gst_element_set_state(GST_ELEMENT(_playbin), GST_STATE_PLAYING);
 
         _gst_thread = boost::thread( boost::bind(g_main_loop_run, _loop) );
-
-        _paused = false;
       }
 
     private:
 
       void onAudio(const audio_common_msgs::AudioDataConstPtr &msg)
       {
-        if(_paused)
-        {
-          gst_element_set_state(GST_ELEMENT(_pipeline), GST_STATE_PLAYING);
-          _paused = false;
-        }
-
         GstBuffer *buffer = gst_buffer_new_and_alloc(msg->data.size());
         gst_buffer_fill(buffer, 0, &msg->data[0], msg->data.size());
         GstFlowReturn ret;
@@ -117,16 +112,6 @@ namespace audio_transport
         g_object_unref (audiopad);
       }
 
-     static void cb_need_data (GstElement *appsrc,
-                   guint       unused_size,
-                   gpointer    user_data)
-     {
-       ROS_WARN("need-data signal emitted! Pausing the pipeline");
-       RosGstPlay *client = reinterpret_cast<RosGstPlay*>(user_data);
-       gst_element_set_state(GST_ELEMENT(client->_pipeline), GST_STATE_PAUSED);
-       client->_paused = true;
-     }
-
       ros::NodeHandle _nh;
       ros::Subscriber _sub;
       boost::thread _gst_thread;
@@ -134,8 +119,6 @@ namespace audio_transport
       GstElement *_pipeline, *_source, *_sink, *_decoder, *_convert, *_audio;
       GstElement *_playbin;
       GMainLoop *_loop;
-
-      bool _paused;
   };
 }
 

@@ -2,6 +2,38 @@
 Changelog for package audio_capture
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.3.3 (2018-05-22)
+------------------
+
+0.3.2 (2018-05-02)
+------------------
+* [sound_play] add option to select audio device to play / record (`#87 <https://github.com/ros-drivers/audio_common/issues/87>`_)
+  * [sound_play] add option to select audio device to play
+  * [sound_play] reformat README to markdown; add usage to set device via rosparam
+  * audio_capture: add option for selecting device to use
+  * audio_play: add option to select device for playing audio
+  * add device argument to launch files
+  Conflicts:
+  audio_capture/launch/capture.launch
+  audio_capture/launch/capture_to_file.launch
+  audio_capture/src/audio_capture.cpp
+  audio_play/launch/play.launch
+  sound_play/scripts/soundplay_node.py
+* Merge pull request `#102 <https://github.com/ros-drivers/audio_common/issues/102>`_ from EndPointCorp/fix_capture_leak
+  Fix audio_capture leak
+* Fix audio_capture sample/buffer leak
+* Merge pull request `#90 <https://github.com/ros-drivers/audio_common/issues/90>`_ from prarobo/master
+  Error checking code and improvements to launch files
+* Bug fix
+* fix(audio_capture): capturing wave using gst1.0
+  0.10-style raw audio caps were being created, according to GStreamer warning. Should be audio/x-raw,format=(string).. now.
+* Merge pull request `#1 <https://github.com/ros-drivers/audio_common/issues/1>`_ from prarobo/fixes
+  Error checking code and improvements to launch files
+* Removed default device
+* Added error checking code
+* Added parameters to launch files
+* Contributors: Austin, Matt Vollrath, Prasanna Kannappan, Rokus, Yuki Furuta, prarobo
+
 0.3.1 (2016-08-28)
 ------------------
 * Update to new gstreamer rosdeps

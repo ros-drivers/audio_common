@@ -2,6 +2,30 @@
 Changelog for package sound_play
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.3.3 (2018-05-22)
+------------------
+* Fix gstreamer errors. Fixes `#108 <https://github.com/ros-drivers/audio_common/issues/108>`_
+* Contributors: trainman419
+
+0.3.2 (2018-05-02)
+------------------
+* [sound_play] add option to select audio device to play / record (`#87 <https://github.com/ros-drivers/audio_common/issues/87>`_)
+  * [sound_play] add option to select audio device to play
+  * [sound_play] reformat README to markdown; add usage to set device via rosparam
+  * audio_capture: add option for selecting device to use
+  * audio_play: add option to select device for playing audio
+  * add device argument to launch files
+  Conflicts:
+  audio_capture/launch/capture.launch
+  audio_capture/launch/capture_to_file.launch
+  audio_capture/src/audio_capture.cpp
+  audio_play/launch/play.launch
+  sound_play/scripts/soundplay_node.py
+* Merge pull request `#95 <https://github.com/ros-drivers/audio_common/issues/95>`_ from yujinrobot/volume_check
+  [sound_play] volume check for cached sounds
+* [sound_play] checks if sound's Gst instance's volume has changed and resets it
+* Contributors: Austin, Naveed Usmani, Yuki Furuta
+
 0.3.1 (2016-08-28)
 ------------------
 * Update to new gstreamer rosdeps
