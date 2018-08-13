@@ -5,7 +5,7 @@ from catkin_pkg.python_setup import generate_distutils_setup
 
 d = generate_distutils_setup(
       packages=['sound_play'],
-      package_dir={'': 'src'}
+      package_dir={'': 'src/sound_play'}
       )
 
 setup(**d)
