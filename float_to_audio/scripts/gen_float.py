@@ -12,6 +12,7 @@
 # In order to support this a fifo buffer will store all the samples to be
 # played back, and grow it as needed to support the longest sample received.
 
+import random
 import rospy
 
 from sensor_msgs.msg import ChannelFloat32
@@ -56,6 +57,7 @@ class GenFloat():
                 val += sc * (fr * 4.0 - 1.0)
             else:
                 val += sc * (1.0 - ((fr - 0.5) * 4.0))
+            val += random.random() * 0.2
             self.msg.values[i] = val
             self.counter += 1
 

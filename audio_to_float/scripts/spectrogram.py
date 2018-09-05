@@ -32,7 +32,9 @@ class View():
         if len(self.buffer) < self.buffer_len:
             return
         samples = np.asarray(self.buffer)
-        f, t, Sxx = signal.spectrogram(samples, self.sample_rate)
+        # TODO(lucasw) this is hugely inefficient if it is re-calculating
+        # for samples that were processed in previous update.
+        f, t, Sxx = signal.spectrogram(samples, self.sample_rate, nperseg=512)
         # TODO(lucasw) is there a standard spectrogram conversion?
         Sxx = np.log(1.0 + Sxx * 2**16)
         mins = np.min(Sxx)
