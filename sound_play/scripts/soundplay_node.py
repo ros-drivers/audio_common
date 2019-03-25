@@ -395,7 +395,7 @@ class soundplay:
     def __init__(self):
         Gst.init(None)
         rospy.init_node('sound_play')
-        self.device = rospy.get_param("~device", str())
+        self.device = rospy.get_param("~device", "default")
         self.diagnostic_pub = rospy.Publisher("/diagnostics", DiagnosticArray, queue_size=1)
         rootdir = os.path.join(roslib.packages.get_pkg_dir('sound_play'),'sounds')
 
