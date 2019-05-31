@@ -16,7 +16,7 @@ namespace audio_transport
       {
         _bitrate = 192;
 
-        std::string dst_type, source_type;
+        std::string dst_type;
 
         // Need to encoding or publish raw wave data
         ros::param::param<std::string>("~format", _format, "mp3");
@@ -33,9 +33,7 @@ namespace audio_transport
         ros::param::param<std::string>("~dst", dst_type, "appsink");
 
         // The source of the audio
-        ros::param::param<std::string>("~src", source_type, "alsasrc");
-        int port;
-        ros::param::param<int>("~port", port, 5603);
+        //ros::param::param<std::string>("~src", source_type, "alsasrc");
         std::string device;
         ros::param::param<std::string>("~device", device, "");
 
@@ -65,59 +63,29 @@ namespace audio_transport
           g_object_set( G_OBJECT(_sink), "location", dst_type.c_str(), NULL);
         }
 
-        _source = gst_element_factory_make(source_type.c_str(), "source");
-
-        if (source_type == "udpsrc")
+        _source = gst_element_factory_make("alsasrc", "source");
+        // if device isn't specified, it will use the default which is
+        // the alsa default source.
+        // A valid device will be of the foram hw:0,0 with other numbers
+        // than 0 and 0 as are available.
+        if (device != "")
         {
-          g_object_set (G_OBJECT (_source), "port", port, NULL);
-          _filter = gst_element_factory_make("capsfilter", "filter");
-          {
-            GstCaps *caps;
-            caps = gst_caps_new_simple("application/x-rtp",
-                                    "media", G_TYPE_STRING, "audio", 
-                                    "clock-rate", G_TYPE_INT, 44100, 
-                                    "width", G_TYPE_INT, 16, 
-                                    "height", G_TYPE_INT, 16, 
-                                    "encoding-name", G_TYPE_STRING, "L16",
-                                    "encoding-params", G_TYPE_STRING, "1", 
-                                    "channels", G_TYPE_INT, 1,
-                                    "channel-positions", G_TYPE_INT, 1,
-                                    "payload", G_TYPE_INT, 96,
-                              NULL);
-            g_object_set( G_OBJECT(_filter), "caps", caps, NULL);
-            gst_caps_unref(caps);
-          }
-          _demux   = gst_element_factory_make ("rtpL16depay", "rtpdepay");
+          // ghcar *gst_device = device.c_str();
+          g_object_set(G_OBJECT(_source), "device", device.c_str(), NULL);
         }
-        else
+
+        _filter = gst_element_factory_make("capsfilter", "filter");
         {
-          // if device isn't specified, it will use the default which is
-          // the alsa default source.
-          // A valid device will be of the foram hw:0,0 with other numbers
-          // than 0 and 0 as are available.
-          if (device != "")
-          {
-            // ghcar *gst_device = device.c_str();
-            g_object_set(G_OBJECT(_source), "device", device.c_str(), NULL);
-          }
-          _filter = gst_element_factory_make("capsfilter", "filter");
-          {
-            GstCaps *caps;
-            caps = gst_caps_new_simple("audio/x-raw",
+          GstCaps *caps;
+          caps = gst_caps_new_simple("audio/x-raw",
                         //      "channels", G_TYPE_INT, _channels,
                         //      "depth",    G_TYPE_INT, _depth,
                               "rate",     G_TYPE_INT, _sample_rate,
                         //       "signed",   G_TYPE_BOOLEAN, TRUE,
                               NULL);
-            g_object_set( G_OBJECT(_filter), "caps", caps, NULL);
-            gst_caps_unref(caps);
-          }
-          _demux = NULL;
+          g_object_set( G_OBJECT(_filter), "caps", caps, NULL);
+          gst_caps_unref(caps);
         }
-
-
-
-
 
         _convert = gst_element_factory_make("audioconvert", "convert");
         if (!_convert) {
@@ -136,16 +104,8 @@ namespace audio_transport
           g_object_set( G_OBJECT(_encode), "quality", 2.0, NULL);
           g_object_set( G_OBJECT(_encode), "bitrate", _bitrate, NULL);
 
-          if (_demux == NULL)
-          {
-            gst_bin_add_many( GST_BIN(_pipeline), _source, _filter, _convert, _encode, _sink, NULL);
-            link_ok = gst_element_link_many(_source, _filter, _convert, _encode, _sink, NULL);
-          }
-          else
-          {
-            gst_bin_add_many( GST_BIN(_pipeline), _source, _filter, _demux, _convert, _encode, _sink, NULL);
-            link_ok = gst_element_link_many(_source, _filter, _demux, _convert, _encode, _sink, NULL);
-          }
+          gst_bin_add_many( GST_BIN(_pipeline), _source, _filter, _convert, _encode, _sink, NULL);
+          link_ok = gst_element_link_many(_source, _filter, _convert, _encode, _sink, NULL);
         } else if (_format == "wave") {
           GstCaps *caps;
           caps = gst_caps_new_simple("audio/x-raw",
@@ -249,7 +209,7 @@ namespace audio_transport
 
       boost::thread _gst_thread;
 
-      GstElement *_pipeline, *_source, *_filter, *_sink, *_convert, *_encode, *_demux;
+      GstElement *_pipeline, *_source, *_filter, *_sink, *_convert, *_encode;
       GstBus *_bus;
       int _bitrate, _channels, _depth, _sample_rate;
       GMainLoop *_loop;
