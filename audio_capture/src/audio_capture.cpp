@@ -63,6 +63,9 @@ namespace audio_transport
 
         _source = gst_element_factory_make(source_type.c_str(), "source");
 
+        _filter = gst_element_factory_make("capsfilter", "filter");
+
+        GstCaps *caps;
         if (source_type == "udpsrc")
         {
           int port;
@@ -72,18 +75,13 @@ namespace audio_transport
           std::string depay;
           ros::param::param<std::string>("~depay", depay, "L16");
 
-          _filter = gst_element_factory_make("capsfilter", "filter");
-          {
-            GstCaps *caps;
-            caps = gst_caps_new_simple("application/x-rtp",
+          caps = gst_caps_new_simple("application/x-rtp",
                                    "media", G_TYPE_STRING, "audio", 
                                    "clock-rate", G_TYPE_INT, _sample_rate, 
                                    "encoding-name", G_TYPE_STRING, depay.c_str(),
                                     "channels", G_TYPE_INT, _channels,
                               NULL);
-            g_object_set( G_OBJECT(_filter), "caps", caps, NULL);
-            gst_caps_unref(caps);
-          }
+
           if (depay == "L16")
           {
             _depay   = gst_element_factory_make ("rtpL16depay", "rtpdepay"); // TODO: more general to use any decoder.
@@ -105,18 +103,14 @@ namespace audio_transport
             // ghcar *gst_device = device.c_str();
             g_object_set(G_OBJECT(_source), "device", device.c_str(), NULL);
           }
-          _filter = gst_element_factory_make("capsfilter", "filter");
-          {
-            GstCaps *caps;
-            caps = gst_caps_new_simple("audio/x-raw",
+
+          caps = gst_caps_new_simple("audio/x-raw",
                         //      "channels", G_TYPE_INT, _channels,
                         //      "depth",    G_TYPE_INT, _depth,
                               "rate",     G_TYPE_INT, _sample_rate,
                         //       "signed",   G_TYPE_BOOLEAN, TRUE,
                               NULL);
-            g_object_set( G_OBJECT(_filter), "caps", caps, NULL);
-            gst_caps_unref(caps);
-          }
+
           _depay = NULL;
         }
         else
@@ -124,6 +118,8 @@ namespace audio_transport
       	  ROS_ERROR_STREAM("Source currently not supported");
       	  exitOnMainThread(1);
         }
+        g_object_set( G_OBJECT(_filter), "caps", caps, NULL);
+        gst_caps_unref(caps);
 
         _convert = gst_element_factory_make("audioconvert", "convert");
         if (!_convert) {
