@@ -84,7 +84,7 @@ namespace audio_transport
 
           if (depay == "L16")
           {
-            _depay   = gst_element_factory_make ("rtpL16depay", "rtpdepay"); // TODO: more general to use any decoder.
+            _depay   = gst_element_factory_make ("rtpL16depay", "rtpdepay");
           }
           else
           {
