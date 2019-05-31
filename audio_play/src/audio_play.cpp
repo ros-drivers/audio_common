@@ -16,10 +16,12 @@ namespace audio_transport
 
         std::string dst_type;
         std::string device;
+        bool do_timestamp;
 
         // The destination of the audio
         ros::param::param<std::string>("~dst", dst_type, "alsasink");
         ros::param::param<std::string>("~device", device, std::string());
+        ros::param::param<bool>("~do_timestamp", do_timestamp, true);
 
         _sub = _nh.subscribe("audio", 10, &RosGstPlay::onAudio, this);
 
@@ -27,7 +29,7 @@ namespace audio_transport
 
         _pipeline = gst_pipeline_new("app_pipeline");
         _source = gst_element_factory_make("appsrc", "app_source");
-        g_object_set(G_OBJECT(_source), "do-timestamp", TRUE, NULL);
+        g_object_set(G_OBJECT(_source), "do-timestamp", (do_timestamp) ? TRUE : FALSE, NULL);
         gst_bin_add( GST_BIN(_pipeline), _source);
 
         //_playbin = gst_element_factory_make("playbin2", "uri_play");
