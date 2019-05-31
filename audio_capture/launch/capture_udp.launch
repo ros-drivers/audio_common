@@ -9,6 +9,8 @@
   <arg name="ns" default="audio"/>
   <arg name="src" default="udpsrc"/>
   <arg name="port" default="5603"/>
+  <arg name="dst" default="appsink"/>
+  <arg name="depay" default="L16"/>
 
   <group ns="$(arg ns)">
     <node name="audio_capture" pkg="audio_capture" type="audio_capture" output="screen">
@@ -19,6 +21,8 @@
       <param name="format" value="$(arg format)"/>
       <param name="src" value="$(arg src)"/>
       <param name="port" value="$(arg port)"/>
+      <param name="dst" value="$(arg dst)"/>
+      <param name="depay" value="$(arg depay)"/>
     </node>
   </group>
 
