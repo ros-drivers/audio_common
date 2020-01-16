@@ -17,11 +17,13 @@ namespace audio_transport
         std::string dst_type;
         std::string device;
         bool do_timestamp;
+        std::string format;
 
         // The destination of the audio
         ros::param::param<std::string>("~dst", dst_type, "alsasink");
         ros::param::param<std::string>("~device", device, std::string());
         ros::param::param<bool>("~do_timestamp", do_timestamp, true);
+        ros::param::param<std::string>("~format", format, "mp3");
 
         _sub = _nh.subscribe("audio", 10, &RosGstPlay::onAudio, this);
 
@@ -30,30 +32,48 @@ namespace audio_transport
         _pipeline = gst_pipeline_new("app_pipeline");
         _source = gst_element_factory_make("appsrc", "app_source");
         g_object_set(G_OBJECT(_source), "do-timestamp", (do_timestamp) ? TRUE : FALSE, NULL);
-        gst_bin_add( GST_BIN(_pipeline), _source);
 
         //_playbin = gst_element_factory_make("playbin2", "uri_play");
         //g_object_set( G_OBJECT(_playbin), "uri", "file:///home/test/test.mp3", NULL);
         if (dst_type == "alsasink")
         {
-          _decoder = gst_element_factory_make("decodebin", "decoder");
-          g_signal_connect(_decoder, "pad-added", G_CALLBACK(cb_newpad),this);
-          gst_bin_add( GST_BIN(_pipeline), _decoder);
-          gst_element_link(_source, _decoder);
+          if (format == "mp3")
+          {
+            gst_bin_add( GST_BIN(_pipeline), _source);
+            _decoder = gst_element_factory_make("decodebin", "decoder");
+            g_signal_connect(_decoder, "pad-added", G_CALLBACK(cb_newpad),this);
+            gst_bin_add( GST_BIN(_pipeline), _decoder);
+            gst_element_link(_source, _decoder);
 
-          _audio = gst_bin_new("audiobin");
-          _convert = gst_element_factory_make("audioconvert", "convert");
-          audiopad = gst_element_get_static_pad(_convert, "sink");
-          _sink = gst_element_factory_make("autoaudiosink", "sink");
-          if (!device.empty()) {
-            g_object_set(G_OBJECT(_sink), "device", device.c_str(), NULL);
+            _audio = gst_bin_new("audiobin");
+            _convert = gst_element_factory_make("audioconvert", "convert");
+            audiopad = gst_element_get_static_pad(_convert, "sink");
+            _sink = gst_element_factory_make("autoaudiosink", "sink");
+            if (!device.empty()) {
+              g_object_set(G_OBJECT(_sink), "device", device.c_str(), NULL);
+            }
+            gst_bin_add_many( GST_BIN(_audio), _convert, _sink, NULL);
+            gst_element_link(_convert, _sink);
+            gst_element_add_pad(_audio, gst_ghost_pad_new("sink", audiopad));
+            gst_object_unref(audiopad);
+
+            gst_bin_add(GST_BIN(_pipeline), _audio);
           }
-          gst_bin_add_many( GST_BIN(_audio), _convert, _sink, NULL);
-          gst_element_link(_convert, _sink);
-          gst_element_add_pad(_audio, gst_ghost_pad_new("sink", audiopad));
-          gst_object_unref(audiopad);
-
-          gst_bin_add(GST_BIN(_pipeline), _audio);
+          else if (format == "wave")
+          {
+            GstCaps *caps;
+            caps = gst_caps_from_string("audio/x-raw,format=S16LE,rate=16000,channels=1,layout=interleaved");
+            g_object_set( G_OBJECT(_source), "caps", caps, NULL);
+            gst_caps_unref(caps);
+            g_object_set (G_OBJECT (_source), "format", GST_FORMAT_TIME, NULL);
+            _sink = gst_element_factory_make( "autoaudiosink", "sink" );
+            gst_bin_add_many( GST_BIN(_pipeline), _source, _sink, NULL);
+            gst_element_link_many( _source, _sink, NULL);
+          }
+          else
+          {
+            ROS_ERROR("Unsupported format: %s", format.c_str());
+          }
         }
         else
         {
