@@ -2,11 +2,13 @@
   <arg name="ns" default="audio"/>
   <arg name="dst" default="alsasink"/>
   <arg name="do_timestamp" default="true"/>
+  <arg name="format" default="mp3"/>
 
   <group ns="$(arg ns)">
   <node name="audio_play" pkg="audio_play" type="audio_play" output="screen">
     <param name="dst" value="$(arg dst)"/>
     <param name="do_timestamp" value="$(arg do_timestamp)"/>
+    <param name="format" value="$(arg format)"/>
   </node>
   </group>
 </launch>
