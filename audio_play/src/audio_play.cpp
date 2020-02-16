@@ -43,6 +43,7 @@ namespace audio_transport
           _convert = gst_element_factory_make("audioconvert", "convert");
           audiopad = gst_element_get_static_pad(_convert, "sink");
           _sink = gst_element_factory_make("autoaudiosink", "sink");
+          g_object_set (_sink, "sync", false, NULL);
           if (!device.empty()) {
             g_object_set(G_OBJECT(_sink), "device", device.c_str(), NULL);
           }
