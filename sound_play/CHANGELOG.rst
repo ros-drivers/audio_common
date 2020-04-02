@@ -2,8 +2,8 @@
 Changelog for package sound_play
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.3.4 (2020-04-02)
+------------------
 * Merge pull request `#126 <https://github.com/ros-drivers/audio_common/issues/126>`_ from itohdak/fix-Gstreamer-memory-leak
   [sound_play/scripts/soundplay_node.py] fix Gstreamer memory leak
 * Merge pull request `#123 <https://github.com/ros-drivers/audio_common/issues/123>`_ from 708yamaguchi/fix-encode
