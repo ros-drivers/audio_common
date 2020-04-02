@@ -102,18 +102,19 @@ class soundtype:
 
         self.bus = self.sound.get_bus()
         self.bus.add_signal_watch()
-        self.bus.connect("message", self.on_stream_end)
+        self.bus_conn_id = self.bus.connect("message", self.on_stream_end)
 
     def on_stream_end(self, bus, message):
         if message.type == Gst.MessageType.EOS:
-            self.state = self.STOPPED
+            self.stop()
 
     def __del__(self):
         # stop our GST object so that it gets garbage-collected
-        self.stop()
+        self.dispose()
 
     def update(self):
-        self.bus.poll(Gst.MessageType.ERROR, 10)
+        if self.bus is not None:
+            self.bus.poll(Gst.MessageType.ERROR, 10)
 
     def loop(self):
         self.lock.acquire()
@@ -126,6 +127,22 @@ class soundtype:
               self.sound.seek_simple(Gst.Format.TIME, Gst.SeekFlags.FLUSH, 0)
               self.sound.set_state(Gst.State.PLAYING)
             self.state = self.LOOPING
+        finally:
+            self.lock.release()
+
+    def dispose(self):
+        self.lock.acquire()
+        try:
+            if self.bus is not None:
+                self.sound.set_state(Gst.State.NULL)
+                self.bus.disconnect(self.bus_conn_id)
+                self.bus.remove_signal_watch()
+                self.bus = None
+                self.sound = None
+                self.sink = None
+                self.state = self.STOPPED
+        except Exception, e:
+            rospy.logerr('Exception in dispose: %s'%str(e))
         finally:
             self.lock.release()
 
@@ -311,7 +328,7 @@ class soundplay:
                 self.active_sounds = self.active_sounds + 1
         for key in purgelist:
            rospy.logdebug('Purging %s from cache'%key)
-           dict[key].stop() # clean up resources
+           dict[key].dispose() # clean up resources
            del dict[key]
 
     def cleanup(self):
