@@ -2,6 +2,16 @@
 Changelog for package audio_play
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* audio_play fix for reproducing livestream sound (`#122 <https://github.com/ros-drivers/audio_common/issues/122>`_)
+  * Added capability to read from a udpsrc. To generalize it, possibly similarly to gscam.
+  * Added parameter to control do-timestamp, as this fixes the problem with audio_play not being able to play livestream sound.
+  * Aligning with the base master, removing the changes from the branch that included the udpsrc.
+  Co-authored-by: Alberto Quattrini Li <albertoq@cse.sc.edu>
+* Merge branch 'master' of github.com:ros-drivers/audio_common
+* Contributors: Alberto Quattrini Li, Gerard Canal
+
 0.3.3 (2018-05-22)
 ------------------
 

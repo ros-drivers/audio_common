@@ -2,6 +2,25 @@
 Changelog for package sound_play
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Merge pull request `#126 <https://github.com/ros-drivers/audio_common/issues/126>`_ from itohdak/fix-Gstreamer-memory-leak
+  [sound_play/scripts/soundplay_node.py] fix Gstreamer memory leak
+* Merge pull request `#123 <https://github.com/ros-drivers/audio_common/issues/123>`_ from 708yamaguchi/fix-encode
+  Do not encode text when using langages which ISO-8859-15 does not support
+* [sound_play/scripts/soundplay_node.py] fix Gstreamer memory leak
+* do not encode text when using langages which ISO-8859-15 does not support
+* Merge pull request `#118 <https://github.com/ros-drivers/audio_common/issues/118>`_ from v4hn/patch-1
+  use default audio output by default
+* use default audio output by default
+  Not specifying a sound device defaults to *the first* sound device starting from Ubuntu 16.04., not to the one configured as default.
+  The change is backward compatible and tested on ROS indigo and kinetic on a PR2 robot.
+* Merge pull request `#110 <https://github.com/ros-drivers/audio_common/issues/110>`_ from gerardcanal/master
+  Encoded text to be said in ISO-8859-15
+* Merge branch 'master' of github.com:ros-drivers/audio_common
+* Sound play: Encoded file to be said in ISO-8859-15 so that accents in languages such as Spanish, Catalan or French are correctly pronounced (based on http://festcat.talp.cat/en/usage.php which says festival expects ISO-8859-15 encoding)
+* Contributors: Austin, Gerard Canal, Michael Görner, Naoya Yamaguchi, Shingo Kitagawa, itohdak
+
 0.3.3 (2018-05-22)
 ------------------
 * Fix gstreamer errors. Fixes `#108 <https://github.com/ros-drivers/audio_common/issues/108>`_

@@ -2,6 +2,11 @@
 Changelog for package audio_capture
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Merge branch 'master' of github.com:ros-drivers/audio_common
+* Contributors: Gerard Canal
+
 0.3.3 (2018-05-22)
 ------------------
 
