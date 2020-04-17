@@ -62,6 +62,8 @@ Error opening pygst. Is gstreamer installed?
     print str
     exit(1)
 
+from gi.repository import GObject as GObject
+
 def sleep(t):
     try:
         rospy.sleep(t)
@@ -106,6 +108,9 @@ class soundtype:
 
     def on_stream_end(self, bus, message):
         if message.type == Gst.MessageType.EOS:
+          if (self.state == self.LOOPING):
+            self.sound.seek_simple(Gst.Format.TIME, Gst.SeekFlags.FLUSH, 0)
+          else:
             self.stop()
 
     def __del__(self):
@@ -182,8 +187,8 @@ class soundtype:
         position = 0
         duration = 0
         try:
-            position = self.sound.query_position(Gst.Format.TIME)[0]
-            duration = self.sound.query_duration(Gst.Format.TIME)[0]
+            position = self.sound.query_position(Gst.Format.TIME)[1]
+            duration = self.sound.query_duration(Gst.Format.TIME)[1]
         except Exception, e:
             position = 0
             duration = 0
@@ -297,8 +302,7 @@ class soundplay:
         if not self.initialized:
             return
         self.mutex.acquire()
-        # Force only one sound at a time
-        self.stopall()
+        
         try:
             if data.sound == SoundRequest.ALL and data.command == SoundRequest.PLAY_STOP:
                 self.stopall()
@@ -414,6 +418,13 @@ class soundplay:
 
     def __init__(self):
         Gst.init(None)
+
+        # Start gobject thread to receive gstreamer messages
+        GObject.threads_init()
+        self.g_loop = threading.Thread(target=GObject.MainLoop().run)
+        self.g_loop.daemon = True
+        self.g_loop.start()
+
         rospy.init_node('sound_play')
         self.device = rospy.get_param("~device", "default")
         self.diagnostic_pub = rospy.Publisher("/diagnostics", DiagnosticArray, queue_size=1)
