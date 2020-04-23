@@ -30,4 +30,4 @@
 # ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 
-import libsoundplay as libsoundplay
+import sound_play.libsoundplay as libsoundplay
