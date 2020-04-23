@@ -22,15 +22,15 @@ catkin_package(CATKIN_DEPENDS message_runtime actionlib_msgs
 #     add_subdirectory(test)
 # endif()
 
-install(PROGRAMS
-   scripts/playbuiltin.py
-   scripts/play.py
-   scripts/say.py
-   scripts/shutup.py
-   scripts/soundplay_node.py
-   scripts/test.py
-   scripts/test_actionlib_client.py
-      DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
+catkin_install_python(PROGRAMS
+  scripts/playbuiltin.py
+  scripts/play.py
+  scripts/say.py
+  scripts/shutup.py
+  scripts/soundplay_node.py
+  scripts/test.py
+  scripts/test_actionlib_client.py
+  DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
 
 install(FILES
    soundplay_node.launch
