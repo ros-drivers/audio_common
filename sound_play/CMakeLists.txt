@@ -16,11 +16,11 @@ generate_messages(DEPENDENCIES actionlib_msgs)
 catkin_package(CATKIN_DEPENDS message_runtime actionlib_msgs
                INCLUDE_DIRS include)
 
-if(CATKIN_ENABLE_TESTING)
-    catkin_add_nosetests(scripts/test)
-
-    add_subdirectory(test)
-endif()
+# if(CATKIN_ENABLE_TESTING)
+#     catkin_add_nosetests(scripts/test)
+#
+#     add_subdirectory(test)
+# endif()
 
 install(PROGRAMS
    scripts/playbuiltin.py
