@@ -2,8 +2,8 @@
 Changelog for package sound_play
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.3.5 (2020-04-28)
+------------------
 * Merge pull request `#133 <https://github.com/ros-drivers/audio_common/issues/133>`_ from knorth55/noetic-build
 * remove unnecessary shebang
 * use setuptools instead of distutils.core
