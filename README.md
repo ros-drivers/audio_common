@@ -22,7 +22,7 @@ Please ask support questions on [ROS Answers](http://answers.ros.org/questions/)
 
 On ROS Indigo or Jade, the `indigo-devel` branch is recommended.
 
-On ROS Kinetic, the `master` branch is recommended.
+On ROS Kinetic, Melodic and Noetic, the `master` branch is recommended.
 
 # Development, Branch and Release Policy
 
@@ -32,6 +32,6 @@ The `sound_play`, `groovy-devel` and `hydro-devel` branches are from previous RO
 
 The `indigo-devel` branch is the stable branch; only bug fixes are accepted on this branch. Periodic releases are done from `indigo-devel` into ROS Indigo and ROS Jade, with version numbers in the 0.2.x range.
 
-The `master` branch is currently considered the development branch, and is released into ROS Kinetic with version numbers in the 0.3.x range. `master` is accepting new, non-breaking features and bug fixes.
+The `master` branch is currently considered the development branch, and is released into ROS Kinetic, Melodic and Noetic with version numbers in the 0.3.x range. `master` is accepting new, non-breaking features and bug fixes.
 
 Large, breaking changes such as changes to dependencies or the package API will be considered, but they will probably be staged into a development branch for release into the next major release of ROS (ROS L)
