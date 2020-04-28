@@ -2,6 +2,18 @@
 Changelog for package sound_play
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Merge pull request `#133 <https://github.com/ros-drivers/audio_common/issues/133>`_ from knorth55/noetic-build
+* remove unnecessary shebang
+* use setuptools instead of distutils.core
+* use package format=3 for python3
+* refactor CMakeLists.txt
+* use catkin_install_python for python shebang
+* Merge pull request `#135 <https://github.com/ros-drivers/audio_common/issues/135>`_ from knorth55/add-travis
+* disable sound_play test
+* Contributors: Shingo Kitagawa
+
 0.3.4 (2020-04-02)
 ------------------
 * Merge pull request `#126 <https://github.com/ros-drivers/audio_common/issues/126>`_ from itohdak/fix-Gstreamer-memory-leak
