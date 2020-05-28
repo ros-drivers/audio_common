@@ -52,45 +52,44 @@ if __name__ == '__main__':
     soundhandle = SoundClient()
 
     rospy.sleep(1)
-    
+
     soundhandle.stopAll()
 
-    print "This script will run continuously until you hit CTRL+C, testing various sound_node sound types."
+    rospy.loginfo("This script will run continuously until you hit CTRL+C, testing various sound_node sound types.")
 
-    print
     #print 'Try to play wave files that do not exist.'
     #soundhandle.playWave('17')
     #soundhandle.playWave('dummy')
-        
+
     # print 'say'
     # soundhandle.say('Hello world!')
     # sleep(3)
-       
-    print 'wave'
+
+    rospy.loginfo('wave')
     soundhandle.playWave('say-beep.wav')
     sleep(2)
-    
-    print 'quiet wave'
+
+    rospy.loginfo('quiet wave')
     soundhandle.playWave('say-beep.wav', 0.3)
     sleep(2)
-        
-    print 'plugging'
+
+    rospy.loginfo('plugging')
     soundhandle.play(SoundRequest.NEEDS_PLUGGING)
     sleep(2)
 
-    print 'quiet plugging'
+    rospy.loginfo('quiet plugging')
     soundhandle.play(SoundRequest.NEEDS_PLUGGING, 0.3)
     sleep(2)
 
-    print 'unplugging'
+    rospy.loginfo('unplugging')
     soundhandle.play(SoundRequest.NEEDS_UNPLUGGING)
     sleep(2)
 
-    print 'plugging badly'
+    rospy.loginfo('plugging badly')
     soundhandle.play(SoundRequest.NEEDS_PLUGGING_BADLY)
     sleep(2)
 
-    print 'unplugging badly'
+    rospy.loginfo('unplugging badly')
     soundhandle.play(SoundRequest.NEEDS_UNPLUGGING_BADLY)
     sleep(2)
 
@@ -101,29 +100,29 @@ if __name__ == '__main__':
     s5 = soundhandle.waveSound("say-beep.wav", 0.3)
     s6 = soundhandle.voiceSound("Testing the new A P I", 0.3)
 
-    print "New API start voice"
+    rospy.loginfo("New API start voice")
     s3.repeat()
     sleep(3)
 
-    print "New API start voice quiet"
+    rospy.loginfo("New API start voice quiet")
     s6.play()
     sleep(3)
-    
-    print "New API wave"
+
+    rospy.loginfo("New API wave")
     s2.repeat()
     sleep(2)
 
-    print "New API wave quiet"
+    rospy.loginfo("New API wave quiet")
     s5.play()
     sleep(2)
 
-    print "New API builtin"
+    rospy.loginfo("New API builtin")
     s1.play()
     sleep(2)
 
-    print "New API builtin quiet"
+    rospy.loginfo("New API builtin quiet")
     s4.play()
     sleep(2)
 
-    print "New API stop"
+    rospy.loginfo("New API stop")
     s3.stop()

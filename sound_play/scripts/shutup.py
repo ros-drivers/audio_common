@@ -41,15 +41,15 @@ from sound_play.msg import SoundRequest
 from sound_play.libsoundplay import SoundClient
 
 if __name__ == '__main__':
-    rospy.init_node('shutup', anonymous = True)
-    
-    soundhandle = SoundClient()
-    rospy.sleep(0.5) # let ROS get started...
+    rospy.init_node('shutup', anonymous=True)
 
-    print "Sending stopAll commande every 100 ms."
-    print "Note: This will not prevent a node that is continuing to issue commands"
-    print "from producing sound."
-    print "Press Ctrl+C to exit."
+    soundhandle = SoundClient()
+    rospy.sleep(0.5)  # let ROS get started...
+
+    rospy.loginfo("Sending stopAll commande every 100 ms.")
+    rospy.loginfo("Note: This will not prevent a node that is continuing to issue commands")
+    rospy.loginfo("from producing sound.")
+    rospy.loginfo("Press Ctrl+C to exit.")
 
     while not rospy.is_shutdown():
         soundhandle.stopAll()
