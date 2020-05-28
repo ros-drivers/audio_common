@@ -2,6 +2,13 @@
 Changelog for package audio_capture
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Merge pull request `#141 <https://github.com/ros-drivers/audio_common/issues/141>`_ from knorth55/add-maintainer
+  add maintainer
+* add maintainer
+* Contributors: Shingo Kitagawa
+
 0.3.5 (2020-04-28)
 ------------------
 
