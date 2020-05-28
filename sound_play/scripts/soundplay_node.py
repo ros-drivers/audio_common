@@ -59,7 +59,7 @@ Error opening pygst. Is gstreamer installed?
 **************************************************************
 """
     rospy.logfatal(str)
-    print str
+    # print str
     exit(1)
 
 def sleep(t):
@@ -141,7 +141,7 @@ class soundtype:
                 self.sound = None
                 self.sink = None
                 self.state = self.STOPPED
-        except Exception, e:
+        except Exception as e:
             rospy.logerr('Exception in dispose: %s'%str(e))
         finally:
             self.lock.release()
@@ -184,7 +184,7 @@ class soundtype:
         try:
             position = self.sound.query_position(Gst.Format.TIME)[0]
             duration = self.sound.query_duration(Gst.Format.TIME)[0]
-        except Exception, e:
+        except Exception as e:
             position = 0
             duration = 0
         finally:
@@ -244,7 +244,7 @@ class soundplay:
                         self.filesounds[absfilename].sound.set_property('volume', data.volume)
                 sound = self.filesounds[absfilename]
         elif data.sound == SoundRequest.SAY:
-            print data
+            # print data
             if not data.arg in self.voicesounds.keys():
                 rospy.logdebug('command for uncached text: "%s"' % data.arg)
                 txtfile = tempfile.NamedTemporaryFile(prefix='sound_play', suffix='.txt')
@@ -305,7 +305,7 @@ class soundplay:
             else:
                 sound = self.select_sound(data)
                 sound.command(data.command)
-        except Exception, e:
+        except Exception as e:
             rospy.logerr('Exception in callback: %s'%str(e))
             rospy.loginfo(traceback.format_exc())
         finally:
@@ -318,7 +318,7 @@ class soundplay:
         for (key,sound) in dict.iteritems():
             try:
                 staleness = sound.get_staleness()
-            except Exception, e:
+            except Exception as e:
                 rospy.logerr('Exception in cleanupdict for sound (%s): %s'%(str(key),str(e)))
                 staleness = 100 # Something is wrong. Let's purge and try again.
             #print "%s %i"%(key, staleness)
@@ -365,7 +365,7 @@ class soundplay:
             da.status.append(ds)
             da.header.stamp = rospy.get_rostime()
             self.diagnostic_pub.publish(da)
-        except Exception, e:
+        except Exception as e:
             rospy.loginfo('Exception in diagnostics: %s'%str(e))
 
     def execute_cb(self, data):
@@ -405,7 +405,7 @@ class soundplay:
                     rospy.loginfo('sound_play action: Succeeded')
                     self._as.set_succeeded(self._result)
 
-        except Exception, e:
+        except Exception as e:
             rospy.logerr('Exception in actionlib callback: %s'%str(e))
             rospy.loginfo(traceback.format_exc())
         finally:
