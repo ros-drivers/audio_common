@@ -5,6 +5,7 @@
       Messages for transmitting audio via ROS
    </description>
    <maintainer email="namniart@gmail.com">Austin Hendrix</maintainer>
+   <maintainer email="shingogo.5511@gmail.com">Shingo Kitagawa</maintainer>
    <author>Nate Koenig</author>
    <license>BSD</license>
    <url type="website">http://ros.org/wiki/audio_common_msgs</url>

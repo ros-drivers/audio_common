@@ -5,6 +5,7 @@
       Outputs audio to a speaker from a source node.
    </description>
    <maintainer email="namniart@gmail.com">Austin Hendrix</maintainer>
+   <maintainer email="shingogo.5511@gmail.com">Shingo Kitagawa</maintainer>
    <author>Nate Koenig</author>
    <license>BSD</license>
    <url type="website">http://ros.org/wiki/audio_play</url>
