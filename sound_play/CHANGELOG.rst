@@ -2,8 +2,8 @@
 Changelog for package sound_play
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.3.6 (2020-05-29)
+------------------
 * Merge pull request `#140 <https://github.com/ros-drivers/audio_common/issues/140>`_ from knorth55/support-python3
   fix syntax for python3
 * Merge pull request `#141 <https://github.com/ros-drivers/audio_common/issues/141>`_ from knorth55/add-maintainer
