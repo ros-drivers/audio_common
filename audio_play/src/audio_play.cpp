@@ -18,12 +18,16 @@ namespace audio_transport
         std::string device;
         bool do_timestamp;
         std::string format;
+        int channels;
+        int sample_rate;
 
         // The destination of the audio
         ros::param::param<std::string>("~dst", dst_type, "alsasink");
         ros::param::param<std::string>("~device", device, std::string());
         ros::param::param<bool>("~do_timestamp", do_timestamp, true);
         ros::param::param<std::string>("~format", format, "mp3");
+        ros::param::param<int>("~channels", channels, 1);
+        ros::param::param<int>("~sample_rate", sample_rate, 16000);
 
         _sub = _nh.subscribe("audio", 10, &RosGstPlay::onAudio, this);
 
@@ -62,7 +66,13 @@ namespace audio_transport
           else if (format == "wave")
           {
             GstCaps *caps;
-            caps = gst_caps_from_string("audio/x-raw,format=S16LE,rate=16000,channels=1,layout=interleaved");
+            caps = gst_caps_new_simple(
+                "audio/x-raw",
+                "format", G_TYPE_STRING, "S16LE",
+                "rate", G_TYPE_INT, sample_rate,
+                "channels", G_TYPE_INT, channels,
+                "layout", G_TYPE_STRING, "interleaved",
+                NULL);
             g_object_set( G_OBJECT(_source), "caps", caps, NULL);
             gst_caps_unref(caps);
             g_object_set (G_OBJECT (_source), "format", GST_FORMAT_TIME, NULL);
