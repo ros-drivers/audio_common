@@ -22,6 +22,7 @@
    <run_depend>roscpp</run_depend>
    <run_depend>audio_common_msgs</run_depend>
    <run_depend>gstreamer1.0</run_depend>
+   <run_depend>gstreamer1.0-alsa</run_depend>
    <run_depend>gstreamer1.0-plugins-base</run_depend>
    <run_depend>gstreamer1.0-plugins-ugly</run_depend>
    <run_depend>gstreamer1.0-plugins-good</run_depend>

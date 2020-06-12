@@ -37,6 +37,7 @@
    <exec_depend condition="$ROS_PYTHON_VERSION == 2">python-gi</exec_depend>
    <exec_depend condition="$ROS_PYTHON_VERSION == 3">python3-gi</exec_depend>
    <exec_depend>gstreamer1.0</exec_depend>
+   <exec_depend>gstreamer1.0-alsa</exec_depend>
    <exec_depend>gstreamer1.0-plugins-base</exec_depend>
    <exec_depend>gstreamer1.0-plugins-ugly</exec_depend>
    <exec_depend>gstreamer1.0-plugins-good</exec_depend>
