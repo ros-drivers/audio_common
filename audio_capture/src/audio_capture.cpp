@@ -75,19 +75,19 @@ namespace audio_transport
           g_object_set(G_OBJECT(_source), "device", device.c_str(), NULL);
         }
 
+        GstCaps *caps;
+        caps = gst_caps_new_simple("audio/x-raw",
+                                   "format", G_TYPE_STRING, _sample_format.c_str(),
+                                   "channels", G_TYPE_INT, _channels,
+                                   "width",    G_TYPE_INT, _depth,
+                                   "depth",    G_TYPE_INT, _depth,
+                                   "rate",     G_TYPE_INT, _sample_rate,
+                                   "signed",   G_TYPE_BOOLEAN, TRUE,
+                                   NULL);
 
         gboolean link_ok;
-
         if (_format == "mp3"){
           _filter = gst_element_factory_make("capsfilter", "filter");
-          GstCaps *caps;
-          caps = gst_caps_new_simple("audio/x-raw",
-                                     "format", G_TYPE_STRING, _sample_format.c_str(),
-                                     "channels", G_TYPE_INT, _channels,
-                                     "rate",     G_TYPE_INT, _sample_rate,
-                                     // "depth",    G_TYPE_INT, _depth,
-                                     // "signed",   G_TYPE_BOOLEAN, TRUE,
-                                     NULL);
           g_object_set( G_OBJECT(_filter), "caps", caps, NULL);
           gst_caps_unref(caps);
 
@@ -108,16 +108,6 @@ namespace audio_transport
           gst_bin_add_many( GST_BIN(_pipeline), _source, _filter, _convert, _encode, _sink, NULL);
           link_ok = gst_element_link_many(_source, _filter, _convert, _encode, _sink, NULL);
         } else if (_format == "wave") {
-          GstCaps *caps;
-          caps = gst_caps_new_simple("audio/x-raw",
-                                     "format", G_TYPE_STRING, _sample_format.c_str(),
-                                     "channels", G_TYPE_INT, _channels,
-                                     "width",    G_TYPE_INT, _depth,
-                                     "depth",    G_TYPE_INT, _depth,
-                                     "rate",     G_TYPE_INT, _sample_rate,
-                                     "signed",   G_TYPE_BOOLEAN, TRUE,
-                                     NULL);
-
           if (dst_type == "appsink") {
             g_object_set( G_OBJECT(_sink), "caps", caps, NULL);
             gst_caps_unref(caps);
