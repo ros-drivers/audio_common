@@ -75,29 +75,28 @@ namespace audio_transport
           g_object_set(G_OBJECT(_source), "device", device.c_str(), NULL);
         }
 
-        _filter = gst_element_factory_make("capsfilter", "filter");
-        {
-          GstCaps *caps;
-          caps = gst_caps_new_simple("audio/x-raw",
-                        //      "channels", G_TYPE_INT, _channels,
-                        //      "depth",    G_TYPE_INT, _depth,
-                              "format", G_TYPE_STRING, _sample_format.c_str(),
-                              "rate",     G_TYPE_INT, _sample_rate,
-                        //       "signed",   G_TYPE_BOOLEAN, TRUE,
-                              NULL);
-          g_object_set( G_OBJECT(_filter), "caps", caps, NULL);
-          gst_caps_unref(caps);
-        }
-
-        _convert = gst_element_factory_make("audioconvert", "convert");
-        if (!_convert) {
-      	  ROS_ERROR_STREAM("Failed to create audioconvert element");
-      	  exitOnMainThread(1);
-        }
 
         gboolean link_ok;
 
         if (_format == "mp3"){
+          _filter = gst_element_factory_make("capsfilter", "filter");
+          GstCaps *caps;
+          caps = gst_caps_new_simple("audio/x-raw",
+                                     "format", G_TYPE_STRING, _sample_format.c_str(),
+                                     "channels", G_TYPE_INT, _channels,
+                                     "rate",     G_TYPE_INT, _sample_rate,
+                                     // "depth",    G_TYPE_INT, _depth,
+                                     // "signed",   G_TYPE_BOOLEAN, TRUE,
+                                     NULL);
+          g_object_set( G_OBJECT(_filter), "caps", caps, NULL);
+          gst_caps_unref(caps);
+
+          _convert = gst_element_factory_make("audioconvert", "convert");
+          if (!_convert) {
+        	  ROS_ERROR_STREAM("Failed to create audioconvert element");
+        	  exitOnMainThread(1);
+          }
+
           _encode = gst_element_factory_make("lamemp3enc", "encoder");
           if (!_encode) {
         	  ROS_ERROR_STREAM("Failed to create encoder element");
