@@ -6,6 +6,7 @@
   <arg name="channels" default="1"/>
   <arg name="sample_rate" default="16000"/>
   <arg name="format" default="mp3"/>
+  <arg name="sample_format" default="S16LE"/>
   <arg name="ns" default="audio"/>
 
   <group ns="$(arg ns)">
@@ -14,6 +15,7 @@
       <param name="device" value="$(arg device)"/>
       <param name="channels" value="$(arg channels)"/>
       <param name="sample_rate" value="$(arg sample_rate)"/>
+      <param name="sample_format" value="$(arg sample_format)"/>
       <param name="format" value="$(arg format)"/>
     </node>
   </group>
