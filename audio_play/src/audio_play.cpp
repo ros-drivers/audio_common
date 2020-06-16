@@ -20,6 +20,7 @@ namespace audio_transport
         std::string format;
         int channels;
         int sample_rate;
+        std::string sample_format;
 
         // The destination of the audio
         ros::param::param<std::string>("~dst", dst_type, "alsasink");
@@ -28,6 +29,7 @@ namespace audio_transport
         ros::param::param<std::string>("~format", format, "mp3");
         ros::param::param<int>("~channels", channels, 1);
         ros::param::param<int>("~sample_rate", sample_rate, 16000);
+        ros::param::param<std::string>("~sample_format", sample_format, "S16LE");
 
         _sub = _nh.subscribe("audio", 10, &RosGstPlay::onAudio, this);
 
@@ -68,7 +70,7 @@ namespace audio_transport
             GstCaps *caps;
             caps = gst_caps_new_simple(
                 "audio/x-raw",
-                "format", G_TYPE_STRING, "S16LE",
+                "format", G_TYPE_STRING, sample_format.c_str(),
                 "rate", G_TYPE_INT, sample_rate,
                 "channels", G_TYPE_INT, channels,
                 "layout", G_TYPE_STRING, "interleaved",
