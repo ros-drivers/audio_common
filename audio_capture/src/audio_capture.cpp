@@ -116,10 +116,16 @@ namespace audio_transport
                                      "signed",   G_TYPE_BOOLEAN, TRUE,
                                      NULL);
 
-          g_object_set( G_OBJECT(_sink), "caps", caps, NULL);
-          gst_caps_unref(caps);
-          gst_bin_add_many( GST_BIN(_pipeline), _source, _sink, NULL);
-          link_ok = gst_element_link_many( _source, _sink, NULL);
+          if (dst_type == "appsink") {
+            g_object_set( G_OBJECT(_sink), "caps", caps, NULL);
+            gst_caps_unref(caps);
+            gst_bin_add_many( GST_BIN(_pipeline), _source, _sink, NULL);
+            link_ok = gst_element_link_many( _source, _sink, NULL);
+          } else {
+            _filter = gst_element_factory_make("wavenc", "filter");
+            gst_bin_add_many( GST_BIN(_pipeline), _source, _filter, _sink, NULL);
+            link_ok = gst_element_link_many( _source, _filter, _sink, NULL);
+          }
         } else {
           ROS_ERROR_STREAM("format must be \"wave\" or \"mp3\"");
           exitOnMainThread(1);
