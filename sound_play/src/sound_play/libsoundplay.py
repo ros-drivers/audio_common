@@ -90,7 +90,7 @@ class Sound(object):
 
 class SoundClient(object):
 
-    def __init__(self, blocking=False):
+    def __init__(self, blocking=False, sound_action='sound_play', sound_topic='robotsound'):
         """
 
         The SoundClient can send SoundRequests in two modes: non-blocking mode
@@ -106,6 +106,12 @@ class SoundClient(object):
 
         :param blocking: Used as the default behavior unless over-ridden,
         (default = false)
+
+        :param sound_action: Namespace of actionlib to play sound. The actionlib interface is used
+        only if blocking parameter is True. (default='sound_play')
+
+        :param sound_topic: Topic name to play sound. The topic interface is used only if blocking
+        parameter is False. (default='robotsound')
         """
 
         self._blocking = blocking
@@ -113,8 +119,8 @@ class SoundClient(object):
         # NOTE: only one of these will be used at once, but we need to create
         # both the publisher and actionlib client here.
         self.actionclient = actionlib.SimpleActionClient(
-            'sound_play', SoundRequestAction)
-        self.pub = rospy.Publisher('robotsound', SoundRequest, queue_size=5)
+            sound_action, SoundRequestAction)
+        self.pub = rospy.Publisher(sound_topic, SoundRequest, queue_size=5)
 
 ## \brief Create a voice Sound.
 ##
