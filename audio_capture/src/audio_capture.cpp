@@ -14,9 +14,7 @@ namespace audio_transport
     public:
       RosGstCapture()
       {
-        _bitrate = 192;
-
-        std::string dst_type;
+        std::string dst_type, source_type;
 
         // Need to encoding or publish raw wave data
         ros::param::param<std::string>("~format", _format, "mp3");
@@ -34,7 +32,7 @@ namespace audio_transport
         ros::param::param<std::string>("~dst", dst_type, "appsink");
 
         // The source of the audio
-        //ros::param::param<std::string>("~src", source_type, "alsasrc");
+        ros::param::param<std::string>("~src", source_type, "alsasrc");
         std::string device;
         ros::param::param<std::string>("~device", device, "");
 
@@ -64,20 +62,49 @@ namespace audio_transport
           g_object_set( G_OBJECT(_sink), "location", dst_type.c_str(), NULL);
         }
 
-        _source = gst_element_factory_make("alsasrc", "source");
-        // if device isn't specified, it will use the default which is
-        // the alsa default source.
-        // A valid device will be of the foram hw:0,0 with other numbers
-        // than 0 and 0 as are available.
-        if (device != "")
-        {
-          // ghcar *gst_device = device.c_str();
-          g_object_set(G_OBJECT(_source), "device", device.c_str(), NULL);
-        }
+        _source = gst_element_factory_make(source_type.c_str(), "source");
 
         _filter = gst_element_factory_make("capsfilter", "filter");
+
+        GstCaps *caps;
+        if (source_type == "udpsrc")
         {
-          GstCaps *caps;
+          int port;
+          ros::param::param<int>("~port", port, 5603);
+          g_object_set (G_OBJECT (_source), "port", port, NULL);
+
+          std::string depay;
+          ros::param::param<std::string>("~depay", depay, "L16");
+
+          caps = gst_caps_new_simple("application/x-rtp",
+                                   "media", G_TYPE_STRING, "audio", 
+                                   "clock-rate", G_TYPE_INT, _sample_rate, 
+                                   "encoding-name", G_TYPE_STRING, depay.c_str(),
+                                    "channels", G_TYPE_INT, _channels,
+                              NULL);
+
+          if (depay == "L16")
+          {
+            _depay   = gst_element_factory_make ("rtpL16depay", "rtpdepay");
+          }
+          else
+          {
+            ROS_ERROR_STREAM("Depay currently not supported, it must be \"L16\"");
+            exitOnMainThread(1);
+          }
+        }
+        else if (source_type == "alsasrc")
+        {
+          // if device isn't specified, it will use the default which is
+          // the alsa default source.
+          // A valid device will be of the foram hw:0,0 with other numbers
+          // than 0 and 0 as are available.
+          if (device != "")
+          {
+            // ghcar *gst_device = device.c_str();
+            g_object_set(G_OBJECT(_source), "device", device.c_str(), NULL);
+          }
+
           caps = gst_caps_new_simple("audio/x-raw",
                         //      "channels", G_TYPE_INT, _channels,
                         //      "depth",    G_TYPE_INT, _depth,
@@ -85,9 +112,16 @@ namespace audio_transport
                               "rate",     G_TYPE_INT, _sample_rate,
                         //       "signed",   G_TYPE_BOOLEAN, TRUE,
                               NULL);
-          g_object_set( G_OBJECT(_filter), "caps", caps, NULL);
-          gst_caps_unref(caps);
+
+          _depay = NULL;
         }
+        else
+        {
+      	  ROS_ERROR_STREAM("Source currently not supported");
+      	  exitOnMainThread(1);
+        }
+        g_object_set( G_OBJECT(_filter), "caps", caps, NULL);
+        gst_caps_unref(caps);
 
         _convert = gst_element_factory_make("audioconvert", "convert");
         if (!_convert) {
@@ -106,8 +140,16 @@ namespace audio_transport
           g_object_set( G_OBJECT(_encode), "quality", 2.0, NULL);
           g_object_set( G_OBJECT(_encode), "bitrate", _bitrate, NULL);
 
-          gst_bin_add_many( GST_BIN(_pipeline), _source, _filter, _convert, _encode, _sink, NULL);
-          link_ok = gst_element_link_many(_source, _filter, _convert, _encode, _sink, NULL);
+          if (_depay== NULL)
+          {
+            gst_bin_add_many( GST_BIN(_pipeline), _source, _filter, _convert, _encode, _sink, NULL);
+            link_ok = gst_element_link_many(_source, _filter, _convert, _encode, _sink, NULL);
+          }
+          else
+          {
+            gst_bin_add_many( GST_BIN(_pipeline), _source, _filter, _depay, _convert, _encode, _sink, NULL);
+            link_ok = gst_element_link_many(_source, _filter, _depay, _convert, _encode, _sink, NULL);
+          }
         } else if (_format == "wave") {
           GstCaps *caps;
           caps = gst_caps_new_simple("audio/x-raw",
@@ -218,7 +260,7 @@ namespace audio_transport
 
       boost::thread _gst_thread;
 
-      GstElement *_pipeline, *_source, *_filter, *_sink, *_convert, *_encode;
+      GstElement *_pipeline, *_source, *_filter, *_sink, *_convert, *_encode, *_depay;
       GstBus *_bus;
       int _bitrate, _channels, _depth, _sample_rate;
       GMainLoop *_loop;
