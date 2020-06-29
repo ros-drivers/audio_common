@@ -93,14 +93,14 @@ namespace audio_transport
 
           _convert = gst_element_factory_make("audioconvert", "convert");
           if (!_convert) {
-        	  ROS_ERROR_STREAM("Failed to create audioconvert element");
-        	  exitOnMainThread(1);
+            ROS_ERROR_STREAM("Failed to create audioconvert element");
+            exitOnMainThread(1);
           }
 
           _encode = gst_element_factory_make("lamemp3enc", "encoder");
           if (!_encode) {
-        	  ROS_ERROR_STREAM("Failed to create encoder element");
-        	  exitOnMainThread(1);
+            ROS_ERROR_STREAM("Failed to create encoder element");
+            exitOnMainThread(1);
           }
           g_object_set( G_OBJECT(_encode), "quality", 2.0, NULL);
           g_object_set( G_OBJECT(_encode), "bitrate", _bitrate, NULL);
