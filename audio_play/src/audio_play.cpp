@@ -13,6 +13,7 @@ namespace audio_transport
       RosGstPlay()
       {
         GstPad *audiopad;
+        GstCaps *caps;
 
         std::string dst_type;
         std::string device;
@@ -43,6 +44,13 @@ namespace audio_transport
         //g_object_set( G_OBJECT(_playbin), "uri", "file:///home/test/test.mp3", NULL);
         if (dst_type == "alsasink")
         {
+          caps = gst_caps_new_simple(
+              "audio/x-raw",
+              "format", G_TYPE_STRING, sample_format.c_str(),
+              "rate", G_TYPE_INT, sample_rate,
+              "channels", G_TYPE_INT, channels,
+              "layout", G_TYPE_STRING, "interleaved",
+              NULL);
           if (format == "mp3")
           {
             gst_bin_add( GST_BIN(_pipeline), _source);
@@ -54,6 +62,10 @@ namespace audio_transport
             _audio = gst_bin_new("audiobin");
             _convert = gst_element_factory_make("audioconvert", "convert");
             audiopad = gst_element_get_static_pad(_convert, "sink");
+
+            _filter = gst_element_factory_make("capsfilter", "filter");
+            g_object_set(G_OBJECT(_filter), "caps", caps, NULL);
+
             _sink = gst_element_factory_make("autoaudiosink", "sink");
             if (!device.empty()) {
               g_object_set(G_OBJECT(_sink), "device", device.c_str(), NULL);
@@ -62,25 +74,18 @@ namespace audio_transport
             gst_element_link(_convert, _sink);
             gst_element_add_pad(_audio, gst_ghost_pad_new("sink", audiopad));
             gst_object_unref(audiopad);
+            gst_caps_unref(caps);
 
             gst_bin_add(GST_BIN(_pipeline), _audio);
           }
           else if (format == "wave")
           {
-            GstCaps *caps;
-            caps = gst_caps_new_simple(
-                "audio/x-raw",
-                "format", G_TYPE_STRING, sample_format.c_str(),
-                "rate", G_TYPE_INT, sample_rate,
-                "channels", G_TYPE_INT, channels,
-                "layout", G_TYPE_STRING, "interleaved",
-                NULL);
             g_object_set( G_OBJECT(_source), "caps", caps, NULL);
-            gst_caps_unref(caps);
             g_object_set (G_OBJECT (_source), "format", GST_FORMAT_TIME, NULL);
             _sink = gst_element_factory_make( "autoaudiosink", "sink" );
             gst_bin_add_many( GST_BIN(_pipeline), _source, _sink, NULL);
             gst_element_link_many( _source, _sink, NULL);
+            gst_caps_unref(caps);
           }
           else
           {
@@ -150,7 +155,7 @@ namespace audio_transport
       ros::Subscriber _sub;
       boost::thread _gst_thread;
 
-      GstElement *_pipeline, *_source, *_sink, *_decoder, *_convert, *_audio;
+      GstElement *_pipeline, *_source, *_sink, *_decoder, *_convert, *_audio, *_filter;
       GstElement *_playbin;
       GMainLoop *_loop;
   };
