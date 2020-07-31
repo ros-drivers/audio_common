@@ -102,7 +102,7 @@ namespace audio_transport
             ROS_ERROR_STREAM("Failed to create encoder element");
             exitOnMainThread(1);
           }
-          g_object_set( G_OBJECT(_encode), "quality", 2.0, NULL);
+          g_object_set( G_OBJECT(_encode), "target", 1, NULL);
           g_object_set( G_OBJECT(_encode), "bitrate", _bitrate, NULL);
 
           gst_bin_add_many( GST_BIN(_pipeline), _source, _filter, _convert, _encode, _sink, NULL);
