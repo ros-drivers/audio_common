@@ -2,8 +2,8 @@
 Changelog for package audio_capture
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.3.7 (2020-08-08)
+------------------
 * Merge pull request `#150 <https://github.com/ros-drivers/audio_common/issues/150>`_ from sktometometo/fix_mp3_options
   Fix property of lamemp3enc element in audio_capture so that the bitrate parameter work properly.
 * fix property of lamemp3enc element so that it will use the specified bitrate

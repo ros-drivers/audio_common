@@ -2,8 +2,8 @@
 Changelog for package sound_play
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.3.7 (2020-08-08)
+------------------
 * Merge pull request `#149 <https://github.com/ros-drivers/audio_common/issues/149>`_ from garaemon/specify-topic-to-play-sound
   Support use different topic and actionlib to play sound
 * Support use different topic and actionlib to play sound

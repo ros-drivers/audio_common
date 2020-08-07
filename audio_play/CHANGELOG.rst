@@ -2,8 +2,8 @@
 Changelog for package audio_play
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.3.7 (2020-08-08)
+------------------
 * Merge pull request `#146 <https://github.com/ros-drivers/audio_common/issues/146>`_ from knorth55/mp3-support
 * support format, rate, channels in mp3
 * Merge pull request `#127 <https://github.com/ros-drivers/audio_common/issues/127>`_ from knorth55/audio-play-wave
