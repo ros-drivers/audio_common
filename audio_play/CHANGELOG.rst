@@ -2,6 +2,21 @@
 Changelog for package audio_play
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Merge pull request `#146 <https://github.com/ros-drivers/audio_common/issues/146>`_ from knorth55/mp3-support
+* support format, rate, channels in mp3
+* Merge pull request `#127 <https://github.com/ros-drivers/audio_common/issues/127>`_ from knorth55/audio-play-wave
+  [audio_play] support wave format
+* add sample_format param in audio_play
+* add channels and sample_rate in audio_play/play.launch
+* add channels and sample_rate in audio_play.cpp
+* add format arg in play.launch
+* support wave in audio_play
+* Merge pull request `#144 <https://github.com/ros-drivers/audio_common/issues/144>`_ from ros-drivers/knorth55-patch-1
+* add gstreamer1.0-alsa for run_depend in audio_play
+* Contributors: Shingo Kitagawa
+
 0.3.6 (2020-05-29)
 ------------------
 * Merge pull request `#141 <https://github.com/ros-drivers/audio_common/issues/141>`_ from knorth55/add-maintainer

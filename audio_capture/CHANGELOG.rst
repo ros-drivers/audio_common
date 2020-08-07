@@ -2,6 +2,24 @@
 Changelog for package audio_capture
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Merge pull request `#150 <https://github.com/ros-drivers/audio_common/issues/150>`_ from sktometometo/fix_mp3_options
+  Fix property of lamemp3enc element in audio_capture so that the bitrate parameter work properly.
+* fix property of lamemp3enc element so that it will use the specified bitrate
+* Merge pull request `#146 <https://github.com/ros-drivers/audio_common/issues/146>`_ from knorth55/mp3-support
+* use space instead of tab
+* use same caps
+* support channls for mp3
+* Merge pull request `#145 <https://github.com/ros-drivers/audio_common/issues/145>`_ from knorth55/mp3-channel-rate
+  [audio_capture] add sample_format in audio_capture
+* Merge pull request `#147 <https://github.com/ros-drivers/audio_common/issues/147>`_ from knorth55/fix-filesink
+  [audio_capture] fix filesink for wave format
+* add sample_format arg in capture_to_file.launch
+* fix filesink for wave format
+* add sample_format in audio_capture
+* Contributors: Koki Shinjo, Shingo Kitagawa
+
 0.3.6 (2020-05-29)
 ------------------
 * Merge pull request `#141 <https://github.com/ros-drivers/audio_common/issues/141>`_ from knorth55/add-maintainer

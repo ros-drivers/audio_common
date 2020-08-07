@@ -2,6 +2,18 @@
 Changelog for package sound_play
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Merge pull request `#149 <https://github.com/ros-drivers/audio_common/issues/149>`_ from garaemon/specify-topic-to-play-sound
+  Support use different topic and actionlib to play sound
+* Support use different topic and actionlib to play sound
+  * Add two keywords to the constructor of SoundClient class in order to
+  specify actionlib namespace and topic name to play sound.
+  * See `#119 <https://github.com/ros-drivers/audio_common/issues/119>`_.
+* Merge pull request `#144 <https://github.com/ros-drivers/audio_common/issues/144>`_ from ros-drivers/knorth55-patch-1
+* add gstreamer1.0-alsa exec_depend in sound_play
+* Contributors: Ryohei Ueda, Shingo Kitagawa
+
 0.3.6 (2020-05-29)
 ------------------
 * Merge pull request `#140 <https://github.com/ros-drivers/audio_common/issues/140>`_ from knorth55/support-python3
