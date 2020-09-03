@@ -317,7 +317,7 @@ class soundplay:
     # Purge sounds that haven't been played in a while.
     def cleanupdict(self, dict):
         purgelist = []
-        for (key,sound) in dict.iteritems():
+        for (key,sound) in dict.items():
             try:
                 staleness = sound.get_staleness()
             except Exception as e:
