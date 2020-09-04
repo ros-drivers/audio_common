@@ -254,9 +254,15 @@ class soundplay:
                 voice = data.arg2
                 try:
                     try:
-                        txtfile.write(data.arg.decode('UTF-8').encode('ISO-8859-15'))
+                        if hasattr(data.arg, 'decode'):
+                            txtfile.write(data.arg.decode('UTF-8').encode('ISO-8859-15'))
+                        else:
+                            txtfile.write(data.arg.encode('ISO-8859-15'))
                     except UnicodeEncodeError:
-                        txtfile.write(data.arg)
+                        if hasattr(data.arg, 'decode'):
+                            txtfile.write(data.arg)
+                        else:
+                            txtfile.write(data.arg.encode('UTF-8'))
                     txtfile.flush()
                     os.system("text2wave -eval '("+voice+")' "+txtfilename+" -o "+wavfilename)
                     try:
@@ -315,7 +321,7 @@ class soundplay:
     # Purge sounds that haven't been played in a while.
     def cleanupdict(self, dict):
         purgelist = []
-        for (key,sound) in dict.iteritems():
+        for (key,sound) in iter(dict.items()):
             try:
                 staleness = sound.get_staleness()
             except Exception as e:
