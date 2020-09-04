@@ -254,11 +254,15 @@ class soundplay:
                 voice = data.arg2
                 try:
                     try:
-                        txtfile.write(data.arg.decode('UTF-8').encode('ISO-8859-15'))
+                        if hasattr(data.arg, 'decode'):
+                            txtfile.write(data.arg.decode('UTF-8').encode('ISO-8859-15'))
+                        else:
+                            txtfile.write(data.arg.encode('ISO-8859-15'))
                     except UnicodeEncodeError:
-                        txtfile.write(data.arg)
-                    except AttributeError:
-                        txtfile.write(data.arg.encode('ISO-8859-15'))
+                        if hasattr(data.arg, 'decode'):
+                            txtfile.write(data.arg)
+                        else:
+                            txtfile.write(data.arg.encode('UTF-8'))
                     txtfile.flush()
                     os.system("text2wave -eval '("+voice+")' "+txtfilename+" -o "+wavfilename)
                     try:
