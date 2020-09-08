@@ -1,7 +1,7 @@
 <launch>
   <arg name="ns" default="audio"/>
   <arg name="dst" default="alsasink"/>
-  <arg name="do_timestamp" default="true"/>
+  <arg name="do_timestamp" default="false"/>
   <arg name="format" default="mp3"/>
   <arg name="channels" default="1"/>
   <arg name="sample_rate" default="16000"/>
