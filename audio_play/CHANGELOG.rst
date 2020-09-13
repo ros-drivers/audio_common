@@ -2,6 +2,13 @@
 Changelog for package audio_play
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Merge pull request `#151 <https://github.com/ros-drivers/audio_common/issues/151>`_ from knorth55/do-timestamp-false
+  [audio_play] set do_timestamp false
+* set do_timestamp false
+* Contributors: Shingo Kitagawa
+
 0.3.7 (2020-08-08)
 ------------------
 * Merge pull request `#146 <https://github.com/ros-drivers/audio_common/issues/146>`_ from knorth55/mp3-support

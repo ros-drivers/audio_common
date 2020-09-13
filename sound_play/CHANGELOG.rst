@@ -2,6 +2,20 @@
 Changelog for package sound_play
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Merge pull request `#155 <https://github.com/ros-drivers/audio_common/issues/155>`_ from garaemon/use-myargv
+  Use rospy.myargv() instead of sys.argv to support remapping
+* Use rospy.myargv() instead of sys.argv to support remapping
+* Merge pull request `#154 <https://github.com/ros-drivers/audio_common/issues/154>`_ from mikaelarguedas/fix_say_python3
+* update to support no iso-8859-15 language (`#1 <https://github.com/ros-drivers/audio_common/issues/1>`_)
+  * support non iso-8859-15 language
+  * encode only for python2
+* convert items to an iterator
+* make cleanup compatible with Python 3
+* catch AttributeError to handle python3 strings
+* Contributors: Mikael Arguedas, Ryohei Ueda, Shingo Kitagawa
+
 0.3.7 (2020-08-08)
 ------------------
 * Merge pull request `#149 <https://github.com/ros-drivers/audio_common/issues/149>`_ from garaemon/specify-topic-to-play-sound
