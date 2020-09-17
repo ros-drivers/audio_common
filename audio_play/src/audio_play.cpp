@@ -42,16 +42,16 @@ namespace audio_transport
 
         //_playbin = gst_element_factory_make("playbin2", "uri_play");
         //g_object_set( G_OBJECT(_playbin), "uri", "file:///home/test/test.mp3", NULL);
-        if (dst_type == "alsasink")
+        caps = gst_caps_new_simple(
+            "audio/x-raw",
+            "format", G_TYPE_STRING, sample_format.c_str(),
+            "rate", G_TYPE_INT, sample_rate,
+            "channels", G_TYPE_INT, channels,
+            "layout", G_TYPE_STRING, "interleaved",
+            NULL);
+        if (format == "mp3")
         {
-          caps = gst_caps_new_simple(
-              "audio/x-raw",
-              "format", G_TYPE_STRING, sample_format.c_str(),
-              "rate", G_TYPE_INT, sample_rate,
-              "channels", G_TYPE_INT, channels,
-              "layout", G_TYPE_STRING, "interleaved",
-              NULL);
-          if (format == "mp3")
+          if (dst_type == "alsasink")
           {
             gst_bin_add( GST_BIN(_pipeline), _source);
             _decoder = gst_element_factory_make("decodebin", "decoder");
@@ -78,26 +78,37 @@ namespace audio_transport
 
             gst_bin_add(GST_BIN(_pipeline), _audio);
           }
-          else if (format == "wave")
+          else
           {
-            g_object_set( G_OBJECT(_source), "caps", caps, NULL);
-            g_object_set (G_OBJECT (_source), "format", GST_FORMAT_TIME, NULL);
+            _sink = gst_element_factory_make("filesink", "sink");
+            g_object_set(G_OBJECT(_sink), "location", dst_type.c_str(), NULL);
+            gst_bin_add_many(GST_BIN(_pipeline), _source, _sink, NULL);
+            gst_element_link(_source, _sink);
+          }
+        }
+        else if (format == "wave")
+        {
+          g_object_set( G_OBJECT(_source), "caps", caps, NULL);
+          g_object_set (G_OBJECT (_source), "format", GST_FORMAT_TIME, NULL);
+          if (dst_type == "alsasink")
+          {
             _sink = gst_element_factory_make( "autoaudiosink", "sink" );
             gst_bin_add_many( GST_BIN(_pipeline), _source, _sink, NULL);
             gst_element_link_many( _source, _sink, NULL);
-            gst_caps_unref(caps);
           }
           else
           {
-            ROS_ERROR("Unsupported format: %s", format.c_str());
+            _filter = gst_element_factory_make("wavenc", "filter");
+            _sink = gst_element_factory_make("filesink", "sink");
+            g_object_set(G_OBJECT(_sink), "location", dst_type.c_str(), NULL);
+            gst_bin_add_many(GST_BIN(_pipeline), _source, _filter, _sink, NULL);
+            gst_element_link_many( _source, _filter, _sink, NULL);
           }
+          gst_caps_unref(caps);
         }
         else
         {
-          _sink = gst_element_factory_make("filesink", "sink");
-          g_object_set( G_OBJECT(_sink), "location", dst_type.c_str(), NULL);
-          gst_bin_add(GST_BIN(_pipeline), _sink);
-          gst_element_link(_source, _sink);
+          ROS_ERROR("Unsupported format: %s", format.c_str());
         }
 
         gst_element_set_state(GST_ELEMENT(_pipeline), GST_STATE_PLAYING);
