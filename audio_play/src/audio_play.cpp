@@ -71,7 +71,7 @@ namespace audio_transport
             _filter = gst_element_factory_make("capsfilter", "filter");
             g_object_set(G_OBJECT(_filter), "caps", caps, NULL);
 
-            _sink = gst_element_factory_make("autoaudiosink", "sink");
+            _sink = gst_element_factory_make("alsasink", "sink");
             if (!device.empty()) {
               g_object_set(G_OBJECT(_sink), "device", device.c_str(), NULL);
             }
@@ -97,7 +97,7 @@ namespace audio_transport
           g_object_set (G_OBJECT (_source), "format", GST_FORMAT_TIME, NULL);
           if (dst_type == "alsasink")
           {
-            _sink = gst_element_factory_make( "autoaudiosink", "sink" );
+            _sink = gst_element_factory_make("alsasink", "sink" );
             gst_bin_add_many( GST_BIN(_pipeline), _source, _sink, NULL);
             gst_element_link_many( _source, _sink, NULL);
           }
