@@ -100,6 +100,9 @@ namespace audio_transport
           {
             _sink = gst_element_factory_make("alsasink", "sink" );
             g_object_set(G_OBJECT(_sink), "sync", FALSE, NULL);
+            if (!device.empty()) {
+              g_object_set(G_OBJECT(_sink), "device", device.c_str(), NULL);
+            }
             gst_bin_add_many( GST_BIN(_pipeline), _source, _sink, NULL);
             gst_element_link_many( _source, _sink, NULL);
           }
