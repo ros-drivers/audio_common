@@ -16,7 +16,6 @@ namespace audio_transport
         GstCaps *caps;
 
         std::string dst_type;
-        std::string device;
         bool do_timestamp;
         std::string format;
         int channels;
@@ -25,7 +24,6 @@ namespace audio_transport
 
         // The destination of the audio
         ros::param::param<std::string>("~dst", dst_type, "alsasink");
-        ros::param::param<std::string>("~device", device, std::string());
         ros::param::param<bool>("~do_timestamp", do_timestamp, true);
         ros::param::param<std::string>("~format", format, "mp3");
         ros::param::param<int>("~channels", channels, 1);
@@ -67,9 +65,6 @@ namespace audio_transport
             g_object_set(G_OBJECT(_filter), "caps", caps, NULL);
 
             _sink = gst_element_factory_make("autoaudiosink", "sink");
-            if (!device.empty()) {
-              g_object_set(G_OBJECT(_sink), "device", device.c_str(), NULL);
-            }
             gst_bin_add_many( GST_BIN(_audio), _convert, _sink, NULL);
             gst_element_link(_convert, _sink);
             gst_element_add_pad(_audio, gst_ghost_pad_new("sink", audiopad));
