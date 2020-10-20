@@ -67,14 +67,15 @@ namespace audio_transport
             _audio = gst_bin_new("audiobin");
             _convert = gst_element_factory_make("audioconvert", "convert");
             audiopad = gst_element_get_static_pad(_convert, "sink");
+            _resample = gst_element_factory_make("audioresample", "resample");
 
             _sink = gst_element_factory_make("alsasink", "sink");
             g_object_set(G_OBJECT(_sink), "sync", FALSE, NULL);
             if (!device.empty()) {
               g_object_set(G_OBJECT(_sink), "device", device.c_str(), NULL);
             }
-            gst_bin_add_many( GST_BIN(_audio), _convert, _sink, NULL);
-            gst_element_link(_convert, _sink);
+            gst_bin_add_many( GST_BIN(_audio), _convert, _resample, _sink, NULL);
+            gst_element_link_many(_convert, _resample, _sink, NULL);
             gst_element_add_pad(_audio, gst_ghost_pad_new("sink", audiopad));
             gst_bin_add_many(GST_BIN(_pipeline), _source, _decoder, _filter, _audio, NULL);
             gst_element_link_many(_source, _decoder, _filter, _audio, NULL);
@@ -94,13 +95,23 @@ namespace audio_transport
           g_object_set (G_OBJECT (_source), "format", GST_FORMAT_TIME, NULL);
           if (dst_type == "alsasink")
           {
-            _sink = gst_element_factory_make("alsasink", "sink" );
+            _audio = gst_bin_new("audiobin");
+            _convert = gst_element_factory_make("audioconvert", "convert");
+            audiopad = gst_element_get_static_pad(_convert, "sink");
+            _resample = gst_element_factory_make("audioresample", "resample");
+
+            _sink = gst_element_factory_make("alsasink", "sink");
             g_object_set(G_OBJECT(_sink), "sync", FALSE, NULL);
             if (!device.empty()) {
               g_object_set(G_OBJECT(_sink), "device", device.c_str(), NULL);
             }
-            gst_bin_add_many( GST_BIN(_pipeline), _source, _sink, NULL);
-            gst_element_link_many( _source, _sink, NULL);
+            gst_bin_add_many( GST_BIN(_audio), _convert, _resample, _sink, NULL);
+            gst_element_link_many(_convert, _resample, _sink, NULL);
+            gst_element_add_pad(_audio, gst_ghost_pad_new("sink", audiopad));
+
+            gst_bin_add_many( GST_BIN(_pipeline), _source, _audio, NULL);
+            gst_element_link_many( _source, _audio, NULL);
+            gst_object_unref(audiopad);
           }
           else
           {
@@ -172,7 +183,7 @@ namespace audio_transport
       ros::Subscriber _sub;
       boost::thread _gst_thread;
 
-      GstElement *_pipeline, *_source, *_sink, *_decoder, *_convert, *_audio, *_filter;
+      GstElement *_pipeline, *_source, *_sink, *_decoder, *_convert, *_audio, *_resample, *_filter;
       GstElement *_playbin;
       GMainLoop *_loop;
   };
