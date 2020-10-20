@@ -20,6 +20,7 @@ namespace audio_transport
         bool do_timestamp;
         std::string format;
         int channels;
+        int depth;
         int sample_rate;
         std::string sample_format;
 
@@ -29,6 +30,7 @@ namespace audio_transport
         ros::param::param<bool>("~do_timestamp", do_timestamp, true);
         ros::param::param<std::string>("~format", format, "mp3");
         ros::param::param<int>("~channels", channels, 1);
+        ros::param::param<int>("~depth", depth, 16);
         ros::param::param<int>("~sample_rate", sample_rate, 16000);
         ros::param::param<std::string>("~sample_format", sample_format, "S16LE");
 
@@ -47,6 +49,9 @@ namespace audio_transport
             "format", G_TYPE_STRING, sample_format.c_str(),
             "rate", G_TYPE_INT, sample_rate,
             "channels", G_TYPE_INT, channels,
+            "width",    G_TYPE_INT, depth,
+            "depth",    G_TYPE_INT, depth,
+            "signed",   G_TYPE_BOOLEAN, TRUE,
             "layout", G_TYPE_STRING, "interleaved",
             NULL);
         if (format == "mp3")
