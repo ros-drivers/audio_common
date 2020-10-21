@@ -59,7 +59,7 @@ namespace audio_transport
         }
         else
         {
-          printf("file sink\n");
+          ROS_INFO("file sink to %s", dst_type.c_str());
           _sink = gst_element_factory_make("filesink", "sink");
           g_object_set( G_OBJECT(_sink), "location", dst_type.c_str(), NULL);
         }
