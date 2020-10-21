@@ -54,6 +54,30 @@ namespace audio_transport
             "signed",   G_TYPE_BOOLEAN, TRUE,
             "layout", G_TYPE_STRING, "interleaved",
             NULL);
+
+        if (dst_type == "alsasink")
+        {
+          _audio = gst_bin_new("audiobin");
+          _convert = gst_element_factory_make("audioconvert", "convert");
+          audiopad = gst_element_get_static_pad(_convert, "sink");
+          _resample = gst_element_factory_make("audioresample", "resample");
+
+          _sink = gst_element_factory_make("alsasink", "sink");
+          g_object_set(G_OBJECT(_sink), "sync", FALSE, NULL);
+          if (!device.empty()) {
+            g_object_set(G_OBJECT(_sink), "device", device.c_str(), NULL);
+          }
+          gst_bin_add_many( GST_BIN(_audio), _convert, _resample, _sink, NULL);
+          gst_element_link_many(_convert, _resample, _sink, NULL);
+          gst_element_add_pad(_audio, gst_ghost_pad_new("sink", audiopad));
+        }
+        else
+        {
+          ROS_INFO("file sink to %s", dst_type.c_str());
+          _sink = gst_element_factory_make("filesink", "sink");
+          g_object_set(G_OBJECT(_sink), "location", dst_type.c_str(), NULL);
+        }
+
         if (format == "mp3")
         {
           if (dst_type == "alsasink")
@@ -64,27 +88,13 @@ namespace audio_transport
             _filter = gst_element_factory_make("capsfilter", "filter");
             g_object_set( G_OBJECT(_filter), "caps", caps, NULL);
 
-            _audio = gst_bin_new("audiobin");
-            _convert = gst_element_factory_make("audioconvert", "convert");
-            audiopad = gst_element_get_static_pad(_convert, "sink");
-            _resample = gst_element_factory_make("audioresample", "resample");
-
-            _sink = gst_element_factory_make("alsasink", "sink");
-            g_object_set(G_OBJECT(_sink), "sync", FALSE, NULL);
-            if (!device.empty()) {
-              g_object_set(G_OBJECT(_sink), "device", device.c_str(), NULL);
-            }
-            gst_bin_add_many( GST_BIN(_audio), _convert, _resample, _sink, NULL);
-            gst_element_link_many(_convert, _resample, _sink, NULL);
-            gst_element_add_pad(_audio, gst_ghost_pad_new("sink", audiopad));
             gst_bin_add_many(GST_BIN(_pipeline), _source, _decoder, _filter, _audio, NULL);
             gst_element_link_many(_source, _decoder, _filter, _audio, NULL);
             gst_object_unref(audiopad);
+            gst_caps_unref(caps);
           }
           else
           {
-            _sink = gst_element_factory_make("filesink", "sink");
-            g_object_set(G_OBJECT(_sink), "location", dst_type.c_str(), NULL);
             gst_bin_add_many(GST_BIN(_pipeline), _source, _sink, NULL);
             gst_element_link(_source, _sink);
           }
@@ -95,20 +105,6 @@ namespace audio_transport
           g_object_set (G_OBJECT (_source), "format", GST_FORMAT_TIME, NULL);
           if (dst_type == "alsasink")
           {
-            _audio = gst_bin_new("audiobin");
-            _convert = gst_element_factory_make("audioconvert", "convert");
-            audiopad = gst_element_get_static_pad(_convert, "sink");
-            _resample = gst_element_factory_make("audioresample", "resample");
-
-            _sink = gst_element_factory_make("alsasink", "sink");
-            g_object_set(G_OBJECT(_sink), "sync", FALSE, NULL);
-            if (!device.empty()) {
-              g_object_set(G_OBJECT(_sink), "device", device.c_str(), NULL);
-            }
-            gst_bin_add_many( GST_BIN(_audio), _convert, _resample, _sink, NULL);
-            gst_element_link_many(_convert, _resample, _sink, NULL);
-            gst_element_add_pad(_audio, gst_ghost_pad_new("sink", audiopad));
-
             gst_bin_add_many( GST_BIN(_pipeline), _source, _audio, NULL);
             gst_element_link_many( _source, _audio, NULL);
             gst_object_unref(audiopad);
@@ -116,17 +112,15 @@ namespace audio_transport
           else
           {
             _filter = gst_element_factory_make("wavenc", "filter");
-            _sink = gst_element_factory_make("filesink", "sink");
-            g_object_set(G_OBJECT(_sink), "location", dst_type.c_str(), NULL);
             gst_bin_add_many(GST_BIN(_pipeline), _source, _filter, _sink, NULL);
             gst_element_link_many( _source, _filter, _sink, NULL);
           }
+          gst_caps_unref(caps);
         }
         else
         {
           ROS_ERROR("Unsupported format: %s", format.c_str());
         }
-        gst_caps_unref(caps);
 
         gst_element_set_state(GST_ELEMENT(_pipeline), GST_STATE_PLAYING);
         //gst_element_set_state(GST_ELEMENT(_playbin), GST_STATE_PLAYING);
