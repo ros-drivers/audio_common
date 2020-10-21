@@ -1,4 +1,5 @@
 <launch>
+  <arg name="device" default=""/>
   <arg name="ns" default="audio"/>
   <arg name="dst" default="alsasink"/>
   <arg name="do_timestamp" default="false"/>
@@ -9,6 +10,7 @@
 
   <group ns="$(arg ns)">
   <node name="audio_play" pkg="audio_play" type="audio_play" output="screen">
+    <param name="device" value="$(arg device)"/>
     <param name="dst" value="$(arg dst)"/>
     <param name="do_timestamp" value="$(arg do_timestamp)"/>
     <param name="format" value="$(arg format)"/>
