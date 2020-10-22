@@ -2,6 +2,20 @@
 Changelog for package audio_play
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Merge pull request `#160 <https://github.com/ros-drivers/audio_common/issues/160>`_ from knorth55/add-device-play
+* refactor audio_play to use same code
+* add audioresample in audio_play
+* apply caps for both formats
+* add device for wave format
+* add sync false for alsasink
+* use alsasink
+* add depth rosparam
+* add device arg in play.launch
+* fix audio_play to save file
+* Contributors: Shingo Kitagawa
+
 0.3.8 (2020-09-13)
 ------------------
 * Merge pull request `#151 <https://github.com/ros-drivers/audio_common/issues/151>`_ from knorth55/do-timestamp-false

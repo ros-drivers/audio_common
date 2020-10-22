@@ -2,6 +2,9 @@
 Changelog for package audio_common_msgs
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 0.3.8 (2020-09-13)
 ------------------
 

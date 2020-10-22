@@ -2,6 +2,12 @@
 Changelog for package audio_capture
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Merge pull request `#160 <https://github.com/ros-drivers/audio_common/issues/160>`_ from knorth55/add-device-play
+* use ROS_INFO instead of printf
+* Contributors: Shingo Kitagawa
+
 0.3.8 (2020-09-13)
 ------------------
 
