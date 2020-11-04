@@ -6,6 +6,7 @@
 #include <ros/ros.h>
 
 #include "audio_common_msgs/AudioData.h"
+#include "audio_common_msgs/AudioInfo.h"
 
 namespace audio_transport
 {
@@ -39,6 +40,7 @@ namespace audio_transport
         ros::param::param<std::string>("~device", device, "");
 
         _pub = _nh.advertise<audio_common_msgs::AudioData>("audio", 10, true);
+        _pub_info = _nh.advertise<audio_common_msgs::AudioInfo>("audio_info", 1, true);
 
         _loop = g_main_loop_new(NULL, false);
         _pipeline = gst_pipeline_new("ros_pipeline");
@@ -142,6 +144,14 @@ namespace audio_transport
         gst_element_set_state(GST_ELEMENT(_pipeline), GST_STATE_PLAYING);
 
         _gst_thread = boost::thread( boost::bind(g_main_loop_run, _loop) );
+
+        audio_common_msgs::AudioInfo info_msg;
+        info_msg.channels = _channels;
+        info_msg.sample_rate = _sample_rate;
+        info_msg.sample_format = _sample_format;
+        info_msg.bitrate = _bitrate;
+        info_msg.coding_format = _format;
+        _pub_info.publish(info_msg);
       }
 
       ~RosGstCapture()
@@ -204,6 +214,7 @@ namespace audio_transport
     private:
       ros::NodeHandle _nh;
       ros::Publisher _pub;
+      ros::Publisher _pub_info;
 
       boost::thread _gst_thread;
 
