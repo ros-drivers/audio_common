@@ -3,6 +3,7 @@
       the first number and the subdevice number as the second in a string
       like hw:1,0 -->
   <arg name="device" default=""/>
+  <arg name="bitrate" default="128"/>
   <arg name="channels" default="1"/>
   <arg name="sample_rate" default="16000"/>
   <arg name="format" default="mp3"/>
@@ -11,7 +12,7 @@
 
   <group ns="$(arg ns)">
     <node name="audio_capture" pkg="audio_capture" type="audio_capture" output="screen">
-      <param name="bitrate" value="128"/>
+      <param name="bitrate" value="$(arg bitrate)"/>
       <param name="device" value="$(arg device)"/>
       <param name="channels" value="$(arg channels)"/>
       <param name="sample_rate" value="$(arg sample_rate)"/>
