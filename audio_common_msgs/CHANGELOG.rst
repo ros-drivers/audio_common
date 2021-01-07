@@ -2,8 +2,8 @@
 Changelog for package audio_common_msgs
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.3.10 (2021-01-07)
+-------------------
 * Change comment style in AudioInfo.msg
 * [audio_common_msgs] AudioInfo.msg to add audio meta data
 * Contributors: Naoya Yamaguchi

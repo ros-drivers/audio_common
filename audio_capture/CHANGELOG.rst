@@ -2,8 +2,8 @@
 Changelog for package audio_capture
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.3.10 (2021-01-07)
+-------------------
 * add bitrate in capture launch
 * [audio_capture] Publish audio info once before publishing /audio
 * Contributors: Naoya Yamaguchi, Shingo Kitagawa
