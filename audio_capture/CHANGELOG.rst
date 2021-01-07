@@ -2,6 +2,12 @@
 Changelog for package audio_capture
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* add bitrate in capture launch
+* [audio_capture] Publish audio info once before publishing /audio
+* Contributors: Naoya Yamaguchi, Shingo Kitagawa
+
 0.3.9 (2020-10-22)
 ------------------
 * Merge pull request `#160 <https://github.com/ros-drivers/audio_common/issues/160>`_ from knorth55/add-device-play
