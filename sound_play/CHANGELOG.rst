@@ -2,8 +2,8 @@
 Changelog for package sound_play
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.3.11 (2021-04-08)
+-------------------
 * Merge pull request `#167 <https://github.com/ros-drivers/audio_common/issues/167>`_ from k-okada/fix_155
 * Use rospy.myargv() instead of sys.argv to support remapping
 * Contributors: Kei Okada, Shingo Kitagawa
