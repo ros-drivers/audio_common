@@ -2,6 +2,9 @@
 Changelog for package audio_capture
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 0.3.10 (2021-01-07)
 -------------------
 * add bitrate in capture launch
