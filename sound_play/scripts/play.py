@@ -37,27 +37,26 @@
 # Author: Blaise Gassend
 
 
-import sys
-
 if __name__ == '__main__':
-    if len(sys.argv) < 2 or len(sys.argv) > 3 or sys.argv[1] == '--help':
-        print 'Usage: %s sound_to_play.(ogg|wav) [volume]'%sys.argv[0]
-        print
-        print 'Plays an .OGG or .WAV file. The path to the file should be absolute, and be valid on the computer on which sound_play is running.\n The (optional) second parameter sets the volume for the sound as a value between 0 and 1.0, where 0 is mute.'
+    import rospy
+    rospy.init_node('play', anonymous=True)
+    argv = rospy.myargv()
+    if len(argv) < 2 or len(argv) > 3 or argv[1] == '--help':
+        print('Usage: %s sound_to_play.(ogg|wav) [volume]' % argv[0])
+        print()
+        print('Plays an .OGG or .WAV file. The path to the file should be absolute, and be valid on the computer on which sound_play is running.\n The (optional) second parameter sets the volume for the sound as a value between 0 and 1.0, where 0 is mute.')
         exit(1)
 
     # Import after printing usage for speed.
-    import rospy
     from sound_play.msg import SoundRequest
     from sound_play.libsoundplay import SoundClient
 
-    rospy.init_node('play', anonymous = True)
     soundhandle = SoundClient()
 
     rospy.sleep(1)
-    print 'Playing "%s".'%sys.argv[1]
+    rospy.loginfo('Playing "%s".' % argv[1])
 
-    volume = float(sys.argv[2]) if len(sys.argv) == 3 else 1.0
-        
-    soundhandle.playWave(sys.argv[1], volume)
+    volume = float(argv[2]) if len(argv) == 3 else 1.0
+
+    soundhandle.playWave(argv[1], volume)
     rospy.sleep(1)

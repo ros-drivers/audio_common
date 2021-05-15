@@ -1,10 +1,15 @@
-<package>
+<?xml version="1.0"?>
+<?xml-model
+  href="http://download.ros.org/schema/package_format3.xsd"
+  schematypens="http://www.w3.org/2001/XMLSchema"?>
+<package format="3">
    <name>sound_play</name>
-   <version>0.3.4</version>
+   <version>0.3.11</version>
    <description>
       sound_play provides a ROS node that translates commands on a ROS topic (<tt>robotsound</tt>) into sounds. The node supports built-in sounds, playing OGG/WAV files, and doing speech synthesis via festival. C++ and Python bindings allow this node to be used without understanding the details of the message format, allowing faster development and resilience to message format changes.
    </description>
    <maintainer email="namniart@gmail.com">Austin Hendrix</maintainer>
+   <maintainer email="shingogo.5511@gmail.com">Shingo Kitagawa</maintainer>
    <author>Blaise Gassend</author>
    <license>BSD</license>
    <url type="website">http://ros.org/wiki/sound_play</url>
@@ -12,6 +17,8 @@
    <url type="bugtracker">https://github.com/ros-drivers/audio_common/issues</url>
 
    <buildtool_depend>catkin</buildtool_depend>
+   <buildtool_depend condition="$ROS_PYTHON_VERSION == 2">python-setuptools</buildtool_depend>
+   <buildtool_depend condition="$ROS_PYTHON_VERSION == 3">python3-setuptools</buildtool_depend>
 
    <build_depend>roscpp</build_depend>
    <build_depend>roslib</build_depend>
@@ -21,21 +28,23 @@
    <build_depend>diagnostic_msgs</build_depend>
    <build_depend>message_generation</build_depend>
 
-   <run_depend>roscpp</run_depend>
-   <run_depend>roslib</run_depend>
-   <run_depend>actionlib_msgs</run_depend>
-   <run_depend>audio_common_msgs</run_depend>
-   <run_depend>diagnostic_msgs</run_depend>
+   <exec_depend>roscpp</exec_depend>
+   <exec_depend>roslib</exec_depend>
+   <exec_depend>actionlib_msgs</exec_depend>
+   <exec_depend>audio_common_msgs</exec_depend>
+   <exec_depend>diagnostic_msgs</exec_depend>
 
-   <run_depend>python-gi</run_depend>
-   <run_depend>gstreamer1.0</run_depend>
-   <run_depend>gstreamer1.0-plugins-base</run_depend>
-   <run_depend>gstreamer1.0-plugins-ugly</run_depend>
-   <run_depend>gstreamer1.0-plugins-good</run_depend>
+   <exec_depend condition="$ROS_PYTHON_VERSION == 2">python-gi</exec_depend>
+   <exec_depend condition="$ROS_PYTHON_VERSION == 3">python3-gi</exec_depend>
+   <exec_depend>gstreamer1.0</exec_depend>
+   <exec_depend>gstreamer1.0-alsa</exec_depend>
+   <exec_depend>gstreamer1.0-plugins-base</exec_depend>
+   <exec_depend>gstreamer1.0-plugins-ugly</exec_depend>
+   <exec_depend>gstreamer1.0-plugins-good</exec_depend>
 
-   <run_depend>rospy</run_depend>
-   <run_depend>festival</run_depend>
-   <run_depend>message_runtime</run_depend>
+   <exec_depend>rospy</exec_depend>
+   <exec_depend>festival</exec_depend>
+   <exec_depend>message_runtime</exec_depend>
 
    <export>
       <cpp cflags="-I${prefix}/include -I${prefix}/msg/cpp" />

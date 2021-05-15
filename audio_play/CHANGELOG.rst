@@ -2,6 +2,58 @@
 Changelog for package audio_play
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.3.11 (2021-04-08)
+-------------------
+
+0.3.10 (2021-01-07)
+-------------------
+
+0.3.9 (2020-10-22)
+------------------
+* Merge pull request `#160 <https://github.com/ros-drivers/audio_common/issues/160>`_ from knorth55/add-device-play
+* refactor audio_play to use same code
+* add audioresample in audio_play
+* apply caps for both formats
+* add device for wave format
+* add sync false for alsasink
+* use alsasink
+* add depth rosparam
+* add device arg in play.launch
+* fix audio_play to save file
+* Contributors: Shingo Kitagawa
+
+0.3.8 (2020-09-13)
+------------------
+* Merge pull request `#151 <https://github.com/ros-drivers/audio_common/issues/151>`_ from knorth55/do-timestamp-false
+  [audio_play] set do_timestamp false
+* set do_timestamp false
+* Contributors: Shingo Kitagawa
+
+0.3.7 (2020-08-08)
+------------------
+* Merge pull request `#146 <https://github.com/ros-drivers/audio_common/issues/146>`_ from knorth55/mp3-support
+* support format, rate, channels in mp3
+* Merge pull request `#127 <https://github.com/ros-drivers/audio_common/issues/127>`_ from knorth55/audio-play-wave
+  [audio_play] support wave format
+* add sample_format param in audio_play
+* add channels and sample_rate in audio_play/play.launch
+* add channels and sample_rate in audio_play.cpp
+* add format arg in play.launch
+* support wave in audio_play
+* Merge pull request `#144 <https://github.com/ros-drivers/audio_common/issues/144>`_ from ros-drivers/knorth55-patch-1
+* add gstreamer1.0-alsa for run_depend in audio_play
+* Contributors: Shingo Kitagawa
+
+0.3.6 (2020-05-29)
+------------------
+* Merge pull request `#141 <https://github.com/ros-drivers/audio_common/issues/141>`_ from knorth55/add-maintainer
+  add maintainer
+* add maintainer
+* Contributors: Shingo Kitagawa
+
+0.3.5 (2020-04-28)
+------------------
+
 0.3.4 (2020-04-02)
 ------------------
 * audio_play fix for reproducing livestream sound (`#122 <https://github.com/ros-drivers/audio_common/issues/122>`_)

@@ -2,6 +2,34 @@
 Changelog for package audio_common_msgs
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.3.11 (2021-04-08)
+-------------------
+
+0.3.10 (2021-01-07)
+-------------------
+* Change comment style in AudioInfo.msg
+* [audio_common_msgs] AudioInfo.msg to add audio meta data
+* Contributors: Naoya Yamaguchi
+
+0.3.9 (2020-10-22)
+------------------
+
+0.3.8 (2020-09-13)
+------------------
+
+0.3.7 (2020-08-08)
+------------------
+
+0.3.6 (2020-05-29)
+------------------
+* Merge pull request `#141 <https://github.com/ros-drivers/audio_common/issues/141>`_ from knorth55/add-maintainer
+  add maintainer
+* add maintainer
+* Contributors: Shingo Kitagawa
+
+0.3.5 (2020-04-28)
+------------------
+
 0.3.4 (2020-04-02)
 ------------------
 * Merge branch 'master' of github.com:ros-drivers/audio_common

@@ -1,12 +1,13 @@
 <package>
    <name>audio_capture</name>
-   <version>0.3.4</version>
+   <version>0.3.11</version>
    <description>
       Transports audio from a source to a destination. Audio sources can come
       from a microphone or file. The destination can play the audio or save it
       to an mp3 file.
    </description>
    <maintainer email="namniart@gmail.com">Austin Hendrix</maintainer>
+   <maintainer email="shingogo.5511@gmail.com">Shingo Kitagawa</maintainer>
    <author>Nate Koenig</author>
    <license>BSD</license>
    <url type="website">http://ros.org/wiki/audio_capture</url>

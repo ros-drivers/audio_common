@@ -12,7 +12,7 @@ def sound_play_client(volume=1.0):
 
     client.wait_for_server()
 
-    print "Need Unplugging"
+    rospy.loginfo("Need Unplugging")
     goal = SoundRequestGoal()
     goal.sound_request.sound = SoundRequest.NEEDS_UNPLUGGING
     goal.sound_request.command = SoundRequest.PLAY_ONCE
@@ -20,22 +20,20 @@ def sound_play_client(volume=1.0):
 
     client.send_goal(goal)
     client.wait_for_result()
-    print client.get_result()
-    print "End Need Unplugging"
-    print
+    # print client.get_result()
+    rospy.loginfo("End Need Unplugging")
 
-    print "Need Plugging"
+    rospy.loginfo("Need Plugging")
     goal = SoundRequestGoal()
     goal.sound_request.sound = SoundRequest.NEEDS_PLUGGING
     goal.sound_request.command = SoundRequest.PLAY_ONCE
     goal.sound_request.volume = volume
     client.send_goal(goal)
     client.wait_for_result()
-    print client.get_result()
-    print "End Need Plugging"
-    print
+    # print client.get_result()
+    rospy.loginfo("End Need Plugging")
 
-    print "Say"
+    rospy.loginfo("Say")
     goal = SoundRequestGoal()
     goal.sound_request.sound = SoundRequest.SAY
     goal.sound_request.command = SoundRequest.PLAY_ONCE
@@ -43,11 +41,10 @@ def sound_play_client(volume=1.0):
     goal.sound_request.volume = volume
     client.send_goal(goal)
     client.wait_for_result()
-    print client.get_result()
-    print "End Say"
-    print
+    # print client.get_result()
+    rospy.loginfo("End Say")
 
-    print "Wav"
+    rospy.loginfo("Wav")
     goal = SoundRequestGoal()
     goal.sound_request.sound = SoundRequest.PLAY_FILE
     goal.sound_request.command = SoundRequest.PLAY_ONCE
@@ -55,9 +52,8 @@ def sound_play_client(volume=1.0):
     goal.sound_request.volume = volume
     client.send_goal(goal)
     client.wait_for_result()
-    print client.get_result()
-    print "End wav"
-    print
+    # print client.get_result()
+    rospy.loginfo("End wav")
 
 if __name__ == '__main__':
     rospy.init_node('soundplay_client_test')

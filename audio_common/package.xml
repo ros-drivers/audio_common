@@ -1,10 +1,11 @@
 <package>
    <name>audio_common</name>
-   <version>0.3.4</version>
+   <version>0.3.11</version>
    <description>
       Common code for working with audio in ROS
    </description>
    <maintainer email="namniart@gmail.com">Austin Hendrix</maintainer>
+   <maintainer email="shingogo.5511@gmail.com">Shingo Kitagawa</maintainer>
    <author>Blaise Gassend</author>
    <license>BSD</license>  
    <url type="website">http://ros.org/wiki/audio_common</url>

@@ -2,6 +2,66 @@
 Changelog for package sound_play
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.3.11 (2021-04-08)
+-------------------
+* Merge pull request `#167 <https://github.com/ros-drivers/audio_common/issues/167>`_ from k-okada/fix_155
+* Use rospy.myargv() instead of sys.argv to support remapping
+* Contributors: Kei Okada, Shingo Kitagawa
+
+0.3.10 (2021-01-07)
+-------------------
+
+0.3.9 (2020-10-22)
+------------------
+
+0.3.8 (2020-09-13)
+------------------
+* Merge pull request `#155 <https://github.com/ros-drivers/audio_common/issues/155>`_ from garaemon/use-myargv
+  Use rospy.myargv() instead of sys.argv to support remapping
+* Use rospy.myargv() instead of sys.argv to support remapping
+* Merge pull request `#154 <https://github.com/ros-drivers/audio_common/issues/154>`_ from mikaelarguedas/fix_say_python3
+* update to support no iso-8859-15 language (`#1 <https://github.com/ros-drivers/audio_common/issues/1>`_)
+  * support non iso-8859-15 language
+  * encode only for python2
+* convert items to an iterator
+* make cleanup compatible with Python 3
+* catch AttributeError to handle python3 strings
+* Contributors: Mikael Arguedas, Ryohei Ueda, Shingo Kitagawa
+
+0.3.7 (2020-08-08)
+------------------
+* Merge pull request `#149 <https://github.com/ros-drivers/audio_common/issues/149>`_ from garaemon/specify-topic-to-play-sound
+  Support use different topic and actionlib to play sound
+* Support use different topic and actionlib to play sound
+  * Add two keywords to the constructor of SoundClient class in order to
+  specify actionlib namespace and topic name to play sound.
+  * See `#119 <https://github.com/ros-drivers/audio_common/issues/119>`_.
+* Merge pull request `#144 <https://github.com/ros-drivers/audio_common/issues/144>`_ from ros-drivers/knorth55-patch-1
+* add gstreamer1.0-alsa exec_depend in sound_play
+* Contributors: Ryohei Ueda, Shingo Kitagawa
+
+0.3.6 (2020-05-29)
+------------------
+* Merge pull request `#140 <https://github.com/ros-drivers/audio_common/issues/140>`_ from knorth55/support-python3
+  fix syntax for python3
+* Merge pull request `#141 <https://github.com/ros-drivers/audio_common/issues/141>`_ from knorth55/add-maintainer
+  add maintainer
+* add maintainer
+* fix syntax for python3
+* Contributors: Shingo Kitagawa
+
+0.3.5 (2020-04-28)
+------------------
+* Merge pull request `#133 <https://github.com/ros-drivers/audio_common/issues/133>`_ from knorth55/noetic-build
+* remove unnecessary shebang
+* use setuptools instead of distutils.core
+* use package format=3 for python3
+* refactor CMakeLists.txt
+* use catkin_install_python for python shebang
+* Merge pull request `#135 <https://github.com/ros-drivers/audio_common/issues/135>`_ from knorth55/add-travis
+* disable sound_play test
+* Contributors: Shingo Kitagawa
+
 0.3.4 (2020-04-02)
 ------------------
 * Merge pull request `#126 <https://github.com/ros-drivers/audio_common/issues/126>`_ from itohdak/fix-Gstreamer-memory-leak
