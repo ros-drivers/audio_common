@@ -1,5 +1,5 @@
 # ROS audio\_common Package
-[![](https://github.com/ros-drivers/audio_common/actions/workflows/main.yml/badge.svg?=master)](https://travis-ci.com/github/ros-drivers/audio_common)
+[![](https://github.com/ros-drivers/audio_common/actions/workflows/main.yml/badge.svg?=master)](https://github.com/ros-drivers/audio_common/actions/workflows/main.yml)
 
 This repository contains the ROS audio\_common package.
 
