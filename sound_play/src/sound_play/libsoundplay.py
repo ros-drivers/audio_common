@@ -38,6 +38,7 @@ import rospy
 import roslib
 import actionlib
 import os, sys
+from actionlib_msgs.msg import GoalStatusArray
 from sound_play.msg import SoundRequest
 from sound_play.msg import SoundRequestGoal
 from sound_play.msg import SoundRequestAction
@@ -115,12 +116,15 @@ class SoundClient(object):
         """
 
         self._blocking = blocking
+        self._playing = False
 
         # NOTE: only one of these will be used at once, but we need to create
         # both the publisher and actionlib client here.
         self.actionclient = actionlib.SimpleActionClient(
             sound_action, SoundRequestAction)
         self.pub = rospy.Publisher(sound_topic, SoundRequest, queue_size=5)
+        self.sub = rospy.Subscriber(
+            '{}/status'.format(sound_action), GoalStatusArray, self._action_status_cb)
 
 ## \brief Create a voice Sound.
 ##
@@ -298,7 +302,7 @@ class SoundClient(object):
     def stopAll(self):
         self.stop(SoundRequest.ALL)
 
-    def sendMsg(self, snd, cmd, s, arg2="", vol=1.0, **kwargs):
+    def sendMsg(self, snd, cmd, s, arg2="", vol=1.0, replace=True, **kwargs):
         """
         Internal method that publishes the sound request, either directly as a
         SoundRequest to the soundplay_node or through the actionlib interface
@@ -343,8 +347,15 @@ class SoundClient(object):
             self.actionclient.wait_for_server()
             goal = SoundRequestGoal()
             goal.sound_request = msg
+            while not replace and self._playing:
+                rospy.sleep(0.1)
             self.actionclient.send_goal(goal)
             self.actionclient.wait_for_result()
             rospy.logdebug('sound request response received')
-
         return
+
+    def _action_status_cb(self, msg):
+        if 1 in [s.status for s in msg.status_list]:
+            self._playing = True
+        else:
+            self._playing = False
