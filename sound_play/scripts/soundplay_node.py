@@ -377,6 +377,8 @@ class soundplay:
     def execute_cb(self, data):
         data = data.sound_request
         if not self.initialized:
+            rospy.logerr('soundplay_node is not initialized yet.')
+            self._as.set_aborted()
             return
         self.mutex.acquire()
         # Force only one sound at a time
@@ -412,6 +414,7 @@ class soundplay:
                     self._as.set_succeeded(self._result)
 
         except Exception as e:
+            self._as.set_aborted()
             rospy.logerr('Exception in actionlib callback: %s'%str(e))
             rospy.loginfo(traceback.format_exc())
         finally:
