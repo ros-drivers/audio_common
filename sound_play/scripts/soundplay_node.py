@@ -52,6 +52,7 @@ try:
     import gi
     gi.require_version('Gst', '1.0')
     from gi.repository import Gst as Gst
+    from gi.repository import GObject as GObject
 except:
     str="""
 **************************************************************
@@ -62,7 +63,6 @@ Error opening pygst. Is gstreamer installed?
     # print str
     exit(1)
 
-from gi.repository import GObject as GObject
 
 def sleep(t):
     try:
