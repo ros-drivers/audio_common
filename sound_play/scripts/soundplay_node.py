@@ -245,8 +245,9 @@ class soundplay:
                 sound = self.filesounds[absfilename]
         elif data.sound == SoundRequest.SAY:
             # print data
-            if not data.arg in self.voicesounds.keys():
-                rospy.logdebug('command for uncached text: "%s"' % data.arg)
+            voice_key = data.arg + '---' + data.arg2
+            if not voice_key in self.voicesounds.keys():
+                rospy.logdebug('command for uncached text: "%s"' % voice_key)
                 txtfile = tempfile.NamedTemporaryFile(prefix='sound_play', suffix='.txt')
                 (wavfile,wavfilename) = tempfile.mkstemp(prefix='sound_play', suffix='.wav')
                 txtfilename=txtfile.name
@@ -271,15 +272,15 @@ class soundplay:
                     except OSError:
                         rospy.logerr('Sound synthesis failed. Is festival installed? Is a festival voice installed? Try running "rosdep satisfy sound_play|sh". Refer to http://wiki.ros.org/sound_play/Troubleshooting')
                         return
-                    self.voicesounds[data.arg] = soundtype(wavfilename, self.device, data.volume)
+                    self.voicesounds[voice_key] = soundtype(wavfilename, self.device, data.volume)
                 finally:
                     txtfile.close()
             else:
-                rospy.logdebug('command for cached text: "%s"'%data.arg)
-                if self.voicesounds[data.arg].sound.get_property('volume') != data.volume:
+                rospy.logdebug('command for cached text: "%s"' % voice_key)
+                if self.voicesounds[voice_key].sound.get_property('volume') != data.volume:
                     rospy.logdebug('volume for cached text has changed, resetting volume')
-                    self.voicesounds[data.arg].sound.set_property('volume', data.volume)
-            sound = self.voicesounds[data.arg]
+                    self.voicesounds[voice_key].sound.set_property('volume', data.volume)
+            sound = self.voicesounds[voice_key]
         else:
             rospy.logdebug('command for builtin wave: %i'%data.sound)
             if data.sound not in self.builtinsounds or (data.sound in self.builtinsounds and data.volume != self.builtinsounds[data.sound].volume):
