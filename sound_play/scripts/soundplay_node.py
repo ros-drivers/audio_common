@@ -395,7 +395,7 @@ class soundplay:
                 sound = self.select_sound(data)
                 sound.command(data.command)
 
-                r = rospy.Rate(1)
+                r = rospy.Rate(self.loop_rate)
                 start_time = rospy.get_rostime()
                 success = True
                 while sound.get_playing():
@@ -436,6 +436,7 @@ class soundplay:
         self.g_loop.start()
 
         rospy.init_node('sound_play')
+        self.loop_rate = rospy.get_param('~loop_rate', 100)
         self.device = rospy.get_param("~device", "default")
         self.diagnostic_pub = rospy.Publisher("/diagnostics", DiagnosticArray, queue_size=1)
         rootdir = os.path.join(roslib.packages.get_pkg_dir('sound_play'),'sounds')
