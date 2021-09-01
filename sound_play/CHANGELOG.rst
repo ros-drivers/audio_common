@@ -2,8 +2,8 @@
 Changelog for package sound_play
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.3.12 (2021-09-01)
+-------------------
 * Merge pull request `#175 <https://github.com/ros-drivers/audio_common/issues/175>`_ from iory/rate
   Modified loop rate for action execution
 * Modified loop rate for action execution
