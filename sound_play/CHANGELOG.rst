@@ -2,6 +2,29 @@
 Changelog for package sound_play
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Merge pull request `#175 <https://github.com/ros-drivers/audio_common/issues/175>`_ from iory/rate
+  Modified loop rate for action execution
+* Modified loop rate for action execution
+* Merge pull request `#131 <https://github.com/ros-drivers/audio_common/issues/131>`_ from yann-bourrigault/master
+  Handle playing sound in loop
+* import GObject in try section
+* Merge pull request `#174 <https://github.com/ros-drivers/audio_common/issues/174>`_ from iory/cache
+  Add arg2 information for cache
+* Add arg2 information for cache
+* Merge pull request `#173 <https://github.com/ros-drivers/audio_common/issues/173>`_ from knorth55/replace-sound-client
+* Merge pull request `#172 <https://github.com/ros-drivers/audio_common/issues/172>`_ from knorth55/start-action-after-init
+  [sound_play] start ActionServer after initialize in soundplay_node.py
+* Merge pull request `#171 <https://github.com/ros-drivers/audio_common/issues/171>`_ from knorth55/set-aborted
+  [sound_play] add proper set_aborted in soundplay_node.py
+* add replace in sendMsg
+* start actionserver after initialize in soundplay_node.py
+* add proper set_aborted in soundplay_node.py
+* Merge branch 'master' into master
+* Handle playing sound repeatedly
+* Contributors: Shingo Kitagawa, Yann BOURRIGAULT, iory
+
 0.3.11 (2021-04-08)
 -------------------
 * Merge pull request `#167 <https://github.com/ros-drivers/audio_common/issues/167>`_ from k-okada/fix_155

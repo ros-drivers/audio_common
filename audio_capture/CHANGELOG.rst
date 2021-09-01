@@ -2,6 +2,11 @@
 Changelog for package audio_capture
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Merge branch 'master' into master
+* Contributors: Shingo Kitagawa
+
 0.3.11 (2021-04-08)
 -------------------
 
