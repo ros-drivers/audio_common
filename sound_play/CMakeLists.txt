@@ -17,6 +17,7 @@ catkin_package(CATKIN_DEPENDS message_runtime actionlib_msgs
                INCLUDE_DIRS include)
 
 catkin_install_python(PROGRAMS
+  scripts/is_speaking.py
   scripts/playbuiltin.py
   scripts/play.py
   scripts/say.py
