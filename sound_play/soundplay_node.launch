@@ -12,10 +12,10 @@ sounds based on messages on the robotsound topic.
   </node>
 
   <group ns="sound_play" >
-    <node name="is_speeching"
-          pkg="sound_play" type="is_speeching.py" >
+    <node name="is_speaking"
+          pkg="sound_play" type="is_speaking.py" >
       <remap from="~robotsound" to="status" />
-      <remap from="~output/is_speeching" to="is_speeching" />
+      <remap from="~output/is_speaking" to="is_speaking" />
     </node>
   </group>
 </launch>
