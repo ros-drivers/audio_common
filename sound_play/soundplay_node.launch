@@ -10,4 +10,12 @@ sounds based on messages on the robotsound topic.
     <param name="device" value="$(arg device)" />
     <param name="loop_rate" value="$(arg loop_rate)" />
   </node>
+
+  <group ns="sound_play" >
+    <node name="is_speaking"
+          pkg="sound_play" type="is_speaking.py" >
+      <remap from="~robotsound" to="status" />
+      <remap from="~output/is_speaking" to="is_speaking" />
+    </node>
+  </group>
 </launch>
