@@ -1,7 +1,7 @@
 SoundRequest sound_request
 ---
 bool playing
-time stamp
+builtin_interfaces/Duration stamp
 ---
 bool playing
-time stamp
+builtin_interfaces/Duration stamp

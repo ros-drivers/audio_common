@@ -1,44 +1,64 @@
-cmake_minimum_required(VERSION 2.8.3)
-
+cmake_minimum_required(VERSION 3.5)
 project(sound_play)
 
-find_package(catkin REQUIRED COMPONENTS message_generation roscpp actionlib_msgs)
+if(NOT CMAKE_CXX_STANDARD)
+  set(CMAKE_CXX_STANDARD 14)
+endif()
 
-add_action_files(DIRECTORY action FILES SoundRequest.action)
-add_message_files(DIRECTORY msg FILES SoundRequest.msg)
+if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+  add_compile_options(-Wall -Wextra -Wpedantic)
+endif()
 
-include_directories(include ${catkin_INCLUDE_DIRS})
+find_package(ament_cmake REQUIRED)
+find_package(rosidl_default_generators REQUIRED)
+find_package(audio_common_msgs REQUIRED)
+find_package(action_msgs REQUIRED)
 
-catkin_python_setup()
+include_directories(rclcpp audio_common_msgs action_msgs builtin_interfaces)
 
-generate_messages(DEPENDENCIES actionlib_msgs)
+set(msg_files
+  "msg/SoundRequest.msg"
+)
 
-catkin_package(CATKIN_DEPENDS message_runtime actionlib_msgs
-               INCLUDE_DIRS include)
+set(action_files
+  "action/SoundRequest.action"
+)
 
-catkin_install_python(PROGRAMS
+rosidl_generate_interfaces(${PROJECT_NAME}
+  ${msg_files}
+  ${action_files}
+  DEPENDENCIES
+    action_msgs
+    audio_common_msgs
+    builtin_interfaces
+)
+
+ament_python_install_package(${PROJECT_NAME})
+
+install(PROGRAMS
   scripts/is_speaking.py
   scripts/playbuiltin.py
   scripts/play.py
   scripts/say.py
   scripts/shutup.py
   scripts/soundplay_node.py
-  scripts/test.py
-  scripts/test_actionlib_client.py
-  DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
-
-install(FILES
-  soundplay_node.launch
-  test.launch
-  DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION})
+  # scripts/test.py
+  # scripts/test_actionlib_client.py
+  DESTINATION lib/${PROJECT_NAME}
+)
 
 install(DIRECTORY include/${PROJECT_NAME}/
-        DESTINATION ${CATKIN_PACKAGE_INCLUDE_DESTINATION})
+  DESTINATION include/${PROJECT_NAME}
+)
+
+install(DIRECTORY launch
+  DESTINATION share/${PROJECT_NAME}
+)
 
 install(DIRECTORY sounds
-        DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION})
+  DESTINATION share/${PROJECT_NAME}
+)
 
-# if(CATKIN_ENABLE_TESTING)
-#   catkin_add_nosetests(scripts/test)
-#   add_subdirectory(test)
-# endif()
+ament_export_dependencies(rosidl_default_runtime)
+
+ament_package()
