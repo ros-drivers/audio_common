@@ -3,44 +3,52 @@
 #include <gst/app/gstappsink.h>
 #include <boost/thread.hpp>
 
-#include <ros/ros.h>
+#include <rclcpp/rclcpp.hpp>
 
-#include "audio_common_msgs/AudioData.h"
-#include "audio_common_msgs/AudioInfo.h"
+#include "audio_common_msgs/msg/audio_data.hpp"
+#include "audio_common_msgs/msg/audio_info.hpp"
 
 namespace audio_transport
 {
-  class RosGstCapture
+  class RosGstCapture: public rclcpp::Node
   {
     public:
       RosGstCapture()
+      : Node("audio_capture")
       {
         _bitrate = 192;
-
         std::string dst_type;
+        std::string device;
 
         // Need to encoding or publish raw wave data
-        ros::param::param<std::string>("~format", _format, "mp3");
-        ros::param::param<std::string>("~sample_format", _sample_format, "S16LE");
+        this->declare_parameter<std::string>("~format", "mp3");
+        this->declare_parameter<std::string>("~sample_format", "S16LE");
+        this->get_parameter("~format", _format);
+        this->get_parameter("~sample_format", _sample_format);
 
         // The bitrate at which to encode the audio
-        ros::param::param<int>("~bitrate", _bitrate, 192);
+        this->declare_parameter<int>("~bitrate", 192);
+        this->get_parameter("~bitrate", _bitrate);
 
         // only available for raw data
-        ros::param::param<int>("~channels", _channels, 1);
-        ros::param::param<int>("~depth", _depth, 16);
-        ros::param::param<int>("~sample_rate", _sample_rate, 16000);
+        this->declare_parameter<int>("~channels", 1);
+        this->declare_parameter<int>("~depth", 16);
+        this->declare_parameter<int>("~sample_rate", 16000);
+        this->get_parameter("~channels", _channels);
+        this->get_parameter("~depth", _depth);
+        this->get_parameter("~sample_rate", _sample_rate);
 
         // The destination of the audio
-        ros::param::param<std::string>("~dst", dst_type, "appsink");
+        this->declare_parameter<std::string>("~dst", "appsink");
+        this->get_parameter("~dst", dst_type);
 
         // The source of the audio
-        //ros::param::param<std::string>("~src", source_type, "alsasrc");
-        std::string device;
-        ros::param::param<std::string>("~device", device, "");
+        //this->declare_parameter<std::string>("~src", source_type, "alsasrc");
+        this->declare_parameter<std::string>("~device", "");
+        this->get_parameter("~device", device);
 
-        _pub = _nh.advertise<audio_common_msgs::AudioData>("audio", 10, true);
-        _pub_info = _nh.advertise<audio_common_msgs::AudioInfo>("audio_info", 1, true);
+        _pub = this->create_publisher<audio_common_msgs::msg::AudioData>("audio", 10);
+        _pub_info = this->create_publisher<audio_common_msgs::msg::AudioInfo>("audio_info", 1);
 
         _loop = g_main_loop_new(NULL, false);
         _pipeline = gst_pipeline_new("ros_pipeline");
@@ -61,7 +69,7 @@ namespace audio_transport
         }
         else
         {
-          ROS_INFO("file sink to %s", dst_type.c_str());
+          RCLCPP_INFO_STREAM(this->get_logger(), "file sink to " << dst_type.c_str());
           _sink = gst_element_factory_make("filesink", "sink");
           g_object_set( G_OBJECT(_sink), "location", dst_type.c_str(), NULL);
         }
@@ -95,13 +103,13 @@ namespace audio_transport
 
           _convert = gst_element_factory_make("audioconvert", "convert");
           if (!_convert) {
-            ROS_ERROR_STREAM("Failed to create audioconvert element");
+            RCLCPP_ERROR_STREAM(this->get_logger(), "Failed to create audioconvert element");
             exitOnMainThread(1);
           }
 
           _encode = gst_element_factory_make("lamemp3enc", "encoder");
           if (!_encode) {
-            ROS_ERROR_STREAM("Failed to create encoder element");
+            RCLCPP_ERROR_STREAM(this->get_logger(), "Failed to create encoder element");
             exitOnMainThread(1);
           }
           g_object_set( G_OBJECT(_encode), "target", 1, NULL);
@@ -121,7 +129,7 @@ namespace audio_transport
             link_ok = gst_element_link_many( _source, _filter, _sink, NULL);
           }
         } else {
-          ROS_ERROR_STREAM("format must be \"wave\" or \"mp3\"");
+          RCLCPP_ERROR_STREAM(this->get_logger(), "format must be \"wave\" or \"mp3\"");
           exitOnMainThread(1);
         }
         /*}
@@ -137,7 +145,7 @@ namespace audio_transport
         */
 
         if (!link_ok) {
-          ROS_ERROR_STREAM("Unsupported media type.");
+          RCLCPP_ERROR_STREAM(this->get_logger(), "Unsupported media type.");
           exitOnMainThread(1);
         }
 
@@ -145,13 +153,13 @@ namespace audio_transport
 
         _gst_thread = boost::thread( boost::bind(g_main_loop_run, _loop) );
 
-        audio_common_msgs::AudioInfo info_msg;
+        audio_common_msgs::msg::AudioInfo info_msg;
         info_msg.channels = _channels;
         info_msg.sample_rate = _sample_rate;
         info_msg.sample_format = _sample_format;
         info_msg.bitrate = _bitrate;
         info_msg.coding_format = _format;
-        _pub_info.publish(info_msg);
+        _pub_info->publish(info_msg);
       }
 
       ~RosGstCapture()
@@ -167,9 +175,9 @@ namespace audio_transport
         exit(code);
       }
 
-      void publish( const audio_common_msgs::AudioData &msg )
+      void publish( const audio_common_msgs::msg::AudioData &msg )
       {
-        _pub.publish(msg);
+        _pub->publish(msg);
       }
 
       static GstFlowReturn onNewBuffer (GstAppSink *appsink, gpointer userData)
@@ -182,7 +190,7 @@ namespace audio_transport
 
         GstBuffer *buffer = gst_sample_get_buffer(sample);
 
-        audio_common_msgs::AudioData msg;
+        audio_common_msgs::msg::AudioData msg;
         gst_buffer_map(buffer, &map, GST_MAP_READ);
         msg.data.resize( map.size );
 
@@ -203,7 +211,7 @@ namespace audio_transport
         gchar *debug;
 
         gst_message_parse_error(message, &err, &debug);
-        ROS_ERROR_STREAM("gstreamer: " << err->message);
+        // RCLCPP_ERROR_STREAM(this->get_logger(), "gstreamer: " << err->message);
         g_error_free(err);
         g_free(debug);
         g_main_loop_quit(server->_loop);
@@ -212,9 +220,8 @@ namespace audio_transport
       }
 
     private:
-      ros::NodeHandle _nh;
-      ros::Publisher _pub;
-      ros::Publisher _pub_info;
+      rclcpp::Publisher<audio_common_msgs::msg::AudioData>::SharedPtr _pub;
+      rclcpp::Publisher<audio_common_msgs::msg::AudioInfo>::SharedPtr _pub_info;
 
       boost::thread _gst_thread;
 
@@ -228,9 +235,9 @@ namespace audio_transport
 
 int main (int argc, char **argv)
 {
-  ros::init(argc, argv, "audio_capture");
+  rclcpp::init(argc, argv);
   gst_init(&argc, &argv);
-
-  audio_transport::RosGstCapture server;
-  ros::spin();
+  rclcpp::spin(std::make_shared<audio_transport::RosGstCapture>());
+  rclcpp::shutdown();
+  return 0;
 }
