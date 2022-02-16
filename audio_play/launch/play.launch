@@ -7,6 +7,7 @@
   <arg name="channels" default="1"/>
   <arg name="sample_rate" default="16000"/>
   <arg name="sample_format" default="S16LE"/>
+  <arg name="audio_topic" default="audio" />
 
   <group ns="$(arg ns)">
   <node name="audio_play" pkg="audio_play" type="audio_play" output="screen">
@@ -17,6 +18,7 @@
     <param name="channels" value="$(arg channels)"/>
     <param name="sample_rate" value="$(arg sample_rate)"/>
     <param name="sample_format" value="$(arg sample_format)"/>
+    <remap from="audio" to="$(arg audio_topic)" />
   </node>
   </group>
 </launch>
