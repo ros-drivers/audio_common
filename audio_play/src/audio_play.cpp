@@ -1,16 +1,18 @@
 #include <gst/gst.h>
 #include <gst/app/gstappsrc.h>
-#include <ros/ros.h>
 #include <boost/thread.hpp>
 
-#include "audio_common_msgs/AudioData.h"
+#include <rclcpp/rclcpp.hpp>
+
+#include "audio_common_msgs/msg/audio_data.hpp"
 
 namespace audio_transport
 {
-  class RosGstPlay
+  class RosGstPlay: public rclcpp::Node
   {
     public:
       RosGstPlay()
+      : Node("audio_play")
       {
         GstPad *audiopad;
         GstCaps *caps;
@@ -25,16 +27,26 @@ namespace audio_transport
         std::string sample_format;
 
         // The destination of the audio
-        ros::param::param<std::string>("~dst", dst_type, "alsasink");
-        ros::param::param<std::string>("~device", device, std::string());
-        ros::param::param<bool>("~do_timestamp", do_timestamp, true);
-        ros::param::param<std::string>("~format", format, "mp3");
-        ros::param::param<int>("~channels", channels, 1);
-        ros::param::param<int>("~depth", depth, 16);
-        ros::param::param<int>("~sample_rate", sample_rate, 16000);
-        ros::param::param<std::string>("~sample_format", sample_format, "S16LE");
+        this->declare_parameter<std::string>("~dst", "alsasink");
+        this->declare_parameter<std::string>("~device", std::string());
+        this->declare_parameter<bool>("~do_timestamp",  true);
+        this->declare_parameter<std::string>("~format", "mp3");
+        this->declare_parameter<int>("~channels", 1);
+        this->declare_parameter<int>("~depth", 16);
+        this->declare_parameter<int>("~sample_rate", 16000);
+        this->declare_parameter<std::string>("~sample_format", "S16LE");
 
-        _sub = _nh.subscribe("audio", 10, &RosGstPlay::onAudio, this);
+        this->get_parameter("~dst", dst_type);
+        this->get_parameter("~device", device);
+        this->get_parameter("~do_timestamp", do_timestamp);
+        this->get_parameter("~format", format);
+        this->get_parameter("~channels", channels);
+        this->get_parameter("~depth", depth);
+        this->get_parameter("~sample_rate", sample_rate);
+        this->get_parameter("~sample_format", sample_format);
+
+        _sub = this->create_subscription<audio_common_msgs::msg::AudioData>(
+            "audio", 10, std::bind(&RosGstPlay::onAudio, this, std::placeholders::_1));
 
         _loop = g_main_loop_new(NULL, false);
 
@@ -73,7 +85,7 @@ namespace audio_transport
         }
         else
         {
-          ROS_INFO("file sink to %s", dst_type.c_str());
+          RCLCPP_INFO_STREAM(this->get_logger(), "file sink to " << dst_type.c_str());
           _sink = gst_element_factory_make("filesink", "sink");
           g_object_set(G_OBJECT(_sink), "location", dst_type.c_str(), NULL);
         }
@@ -119,7 +131,7 @@ namespace audio_transport
         }
         else
         {
-          ROS_ERROR("Unsupported format: %s", format.c_str());
+          RCLCPP_ERROR_STREAM(this->get_logger(), "Unsupported format: " << format.c_str());
         }
 
         gst_element_set_state(GST_ELEMENT(_pipeline), GST_STATE_PLAYING);
@@ -130,7 +142,7 @@ namespace audio_transport
 
     private:
 
-      void onAudio(const audio_common_msgs::AudioDataConstPtr &msg)
+      void onAudio(const audio_common_msgs::msg::AudioData::SharedPtr msg) const
       {
         GstBuffer *buffer = gst_buffer_new_and_alloc(msg->data.size());
         gst_buffer_fill(buffer, 0, &msg->data[0], msg->data.size());
@@ -173,8 +185,7 @@ namespace audio_transport
         g_object_unref (audiopad);
       }
 
-      ros::NodeHandle _nh;
-      ros::Subscriber _sub;
+      rclcpp::Subscription<audio_common_msgs::msg::AudioData>::SharedPtr _sub;
       boost::thread _gst_thread;
 
       GstElement *_pipeline, *_source, *_sink, *_decoder, *_convert, *_audio, *_resample, *_filter;
@@ -186,10 +197,9 @@ namespace audio_transport
 
 int main (int argc, char **argv)
 {
-  ros::init(argc, argv, "audio_play");
+  rclcpp::init(argc, argv);
   gst_init(&argc, &argv);
-
-  audio_transport::RosGstPlay client;
-
-  ros::spin();
+  rclcpp::spin(std::make_shared<audio_transport::RosGstPlay>());
+  rclcpp::shutdown();
+  return 0;
 }

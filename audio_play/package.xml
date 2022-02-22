@@ -1,4 +1,8 @@
-<package>
+<?xml version="1.0"?>
+<?xml-model
+  href="http://download.ros.org/schema/package_format3.xsd"
+  schematypens="http://www.w3.org/2001/XMLSchema"?>
+<package format="3">
    <name>audio_play</name>
    <version>0.3.12</version>
    <description>
@@ -12,20 +16,28 @@
    <url type="repository">https://github.com/ros-drivers/audio_common</url>
    <url type="bugtracker">https://github.com/ros-drivers/audio_common/issues</url>
 
-   <buildtool_depend>catkin</buildtool_depend>
+   <buildtool_depend>ament_cmake</buildtool_depend>
 
-   <build_depend>roscpp</build_depend>
    <build_depend>audio_common_msgs</build_depend>
+   <build_depend>boost</build_depend>
+   <build_depend>rclcpp</build_depend>
+
    <build_depend>libgstreamer1.0-dev</build_depend>
    <build_depend>libgstreamer-plugins-base1.0-dev</build_depend>
 
-   <run_depend>roscpp</run_depend>
-   <run_depend>audio_common_msgs</run_depend>
-   <run_depend>gstreamer1.0</run_depend>
-   <run_depend>gstreamer1.0-alsa</run_depend>
-   <run_depend>gstreamer1.0-plugins-base</run_depend>
-   <run_depend>gstreamer1.0-plugins-ugly</run_depend>
-   <run_depend>gstreamer1.0-plugins-good</run_depend>
+   <exec_depend>audio_common_msgs</exec_depend>
+   <exec_depend>launch_xml</exec_depend>
+   <exec_depend>rclcpp</exec_depend>
+
+   <exec_depend>gstreamer1.0</exec_depend>
+   <exec_depend>gstreamer1.0-alsa</exec_depend>
+   <exec_depend>gstreamer1.0-plugins-base</exec_depend>
+   <exec_depend>gstreamer1.0-plugins-ugly</exec_depend>
+   <exec_depend>gstreamer1.0-plugins-good</exec_depend>
+
+  <export>
+    <build_type>ament_cmake</build_type>
+  </export>
 
 </package>
 

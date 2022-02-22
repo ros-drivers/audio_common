@@ -10,14 +10,14 @@
   <arg name="sample_format" default="S16LE"/>
   <arg name="ns" default="audio"/>
 
-  <group ns="$(arg ns)">
-    <node name="audio_capture" pkg="audio_capture" type="audio_capture" output="screen">
-      <param name="bitrate" value="$(arg bitrate)"/>
-      <param name="device" value="$(arg device)"/>
-      <param name="channels" value="$(arg channels)"/>
-      <param name="sample_rate" value="$(arg sample_rate)"/>
-      <param name="sample_format" value="$(arg sample_format)"/>
-      <param name="format" value="$(arg format)"/>
+  <group ns="$(var ns)">
+    <node name="audio_capture" pkg="audio_capture" exec="audio_capture" output="screen">
+      <param name="bitrate" value="$(var bitrate)"/>
+      <param name="device" value="$(var device)"/>
+      <param name="channels" value="$(var channels)"/>
+      <param name="sample_rate" value="$(var sample_rate)"/>
+      <param name="sample_format" value="$(var sample_format)"/>
+      <param name="format" value="$(var format)"/>
     </node>
   </group>
 
