@@ -2,6 +2,9 @@
 Changelog for package audio_capture
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 0.3.12 (2021-09-01)
 -------------------
 * Merge branch 'master' into master

@@ -2,6 +2,14 @@
 Changelog for package sound_play
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Merge pull request `#176 <https://github.com/ros-drivers/audio_common/issues/176>`_ from iory/is-speeching
+* Add is_speaking.py to catkin_install_python
+* Fixed name speeching to speaking
+* Add is_speeching node for checking robot is speaking
+* Contributors: Shingo Kitagawa, iory
+
 0.3.12 (2021-09-01)
 -------------------
 * Merge pull request `#175 <https://github.com/ros-drivers/audio_common/issues/175>`_ from iory/rate

@@ -2,6 +2,12 @@
 Changelog for package audio_play
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Merge pull request `#179 <https://github.com/ros-drivers/audio_common/issues/179>`_ from tkmtnt7000/PR-remap-audio-topic
+* audio_play: add audio_topic option
+* Contributors: Naoto Tsukamoto, Shingo Kitagawa
+
 0.3.12 (2021-09-01)
 -------------------
 * Merge branch 'master' into master
