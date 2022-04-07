@@ -2,8 +2,8 @@
 Changelog for package sound_play
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.3.13 (2022-04-07)
+-------------------
 * Merge pull request `#176 <https://github.com/ros-drivers/audio_common/issues/176>`_ from iory/is-speeching
 * Add is_speaking.py to catkin_install_python
 * Fixed name speeching to speaking
