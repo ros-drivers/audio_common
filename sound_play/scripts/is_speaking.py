@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 
+import rospy
 
 from actionlib_msgs.msg import GoalStatusArray
-import rospy
 import std_msgs.msg
 
 
@@ -22,7 +22,7 @@ class IsSpeaking(object):
             '~output/is_speaking',
             std_msgs.msg.Bool, queue_size=1)
 
-        rospy.Timer(rospy.Duration(0.01), self.speech_timer_cb)
+        self.timer = rospy.Timer(rospy.Duration(0.01), self.speech_timer_cb)
 
     def callback(self, msg):
         if any([len(status.text) > 0 for status in msg.status_list]):
@@ -37,5 +37,5 @@ class IsSpeaking(object):
 
 if __name__ == '__main__':
     rospy.init_node('is_speaking')
-    IsSpeaking()
+    app = IsSpeaking()
     rospy.spin()
