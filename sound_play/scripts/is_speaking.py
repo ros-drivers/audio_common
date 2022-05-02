@@ -3,6 +3,7 @@
 import rclpy
 import rclpy.node
 
+from action_msgs.msg import GoalStatus
 from action_msgs.msg import GoalStatusArray
 from std_msgs.msg import Bool
 
@@ -24,11 +25,23 @@ class IsSpeakingNode(rclpy.node.Node):
         self.destroy_timer(self.timer)
         self.dispose()
 
+    def check_speak_status(self, status_msg):
+        """Returns True when speaking.
+
+        """
+        # If it is not included in the terminal state,
+        # it is determined as a speaking state.
+        if status_msg.status in [GoalStatus.STATUS_ACCEPTED,
+                                 GoalStatus.STATUS_EXECUTING]:
+            return True
+        return False
+
     def callback(self, msg):
-        if any([s.status in [1, 2] for s in msg.status_list]):
-            self.is_speaking = True
-        else:
-            self.is_speaking = False
+        for status in msg.status_list:
+            if self.check_speak_status(status):
+                self.is_speaking = True
+                return
+        self.is_speaking = False
 
     def speech_timer_cb(self):
         self.pub_speech_flag.publish(
