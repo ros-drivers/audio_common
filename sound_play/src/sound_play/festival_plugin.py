@@ -17,7 +17,6 @@ class FestivalPlugin(SoundPlayPlugin):
             prefix='sound_play', suffix='.wav')
         txtfilename = txtfile.name
         os.close(wavfile)
-        voice = voice
         try:
             try:
                 if hasattr(text, 'decode'):
