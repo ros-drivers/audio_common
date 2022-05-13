@@ -6,10 +6,12 @@ sounds based on messages on the robotsound topic.
 <launch>
   <arg name="device" default="" />
   <arg name="loop_rate" default="100" />
+  <arg name="default_voice" default="voice_kal_diphone" />
 
   <node name="soundplay_node" pkg="sound_play" exec="soundplay_node.py">
     <param name="device" value="$(var device)" />
     <param name="loop_rate" value="$(var loop_rate)" />
+    <param name="default_voice" value="$(var default_voice)" />
   </node>
 
   <node name="is_speaking"

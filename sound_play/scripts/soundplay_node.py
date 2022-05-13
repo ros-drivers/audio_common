@@ -219,8 +219,11 @@ class SoundPlayNode(rclpy.node.Node):
 
         self.declare_parameter('loop_rate', 100)
         self.declare_parameter('device', 'default')
+        self.declare_parameter(
+            'default_voice', 'voice_kal_diphone')
         self.loop_rate = self.get_parameter('loop_rate').value
         self.device = self.get_parameter('device').value
+        self.default_voice = self.get_parameter('default_voice').value
 
         self.diagnostic_pub = self.create_publisher(
             DiagnosticArray, "/diagnostics", 1)
@@ -350,7 +353,10 @@ class SoundPlayNode(rclpy.node.Node):
                     prefix='sound_play', suffix='.wav')
                 txtfilename = txtfile.name
                 os.close(wavfile)
-                voice = data.arg2
+                if data.arg2 == '':
+                    voice = self.default_voice
+                else:
+                    voice = data.arg2
                 try:
                     try:
                         if hasattr(data.arg, 'decode'):
