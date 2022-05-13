@@ -257,7 +257,10 @@ class soundplay:
                 (wavfile,wavfilename) = tempfile.mkstemp(prefix='sound_play', suffix='.wav')
                 txtfilename=txtfile.name
                 os.close(wavfile)
-                voice = data.arg2
+                if data.arg2 == '':
+                    voice = self.default_voice
+                else:
+                    voice = data.arg2
                 try:
                     try:
                         if hasattr(data.arg, 'decode'):
@@ -438,6 +441,7 @@ class soundplay:
         rospy.init_node('sound_play')
         self.loop_rate = rospy.get_param('~loop_rate', 100)
         self.device = rospy.get_param("~device", "default")
+        self.default_voice = rospy.get_param('~default_voice', 'voice_kal_diphone')
         self.diagnostic_pub = rospy.Publisher("/diagnostics", DiagnosticArray, queue_size=1)
         rootdir = os.path.join(roslib.packages.get_pkg_dir('sound_play'),'sounds')
 
