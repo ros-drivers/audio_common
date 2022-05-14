@@ -1,2 +1,4 @@
 - name: sound_play/festival_plugin
   module: sound_play.festival_plugin.FestivalPlugin
+- name: sound_play/flite_plugin
+  module: sound_play.flite_plugin.FlitePlugin

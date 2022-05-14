@@ -31,5 +31,6 @@
 # POSSIBILITY OF SUCH DAMAGE.
 
 from sound_play.festival_plugin import FestivalPlugin
+from sound_play.flite_plugin import FlitePlugin
 import sound_play.libsoundplay as libsoundplay
 from sound_play.sound_play_plugin import SoundPlayPlugin
