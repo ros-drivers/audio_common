@@ -7,10 +7,15 @@ from sound_play.sound_play_plugin import SoundPlayPlugin
 
 
 class FestivalPlugin(SoundPlayPlugin):
+
+    _default_voice = 'voice_kal_diphone'
+
     def __init__(self):
         super(FestivalPlugin, self).__init__()
 
     def sound_play_say_plugin(self, text, voice):
+        if voice is None or voice == '':
+            voice = self._default_voice
         txtfile = tempfile.NamedTemporaryFile(
             prefix='sound_play', suffix='.txt')
         (wavfile, wavfilename) = tempfile.mkstemp(
