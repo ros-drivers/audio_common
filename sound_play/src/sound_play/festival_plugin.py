@@ -36,9 +36,9 @@ class FestivalPlugin(SoundPlayPlugin):
                 else:
                     txtfile.write(text.encode('UTF-8'))
             txtfile.flush()
-            os.system(
-                "text2wave -eval '({0})' {1} -o {2}".format(
-                    voice, txtfilename, wavfilename))
+            cmd = "text2wave -eval '({0})' {1} -o {2}".format(
+                voice, txtfilename, wavfilename)
+            os.system(cmd)
             try:
                 if os.stat(wavfilename).st_size == 0:
                     # So we hit the same catch block
