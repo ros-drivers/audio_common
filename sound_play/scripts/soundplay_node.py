@@ -335,8 +335,7 @@ class SoundPlayNode(object):
         rospy.init_node('sound_play')
         self.loop_rate = rospy.get_param('~loop_rate', 100)
         self.device = rospy.get_param("~device", "default")
-        self.default_voice = rospy.get_param(
-            '~default_voice', 'voice_kal_diphone')
+        self.default_voice = rospy.get_param('~default_voice', None)
         self.plugin_name = rospy.get_param(
             '~plugin', 'sound_play/festival_plugin')
         self.diagnostic_pub = rospy.Publisher(
