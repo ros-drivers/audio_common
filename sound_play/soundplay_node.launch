@@ -7,11 +7,14 @@ sounds based on messages on the robotsound topic.
   <arg name="device" default="" />
   <arg name="loop_rate" default="100" />
   <arg name="default_voice" default="voice_kal_diphone" />
+  <arg name="plugin" default="sound_play/festival_plugin" />
 
-  <node name="soundplay_node" pkg="sound_play" type="soundplay_node.py">
+  <node name="soundplay_node" pkg="sound_play" type="soundplay_node.py"
+        output="screen">
     <param name="device" value="$(arg device)" />
     <param name="loop_rate" value="$(arg loop_rate)" />
     <param name="default_voice" value="$(arg default_voice)" />
+    <param name="plugin" value="$(arg plugin)" />
   </node>
 
   <group ns="sound_play" >

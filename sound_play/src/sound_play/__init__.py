@@ -30,4 +30,6 @@
 # ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 
+from sound_play.festival_plugin import FestivalPlugin
 import sound_play.libsoundplay as libsoundplay
+from sound_play.sound_play_plugin import SoundPlayPlugin

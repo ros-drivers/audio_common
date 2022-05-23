@@ -48,5 +48,6 @@
 
    <export>
       <cpp cflags="-I${prefix}/include -I${prefix}/msg/cpp" />
+      <sound_play plugin="${prefix}/sound_play_plugin.yaml" />
    </export>
 </package>
