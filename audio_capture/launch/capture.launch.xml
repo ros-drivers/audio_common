@@ -10,7 +10,8 @@
   <arg name="sample_format" default="S16LE"/>
   <arg name="ns" default="audio"/>
 
-  <group ns="$(var ns)">
+  <group>
+    <push-ros-namespace namespace="$(var ns)"/>
     <node name="audio_capture" pkg="audio_capture" exec="audio_capture" output="screen">
       <param name="bitrate" value="$(var bitrate)"/>
       <param name="device" value="$(var device)"/>
