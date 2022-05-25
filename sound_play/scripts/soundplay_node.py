@@ -106,7 +106,7 @@ class SoundPlayNode(object):
                             'volume for cached wave has changed,'
                             'resetting volume')
                         filesound.sound.set_property('volume', data.volume)
-                sound = filesound
+                sound = self.filesound[data.arg]
             else:
                 absfilename = os.path.join(
                     roslib.packages.get_pkg_dir(data.arg2), data.arg)
@@ -132,7 +132,7 @@ class SoundPlayNode(object):
                             'volume for cached wave has changed,'
                             'resetting volume')
                         filesound.sound.set_property('volume', data.volume)
-                sound = filesound
+                sound = self.filesound[absfilename]
         elif data.sound == SoundRequest.SAY:
             voice_key = data.arg + '---' + data.arg2
             if voice_key not in self.voicesounds.keys():
