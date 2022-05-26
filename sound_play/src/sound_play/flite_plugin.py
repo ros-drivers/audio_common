@@ -1,6 +1,8 @@
 import os
 import tempfile
 
+import resource_retriever
+import rospkg
 import rospy
 
 from sound_play.sound_play_plugin import SoundPlayPlugin
@@ -12,10 +14,22 @@ class FlitePlugin(SoundPlayPlugin):
 
     def __init__(self):
         super(FlitePlugin, self).__init__()
+        self.rospack = rospkg.RosPack()
+        self.default_voice_path = os.path.join(
+            self.rospack.get_path('sound_play'),
+            'resources/flitevox')
 
     def sound_play_say_plugin(self, text, voice):
         if voice is None or voice == '':
             voice = self._default_voice
+        if voice.endswith('.flitevox'):
+            if voice.startswith('package://'):
+                voice = resource_retriever.get(voice)
+            elif voice.startswith('/'):
+                voice = voice
+            else:
+                voice = os.path.join(
+                    self.default_voice_path, voice)
         (wavfile, wavfilename) = tempfile.mkstemp(
             prefix='sound_play', suffix='.wav')
         os.close(wavfile)

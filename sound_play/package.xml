@@ -46,6 +46,7 @@
    <exec_depend>festival</exec_depend>
    <exec_depend>flite</exec_depend>
    <exec_depend>message_runtime</exec_depend>
+   <exec_depend>resource_retriever</exec_depend>
 
    <export>
       <cpp cflags="-I${prefix}/include -I${prefix}/msg/cpp" />
