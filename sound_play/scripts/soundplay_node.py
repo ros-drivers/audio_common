@@ -442,6 +442,8 @@ class SoundPlayNode(object):
         while (not rospy.is_shutdown()
                 and (rospy.get_time() - self.last_activity_time < 10
                      or sound_length > 0)):
+            sound_length = len(self.builtinsounds) +\
+                len(self.voicesounds) + len(self.filesounds)
             # print("idle_loop")
             self.diagnostics(0)
             self.sleep(1)
