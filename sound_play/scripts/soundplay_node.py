@@ -435,15 +435,16 @@ class SoundPlayNode(object):
         except rospy.exceptions.ROSInterruptException:
             pass
 
-    def idle_loop(self):
-        self.last_activity_time = rospy.get_time()
+    def get_sound_length(self):
         sound_length = len(self.builtinsounds) +\
             len(self.voicesounds) + len(self.filesounds)
+        return sound_length
+
+    def idle_loop(self):
+        self.last_activity_time = rospy.get_time()
         while (not rospy.is_shutdown()
                 and (rospy.get_time() - self.last_activity_time < 10
-                     or sound_length > 0)):
-            sound_length = len(self.builtinsounds) +\
-                len(self.voicesounds) + len(self.filesounds)
+                     or self.get_sound_length() > 0)):
             # print("idle_loop")
             self.diagnostics(0)
             self.sleep(1)
