@@ -1,0 +1,80 @@
+[0.059s] Invoking command in '/home/lindelani/ros2_ws/src/audio_common/audio_capture/build/audio_capture': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/home/lindelani/ros2_ws/install/my_py_pkg /usr/bin/cmake /home/lindelani/ros2_ws/src/audio_common/audio_capture -DCMAKE_INSTALL_PREFIX=/home/lindelani/ros2_ws/src/audio_common/audio_capture/install/audio_capture
+[0.160s] -- The C compiler identification is GNU 9.4.0
+[0.221s] -- The CXX compiler identification is GNU 9.4.0
+[0.229s] -- Check for working C compiler: /usr/bin/cc
+[0.310s] -- Check for working C compiler: /usr/bin/cc -- works
+[0.312s] -- Detecting C compiler ABI info
+[0.493s] -- Detecting C compiler ABI info - done
+[0.508s] -- Detecting C compile features
+[0.508s] -- Detecting C compile features - done
+[0.510s] -- Check for working CXX compiler: /usr/bin/c++
+[0.603s] -- Check for working CXX compiler: /usr/bin/c++ -- works
+[0.606s] -- Detecting CXX compiler ABI info
+[0.725s] -- Detecting CXX compiler ABI info - done
+[0.743s] -- Detecting CXX compile features
+[0.744s] -- Detecting CXX compile features - done
+[0.745s] -- Found ament_cmake: 0.9.9 (/home/lindelani/ros2_foxy/ros2-linux/share/ament_cmake/cmake)
+[0.774s] -- Found PythonInterp: /usr/bin/python3 (found suitable version "3.8.10", minimum required is "3") 
+[0.774s] -- Using PYTHON_EXECUTABLE: /usr/bin/python3
+[0.967s] -- Found rclcpp: 2.4.1 (/home/lindelani/ros2_foxy/ros2-linux/share/rclcpp/cmake)
+[1.004s] -- Using all available rosidl_typesupport_c: rosidl_typesupport_connext_c;rosidl_typesupport_fastrtps_c;rosidl_typesupport_introspection_c
+[1.010s] -- Found rosidl_adapter: 1.2.1 (/home/lindelani/ros2_foxy/ros2-linux/share/rosidl_adapter/cmake)
+[1.027s] -- Could not find RTI Connext - skipping rosidl_typesupport_connext_c
+[1.038s] -- Could not find RTI Connext - skipping rosidl_typesupport_connext_cpp
+[1.164s] -- Found OpenSSL: /usr/lib/x86_64-linux-gnu/libcrypto.so (found version "1.1.1f")  
+[1.196s] -- Found FastRTPS: /home/lindelani/ros2_foxy/ros2-linux/include  
+[1.268s] -- Using all available rosidl_typesupport_cpp: rosidl_typesupport_connext_cpp;rosidl_typesupport_fastrtps_cpp;rosidl_typesupport_introspection_cpp
+[1.315s] -- Found rmw_implementation_cmake: 1.0.3 (/home/lindelani/ros2_foxy/ros2-linux/share/rmw_implementation_cmake/cmake)
+[1.316s] -- Using RMW implementation 'rmw_fastrtps_cpp' as default
+[1.318s] -- Looking for pthread.h
+[1.405s] -- Looking for pthread.h - found
+[1.405s] -- Performing Test CMAKE_HAVE_LIBC_PTHREAD
+[1.510s] -- Performing Test CMAKE_HAVE_LIBC_PTHREAD - Failed
+[1.510s] -- Looking for pthread_create in pthreads
+[1.600s] -- Looking for pthread_create in pthreads - not found
+[1.601s] -- Looking for pthread_create in pthread
+[1.709s] -- Looking for pthread_create in pthread - found
+[1.711s] -- Found Threads: TRUE  
+[1.800s] -- Found audio_common_msgs: 0.3.12 (/home/lindelani/ros2_ws/install/audio_common_msgs/share/audio_common_msgs/cmake)
+[1.813s] -- Found PkgConfig: /usr/bin/pkg-config (found version "0.29.1") 
+[1.816s] -- Checking for module 'gstreamer-1.0'
+[1.843s] --   Found gstreamer-1.0, version 1.16.2
+[1.945s] -- Found Boost: /usr/lib/x86_64-linux-gnu/cmake/Boost-1.71.0/BoostConfig.cmake (found version "1.71.0") found components: thread 
+[2.055s] -- Configuring done
+[2.061s] -- Generating done
+[2.063s] -- Build files have been written to: /home/lindelani/ros2_ws/src/audio_common/audio_capture/build/audio_capture
+[2.069s] Invoked command in '/home/lindelani/ros2_ws/src/audio_common/audio_capture/build/audio_capture' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/home/lindelani/ros2_ws/install/my_py_pkg /usr/bin/cmake /home/lindelani/ros2_ws/src/audio_common/audio_capture -DCMAKE_INSTALL_PREFIX=/home/lindelani/ros2_ws/src/audio_common/audio_capture/install/audio_capture
+[2.074s] Invoking command in '/home/lindelani/ros2_ws/src/audio_common/audio_capture/build/audio_capture': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/home/lindelani/ros2_ws/install/my_py_pkg /usr/bin/cmake --build /home/lindelani/ros2_ws/src/audio_common/audio_capture/build/audio_capture -- -j8 -l8
+[2.128s] [35m[1mScanning dependencies of target audio_capture[0m
+[2.181s] [ 50%] [32mBuilding CXX object CMakeFiles/audio_capture.dir/src/audio_capture.cpp.o[0m
+[4.414s] [01m[K/home/lindelani/ros2_ws/src/audio_common/audio_capture/src/audio_capture.cpp:[m[K In static member function ‘[01m[Kstatic gboolean audio_transport::RosGstCapture::onMessage(GstBus*, GstMessage*, gpointer)[m[K’:
+[4.414s] [01m[K/home/lindelani/ros2_ws/src/audio_common/audio_capture/src/audio_capture.cpp:207:42:[m[K [01;35m[Kwarning: [m[Kunused parameter ‘[01m[Kbus[m[K’ [[01;35m[K-Wunused-parameter[m[K]
+[4.414s]   207 |       static gboolean onMessage ([01;35m[KGstBus *bus[m[K, GstMessage *message, gpointer userData)
+[4.414s]       |                                  [01;35m[K~~~~~~~~^~~[m[K
+[6.421s] [100%] [32m[1mLinking CXX executable audio_capture[0m
+[6.662s] [100%] Built target audio_capture
+[6.682s] Invoked command in '/home/lindelani/ros2_ws/src/audio_common/audio_capture/build/audio_capture' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/home/lindelani/ros2_ws/install/my_py_pkg /usr/bin/cmake --build /home/lindelani/ros2_ws/src/audio_common/audio_capture/build/audio_capture -- -j8 -l8
+[6.722s] Invoking command in '/home/lindelani/ros2_ws/src/audio_common/audio_capture/build/audio_capture': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/home/lindelani/ros2_ws/install/my_py_pkg /usr/bin/cmake --install /home/lindelani/ros2_ws/src/audio_common/audio_capture/build/audio_capture
+[6.730s] -- Install configuration: ""
+[6.731s] -- Installing: /home/lindelani/ros2_ws/src/audio_common/audio_capture/install/audio_capture/lib/audio_capture/audio_capture
+[6.731s] -- Set runtime path of "/home/lindelani/ros2_ws/src/audio_common/audio_capture/install/audio_capture/lib/audio_capture/audio_capture" to ""
+[6.732s] -- Installing: /home/lindelani/ros2_ws/src/audio_common/audio_capture/install/audio_capture/share/audio_capture/launch
+[6.732s] -- Installing: /home/lindelani/ros2_ws/src/audio_common/audio_capture/install/audio_capture/share/audio_capture/launch/capture_to_file.launch.xml
+[6.732s] -- Installing: /home/lindelani/ros2_ws/src/audio_common/audio_capture/install/audio_capture/share/audio_capture/launch/capture.launch.xml
+[6.732s] -- Installing: /home/lindelani/ros2_ws/src/audio_common/audio_capture/install/audio_capture/share/audio_capture/launch/capture_wave.launch.xml
+[6.733s] -- Installing: /home/lindelani/ros2_ws/src/audio_common/audio_capture/install/audio_capture/share/ament_index/resource_index/package_run_dependencies/audio_capture
+[6.733s] -- Installing: /home/lindelani/ros2_ws/src/audio_common/audio_capture/install/audio_capture/share/ament_index/resource_index/parent_prefix_path/audio_capture
+[6.733s] -- Installing: /home/lindelani/ros2_ws/src/audio_common/audio_capture/install/audio_capture/share/audio_capture/environment/ament_prefix_path.sh
+[6.733s] -- Installing: /home/lindelani/ros2_ws/src/audio_common/audio_capture/install/audio_capture/share/audio_capture/environment/ament_prefix_path.dsv
+[6.733s] -- Installing: /home/lindelani/ros2_ws/src/audio_common/audio_capture/install/audio_capture/share/audio_capture/environment/path.sh
+[6.734s] -- Installing: /home/lindelani/ros2_ws/src/audio_common/audio_capture/install/audio_capture/share/audio_capture/environment/path.dsv
+[6.734s] -- Installing: /home/lindelani/ros2_ws/src/audio_common/audio_capture/install/audio_capture/share/audio_capture/local_setup.bash
+[6.734s] -- Installing: /home/lindelani/ros2_ws/src/audio_common/audio_capture/install/audio_capture/share/audio_capture/local_setup.sh
+[6.734s] -- Installing: /home/lindelani/ros2_ws/src/audio_common/audio_capture/install/audio_capture/share/audio_capture/local_setup.zsh
+[6.734s] -- Installing: /home/lindelani/ros2_ws/src/audio_common/audio_capture/install/audio_capture/share/audio_capture/local_setup.dsv
+[6.734s] -- Installing: /home/lindelani/ros2_ws/src/audio_common/audio_capture/install/audio_capture/share/audio_capture/package.dsv
+[6.735s] -- Installing: /home/lindelani/ros2_ws/src/audio_common/audio_capture/install/audio_capture/share/ament_index/resource_index/packages/audio_capture
+[6.735s] -- Installing: /home/lindelani/ros2_ws/src/audio_common/audio_capture/install/audio_capture/share/audio_capture/cmake/audio_captureConfig.cmake
+[6.735s] -- Installing: /home/lindelani/ros2_ws/src/audio_common/audio_capture/install/audio_capture/share/audio_capture/cmake/audio_captureConfig-version.cmake
+[6.735s] -- Installing: /home/lindelani/ros2_ws/src/audio_common/audio_capture/install/audio_capture/share/audio_capture/package.xml
+[6.738s] Invoked command in '/home/lindelani/ros2_ws/src/audio_common/audio_capture/build/audio_capture' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/home/lindelani/ros2_ws/install/my_py_pkg /usr/bin/cmake --install /home/lindelani/ros2_ws/src/audio_common/audio_capture/build/audio_capture

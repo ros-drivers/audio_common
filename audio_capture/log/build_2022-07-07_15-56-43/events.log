@@ -1,0 +1,155 @@
+[0.000000] (-) TimerEvent: {}
+[0.002369] (audio_capture) JobQueued: {'identifier': 'audio_capture', 'dependencies': OrderedDict()}
+[0.002521] (audio_capture) JobStarted: {'identifier': 'audio_capture'}
+[0.058566] (audio_capture) JobProgress: {'identifier': 'audio_capture', 'progress': 'cmake'}
+[0.059707] (audio_capture) Command: {'cmd': ['/usr/bin/cmake', '/home/lindelani/ros2_ws/src/audio_common/audio_capture', '-DCMAKE_INSTALL_PREFIX=/home/lindelani/ros2_ws/src/audio_common/audio_capture/install/audio_capture'], 'cwd': '/home/lindelani/ros2_ws/src/audio_common/audio_capture/build/audio_capture', 'env': OrderedDict([('LESSOPEN', '| /usr/bin/lesspipe %s'), ('LANGUAGE', 'en_ZA:en'), ('USER', 'lindelani'), ('SSH_AGENT_PID', '1747'), ('XDG_SESSION_TYPE', 'x11'), ('SHLVL', '1'), ('LD_LIBRARY_PATH', '/home/lindelani/ros2_ws/install/audio_common_msgs/lib:/home/lindelani/ros2_foxy/ros2-linux/opt/yaml_cpp_vendor/lib:/home/lindelani/ros2_foxy/ros2-linux/opt/rviz_ogre_vendor/lib:/home/lindelani/ros2_foxy/ros2-linux/lib'), ('HOME', '/home/lindelani'), ('CONDA_SHLVL', '0'), ('OLDPWD', '/home/lindelani/ros2_ws/src/audio_common'), ('DESKTOP_SESSION', 'ubuntu'), ('ROS_PYTHON_VERSION', '3'), ('GNOME_SHELL_SESSION_MODE', 'ubuntu'), ('GTK_MODULES', 'gail:atk-bridge'), ('MANAGERPID', '1545'), ('DBUS_SESSION_BUS_ADDRESS', 'unix:path=/run/user/1000/bus'), ('COLORTERM', 'truecolor'), ('_CE_M', ''), ('TERMINATOR_DBUS_NAME', 'net.tenshu.Terminator21a9d5db22c73a993ff0b42f64b396873'), ('GIO_LAUNCHED_DESKTOP_FILE_PID', '8629'), ('MANDATORY_PATH', '/usr/share/gconf/ubuntu.mandatory.path'), ('IM_CONFIG_PHASE', '1'), ('COLCON_PREFIX_PATH', '/home/lindelani/ros2_ws/install:/home/lindelani/ros2_foxy/ros2-linux'), ('ROS_DISTRO', 'foxy'), ('LOGNAME', 'lindelani'), ('JOURNAL_STREAM', '8:55639'), ('_', '/usr/bin/colcon'), ('ROS_VERSION', '2'), ('PKG_CONFIG_PATH', '/home/lindelani/ros2_foxy/ros2-linux/lib/x86_64-linux-gnu/pkgconfig:/home/lindelani/ros2_foxy/ros2-linux/lib/pkgconfig'), ('XDG_SESSION_CLASS', 'user'), ('DEFAULTS_PATH', '/usr/share/gconf/ubuntu.default.path'), ('USERNAME', 'lindelani'), ('TERM', 'xterm-256color'), ('GNOME_DESKTOP_SESSION_ID', 'this-is-deprecated'), ('_CE_CONDA', ''), ('ROS_LOCALHOST_ONLY', '0'), ('WINDOWPATH', '2'), ('PATH', '/home/lindelani/ros2_foxy/ros2-linux/bin:/home/lindelani/anaconda3/condabin:/home/lindelani/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin'), ('SESSION_MANAGER', 'local/lindelani-IdeaPad-Flex-5-14ARE05:@/tmp/.ICE-unix/1807,unix/lindelani-IdeaPad-Flex-5-14ARE05:/tmp/.ICE-unix/1807'), ('INVOCATION_ID', 'bf7b285e62a944d793dcb894e5064a81'), ('XDG_MENU_PREFIX', 'gnome-'), ('XDG_RUNTIME_DIR', '/run/user/1000'), ('DISPLAY', ':0'), ('TERMINATOR_DBUS_PATH', '/net/tenshu/Terminator2'), ('LANG', 'en_US.UTF-8'), ('XDG_CURRENT_DESKTOP', 'ubuntu:GNOME'), ('XMODIFIERS', '@im=ibus'), ('XDG_SESSION_DESKTOP', 'ubuntu'), ('XAUTHORITY', '/run/user/1000/gdm/Xauthority'), ('LS_COLORS', 'rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=30;41:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.zst=01;31:*.tzst=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.wim=01;31:*.swm=01;31:*.dwm=01;31:*.esd=01;31:*.jpg=01;35:*.jpeg=01;35:*.mjpg=01;35:*.mjpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.m4a=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.oga=00;36:*.opus=00;36:*.spx=00;36:*.xspf=00;36:'), ('SSH_AUTH_SOCK', '/run/user/1000/keyring/ssh'), ('AMENT_PREFIX_PATH', '/home/lindelani/ros2_ws/install/my_py_pkg:/home/lindelani/ros2_ws/install/my_cpp_pkg:/home/lindelani/ros2_ws/install/audio_common_msgs:/home/lindelani/ros2_foxy/ros2-linux'), ('CONDA_PYTHON_EXE', '/home/lindelani/anaconda3/bin/python'), ('SHELL', '/bin/bash'), ('TERMINATOR_UUID', 'urn:uuid:1e789671-8f19-4608-9c12-196b046a6e60'), ('QT_ACCESSIBILITY', '1'), ('GDMSESSION', 'ubuntu'), ('LESSCLOSE', '/usr/bin/lesspipe %s %s'), ('GPG_AGENT_INFO', '/run/user/1000/gnupg/S.gpg-agent:0:1'), ('QT_IM_MODULE', 'ibus'), ('PWD', '/home/lindelani/ros2_ws/src/audio_common/audio_capture/build/audio_capture'), ('LC_ALL', 'en_US.UTF-8'), ('XDG_CONFIG_DIRS', '/etc/xdg/xdg-ubuntu:/etc/xdg'), ('CONDA_EXE', '/home/lindelani/anaconda3/bin/conda'), ('XDG_DATA_DIRS', '/usr/share/ubuntu:/home/lindelani/.local/share/flatpak/exports/share:/var/lib/flatpak/exports/share:/usr/local/share/:/usr/share/:/var/lib/snapd/desktop'), ('PYTHONPATH', '/home/lindelani/ros2_ws/install/my_py_pkg/lib/python3.8/site-packages:/home/lindelani/ros2_ws/install/audio_common_msgs/lib/python3.8/site-packages:/home/lindelani/ros2_foxy/ros2-linux/lib/python3.8/site-packages'), ('COLCON', '1'), ('VTE_VERSION', '6003'), ('CMAKE_PREFIX_PATH', '/home/lindelani/ros2_ws/install/my_cpp_pkg:/home/lindelani/ros2_ws/install/audio_common_msgs:/home/lindelani/ros2_foxy/ros2-linux:/home/lindelani/ros2_ws/install/my_py_pkg')]), 'shell': False}
+[0.099632] (-) TimerEvent: {}
+[0.162431] (audio_capture) StdoutLine: {'line': b'-- The C compiler identification is GNU 9.4.0\n'}
+[0.199762] (-) TimerEvent: {}
+[0.223523] (audio_capture) StdoutLine: {'line': b'-- The CXX compiler identification is GNU 9.4.0\n'}
+[0.230961] (audio_capture) StdoutLine: {'line': b'-- Check for working C compiler: /usr/bin/cc\n'}
+[0.299912] (-) TimerEvent: {}
+[0.312724] (audio_capture) StdoutLine: {'line': b'-- Check for working C compiler: /usr/bin/cc -- works\n'}
+[0.314368] (audio_capture) StdoutLine: {'line': b'-- Detecting C compiler ABI info\n'}
+[0.400082] (-) TimerEvent: {}
+[0.495429] (audio_capture) StdoutLine: {'line': b'-- Detecting C compiler ABI info - done\n'}
+[0.500216] (-) TimerEvent: {}
+[0.509888] (audio_capture) StdoutLine: {'line': b'-- Detecting C compile features\n'}
+[0.510363] (audio_capture) StdoutLine: {'line': b'-- Detecting C compile features - done\n'}
+[0.512562] (audio_capture) StdoutLine: {'line': b'-- Check for working CXX compiler: /usr/bin/c++\n'}
+[0.600363] (-) TimerEvent: {}
+[0.605419] (audio_capture) StdoutLine: {'line': b'-- Check for working CXX compiler: /usr/bin/c++ -- works\n'}
+[0.608434] (audio_capture) StdoutLine: {'line': b'-- Detecting CXX compiler ABI info\n'}
+[0.700501] (-) TimerEvent: {}
+[0.726861] (audio_capture) StdoutLine: {'line': b'-- Detecting CXX compiler ABI info - done\n'}
+[0.745254] (audio_capture) StdoutLine: {'line': b'-- Detecting CXX compile features\n'}
+[0.745856] (audio_capture) StdoutLine: {'line': b'-- Detecting CXX compile features - done\n'}
+[0.747194] (audio_capture) StdoutLine: {'line': b'-- Found ament_cmake: 0.9.9 (/home/lindelani/ros2_foxy/ros2-linux/share/ament_cmake/cmake)\n'}
+[0.776178] (audio_capture) StdoutLine: {'line': b'-- Found PythonInterp: /usr/bin/python3 (found suitable version "3.8.10", minimum required is "3") \n'}
+[0.776342] (audio_capture) StdoutLine: {'line': b'-- Using PYTHON_EXECUTABLE: /usr/bin/python3\n'}
+[0.800653] (-) TimerEvent: {}
+[0.901103] (-) TimerEvent: {}
+[0.969317] (audio_capture) StdoutLine: {'line': b'-- Found rclcpp: 2.4.1 (/home/lindelani/ros2_foxy/ros2-linux/share/rclcpp/cmake)\n'}
+[1.001236] (-) TimerEvent: {}
+[1.006737] (audio_capture) StdoutLine: {'line': b'-- Using all available rosidl_typesupport_c: rosidl_typesupport_connext_c;rosidl_typesupport_fastrtps_c;rosidl_typesupport_introspection_c\n'}
+[1.012584] (audio_capture) StdoutLine: {'line': b'-- Found rosidl_adapter: 1.2.1 (/home/lindelani/ros2_foxy/ros2-linux/share/rosidl_adapter/cmake)\n'}
+[1.029396] (audio_capture) StdoutLine: {'line': b'-- Could not find RTI Connext - skipping rosidl_typesupport_connext_c\n'}
+[1.039907] (audio_capture) StdoutLine: {'line': b'-- Could not find RTI Connext - skipping rosidl_typesupport_connext_cpp\n'}
+[1.101359] (-) TimerEvent: {}
+[1.166781] (audio_capture) StdoutLine: {'line': b'-- Found OpenSSL: /usr/lib/x86_64-linux-gnu/libcrypto.so (found version "1.1.1f")  \n'}
+[1.198294] (audio_capture) StdoutLine: {'line': b'-- Found FastRTPS: /home/lindelani/ros2_foxy/ros2-linux/include  \n'}
+[1.201463] (-) TimerEvent: {}
+[1.269897] (audio_capture) StdoutLine: {'line': b'-- Using all available rosidl_typesupport_cpp: rosidl_typesupport_connext_cpp;rosidl_typesupport_fastrtps_cpp;rosidl_typesupport_introspection_cpp\n'}
+[1.301610] (-) TimerEvent: {}
+[1.316904] (audio_capture) StdoutLine: {'line': b'-- Found rmw_implementation_cmake: 1.0.3 (/home/lindelani/ros2_foxy/ros2-linux/share/rmw_implementation_cmake/cmake)\n'}
+[1.318112] (audio_capture) StdoutLine: {'line': b"-- Using RMW implementation 'rmw_fastrtps_cpp' as default\n"}
+[1.320348] (audio_capture) StdoutLine: {'line': b'-- Looking for pthread.h\n'}
+[1.401744] (-) TimerEvent: {}
+[1.406878] (audio_capture) StdoutLine: {'line': b'-- Looking for pthread.h - found\n'}
+[1.407258] (audio_capture) StdoutLine: {'line': b'-- Performing Test CMAKE_HAVE_LIBC_PTHREAD\n'}
+[1.501883] (-) TimerEvent: {}
+[1.512319] (audio_capture) StdoutLine: {'line': b'-- Performing Test CMAKE_HAVE_LIBC_PTHREAD - Failed\n'}
+[1.512817] (audio_capture) StdoutLine: {'line': b'-- Looking for pthread_create in pthreads\n'}
+[1.602013] (-) TimerEvent: {}
+[1.602671] (audio_capture) StdoutLine: {'line': b'-- Looking for pthread_create in pthreads - not found\n'}
+[1.603007] (audio_capture) StdoutLine: {'line': b'-- Looking for pthread_create in pthread\n'}
+[1.702132] (-) TimerEvent: {}
+[1.711274] (audio_capture) StdoutLine: {'line': b'-- Looking for pthread_create in pthread - found\n'}
+[1.713534] (audio_capture) StdoutLine: {'line': b'-- Found Threads: TRUE  \n'}
+[1.802272] (-) TimerEvent: {}
+[1.802744] (audio_capture) StdoutLine: {'line': b'-- Found audio_common_msgs: 0.3.12 (/home/lindelani/ros2_ws/install/audio_common_msgs/share/audio_common_msgs/cmake)\n'}
+[1.815487] (audio_capture) StdoutLine: {'line': b'-- Found PkgConfig: /usr/bin/pkg-config (found version "0.29.1") \n'}
+[1.818117] (audio_capture) StdoutLine: {'line': b"-- Checking for module 'gstreamer-1.0'\n"}
+[1.845712] (audio_capture) StdoutLine: {'line': b'--   Found gstreamer-1.0, version 1.16.2\n'}
+[1.902438] (-) TimerEvent: {}
+[1.947297] (audio_capture) StdoutLine: {'line': b'-- Found Boost: /usr/lib/x86_64-linux-gnu/cmake/Boost-1.71.0/BoostConfig.cmake (found version "1.71.0") found components: thread \n'}
+[2.002584] (-) TimerEvent: {}
+[2.056963] (audio_capture) StdoutLine: {'line': b'-- Configuring done\n'}
+[2.063437] (audio_capture) StdoutLine: {'line': b'-- Generating done\n'}
+[2.065023] (audio_capture) StdoutLine: {'line': b'-- Build files have been written to: /home/lindelani/ros2_ws/src/audio_common/audio_capture/build/audio_capture\n'}
+[2.070609] (audio_capture) CommandEnded: {'returncode': 0}
+[2.072132] (audio_capture) JobProgress: {'identifier': 'audio_capture', 'progress': 'build'}
+[2.073843] (audio_capture) Command: {'cmd': ['/usr/bin/cmake', '--build', '/home/lindelani/ros2_ws/src/audio_common/audio_capture/build/audio_capture', '--', '-j8', '-l8'], 'cwd': '/home/lindelani/ros2_ws/src/audio_common/audio_capture/build/audio_capture', 'env': OrderedDict([('LESSOPEN', '| /usr/bin/lesspipe %s'), ('LANGUAGE', 'en_ZA:en'), ('USER', 'lindelani'), ('SSH_AGENT_PID', '1747'), ('XDG_SESSION_TYPE', 'x11'), ('SHLVL', '1'), ('LD_LIBRARY_PATH', '/home/lindelani/ros2_ws/install/audio_common_msgs/lib:/home/lindelani/ros2_foxy/ros2-linux/opt/yaml_cpp_vendor/lib:/home/lindelani/ros2_foxy/ros2-linux/opt/rviz_ogre_vendor/lib:/home/lindelani/ros2_foxy/ros2-linux/lib'), ('HOME', '/home/lindelani'), ('CONDA_SHLVL', '0'), ('OLDPWD', '/home/lindelani/ros2_ws/src/audio_common'), ('DESKTOP_SESSION', 'ubuntu'), ('ROS_PYTHON_VERSION', '3'), ('GNOME_SHELL_SESSION_MODE', 'ubuntu'), ('GTK_MODULES', 'gail:atk-bridge'), ('MANAGERPID', '1545'), ('DBUS_SESSION_BUS_ADDRESS', 'unix:path=/run/user/1000/bus'), ('COLORTERM', 'truecolor'), ('_CE_M', ''), ('TERMINATOR_DBUS_NAME', 'net.tenshu.Terminator21a9d5db22c73a993ff0b42f64b396873'), ('GIO_LAUNCHED_DESKTOP_FILE_PID', '8629'), ('MANDATORY_PATH', '/usr/share/gconf/ubuntu.mandatory.path'), ('IM_CONFIG_PHASE', '1'), ('COLCON_PREFIX_PATH', '/home/lindelani/ros2_ws/install:/home/lindelani/ros2_foxy/ros2-linux'), ('ROS_DISTRO', 'foxy'), ('LOGNAME', 'lindelani'), ('JOURNAL_STREAM', '8:55639'), ('_', '/usr/bin/colcon'), ('ROS_VERSION', '2'), ('PKG_CONFIG_PATH', '/home/lindelani/ros2_foxy/ros2-linux/lib/x86_64-linux-gnu/pkgconfig:/home/lindelani/ros2_foxy/ros2-linux/lib/pkgconfig'), ('XDG_SESSION_CLASS', 'user'), ('DEFAULTS_PATH', '/usr/share/gconf/ubuntu.default.path'), ('USERNAME', 'lindelani'), ('TERM', 'xterm-256color'), ('GNOME_DESKTOP_SESSION_ID', 'this-is-deprecated'), ('_CE_CONDA', ''), ('ROS_LOCALHOST_ONLY', '0'), ('WINDOWPATH', '2'), ('PATH', '/home/lindelani/ros2_foxy/ros2-linux/bin:/home/lindelani/anaconda3/condabin:/home/lindelani/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin'), ('SESSION_MANAGER', 'local/lindelani-IdeaPad-Flex-5-14ARE05:@/tmp/.ICE-unix/1807,unix/lindelani-IdeaPad-Flex-5-14ARE05:/tmp/.ICE-unix/1807'), ('INVOCATION_ID', 'bf7b285e62a944d793dcb894e5064a81'), ('XDG_MENU_PREFIX', 'gnome-'), ('XDG_RUNTIME_DIR', '/run/user/1000'), ('DISPLAY', ':0'), ('TERMINATOR_DBUS_PATH', '/net/tenshu/Terminator2'), ('LANG', 'en_US.UTF-8'), ('XDG_CURRENT_DESKTOP', 'ubuntu:GNOME'), ('XMODIFIERS', '@im=ibus'), ('XDG_SESSION_DESKTOP', 'ubuntu'), ('XAUTHORITY', '/run/user/1000/gdm/Xauthority'), ('LS_COLORS', 'rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=30;41:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.zst=01;31:*.tzst=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.wim=01;31:*.swm=01;31:*.dwm=01;31:*.esd=01;31:*.jpg=01;35:*.jpeg=01;35:*.mjpg=01;35:*.mjpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.m4a=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.oga=00;36:*.opus=00;36:*.spx=00;36:*.xspf=00;36:'), ('SSH_AUTH_SOCK', '/run/user/1000/keyring/ssh'), ('AMENT_PREFIX_PATH', '/home/lindelani/ros2_ws/install/my_py_pkg:/home/lindelani/ros2_ws/install/my_cpp_pkg:/home/lindelani/ros2_ws/install/audio_common_msgs:/home/lindelani/ros2_foxy/ros2-linux'), ('CONDA_PYTHON_EXE', '/home/lindelani/anaconda3/bin/python'), ('SHELL', '/bin/bash'), ('TERMINATOR_UUID', 'urn:uuid:1e789671-8f19-4608-9c12-196b046a6e60'), ('QT_ACCESSIBILITY', '1'), ('GDMSESSION', 'ubuntu'), ('LESSCLOSE', '/usr/bin/lesspipe %s %s'), ('GPG_AGENT_INFO', '/run/user/1000/gnupg/S.gpg-agent:0:1'), ('QT_IM_MODULE', 'ibus'), ('PWD', '/home/lindelani/ros2_ws/src/audio_common/audio_capture/build/audio_capture'), ('LC_ALL', 'en_US.UTF-8'), ('XDG_CONFIG_DIRS', '/etc/xdg/xdg-ubuntu:/etc/xdg'), ('CONDA_EXE', '/home/lindelani/anaconda3/bin/conda'), ('XDG_DATA_DIRS', '/usr/share/ubuntu:/home/lindelani/.local/share/flatpak/exports/share:/var/lib/flatpak/exports/share:/usr/local/share/:/usr/share/:/var/lib/snapd/desktop'), ('PYTHONPATH', '/home/lindelani/ros2_ws/install/my_py_pkg/lib/python3.8/site-packages:/home/lindelani/ros2_ws/install/audio_common_msgs/lib/python3.8/site-packages:/home/lindelani/ros2_foxy/ros2-linux/lib/python3.8/site-packages'), ('COLCON', '1'), ('VTE_VERSION', '6003'), ('CMAKE_PREFIX_PATH', '/home/lindelani/ros2_ws/install/my_cpp_pkg:/home/lindelani/ros2_ws/install/audio_common_msgs:/home/lindelani/ros2_foxy/ros2-linux:/home/lindelani/ros2_ws/install/my_py_pkg')]), 'shell': False}
+[2.102818] (-) TimerEvent: {}
+[2.130491] (audio_capture) StdoutLine: {'line': b'\x1b[35m\x1b[1mScanning dependencies of target audio_capture\x1b[0m\n'}
+[2.183184] (audio_capture) StdoutLine: {'line': b'[ 50%] \x1b[32mBuilding CXX object CMakeFiles/audio_capture.dir/src/audio_capture.cpp.o\x1b[0m\n'}
+[2.202982] (-) TimerEvent: {}
+[2.303651] (-) TimerEvent: {}
+[2.404061] (-) TimerEvent: {}
+[2.504511] (-) TimerEvent: {}
+[2.604974] (-) TimerEvent: {}
+[2.705436] (-) TimerEvent: {}
+[2.805893] (-) TimerEvent: {}
+[2.906731] (-) TimerEvent: {}
+[3.007199] (-) TimerEvent: {}
+[3.107698] (-) TimerEvent: {}
+[3.208124] (-) TimerEvent: {}
+[3.308595] (-) TimerEvent: {}
+[3.409054] (-) TimerEvent: {}
+[3.509499] (-) TimerEvent: {}
+[3.609958] (-) TimerEvent: {}
+[3.710425] (-) TimerEvent: {}
+[3.810871] (-) TimerEvent: {}
+[3.911331] (-) TimerEvent: {}
+[4.011808] (-) TimerEvent: {}
+[4.112228] (-) TimerEvent: {}
+[4.212694] (-) TimerEvent: {}
+[4.313170] (-) TimerEvent: {}
+[4.413629] (-) TimerEvent: {}
+[4.415796] (audio_capture) StderrLine: {'line': b'\x1b[01m\x1b[K/home/lindelani/ros2_ws/src/audio_common/audio_capture/src/audio_capture.cpp:\x1b[m\x1b[K In static member function \xe2\x80\x98\x1b[01m\x1b[Kstatic gboolean audio_transport::RosGstCapture::onMessage(GstBus*, GstMessage*, gpointer)\x1b[m\x1b[K\xe2\x80\x99:\n'}
+[4.416151] (audio_capture) StderrLine: {'line': b'\x1b[01m\x1b[K/home/lindelani/ros2_ws/src/audio_common/audio_capture/src/audio_capture.cpp:207:42:\x1b[m\x1b[K \x1b[01;35m\x1b[Kwarning: \x1b[m\x1b[Kunused parameter \xe2\x80\x98\x1b[01m\x1b[Kbus\x1b[m\x1b[K\xe2\x80\x99 [\x1b[01;35m\x1b[K-Wunused-parameter\x1b[m\x1b[K]\n'}
+[4.416304] (audio_capture) StderrLine: {'line': b'  207 |       static gboolean onMessage (\x1b[01;35m\x1b[KGstBus *bus\x1b[m\x1b[K, GstMessage *message, gpointer userData)\n'}
+[4.416443] (audio_capture) StderrLine: {'line': b'      |                                  \x1b[01;35m\x1b[K~~~~~~~~^~~\x1b[m\x1b[K\n'}
+[4.513760] (-) TimerEvent: {}
+[4.614225] (-) TimerEvent: {}
+[4.714689] (-) TimerEvent: {}
+[4.815154] (-) TimerEvent: {}
+[4.915627] (-) TimerEvent: {}
+[5.016044] (-) TimerEvent: {}
+[5.116819] (-) TimerEvent: {}
+[5.217249] (-) TimerEvent: {}
+[5.317629] (-) TimerEvent: {}
+[5.417994] (-) TimerEvent: {}
+[5.518390] (-) TimerEvent: {}
+[5.618764] (-) TimerEvent: {}
+[5.719135] (-) TimerEvent: {}
+[5.819495] (-) TimerEvent: {}
+[5.919861] (-) TimerEvent: {}
+[6.020208] (-) TimerEvent: {}
+[6.120568] (-) TimerEvent: {}
+[6.221078] (-) TimerEvent: {}
+[6.321499] (-) TimerEvent: {}
+[6.421883] (-) TimerEvent: {}
+[6.422874] (audio_capture) StdoutLine: {'line': b'[100%] \x1b[32m\x1b[1mLinking CXX executable audio_capture\x1b[0m\n'}
+[6.522080] (-) TimerEvent: {}
+[6.622564] (-) TimerEvent: {}
+[6.664024] (audio_capture) StdoutLine: {'line': b'[100%] Built target audio_capture\n'}
+[6.683657] (audio_capture) CommandEnded: {'returncode': 0}
+[6.711652] (audio_capture) JobProgress: {'identifier': 'audio_capture', 'progress': 'install'}
+[6.723027] (audio_capture) Command: {'cmd': ['/usr/bin/cmake', '--install', '/home/lindelani/ros2_ws/src/audio_common/audio_capture/build/audio_capture'], 'cwd': '/home/lindelani/ros2_ws/src/audio_common/audio_capture/build/audio_capture', 'env': OrderedDict([('LESSOPEN', '| /usr/bin/lesspipe %s'), ('LANGUAGE', 'en_ZA:en'), ('USER', 'lindelani'), ('SSH_AGENT_PID', '1747'), ('XDG_SESSION_TYPE', 'x11'), ('SHLVL', '1'), ('LD_LIBRARY_PATH', '/home/lindelani/ros2_ws/install/audio_common_msgs/lib:/home/lindelani/ros2_foxy/ros2-linux/opt/yaml_cpp_vendor/lib:/home/lindelani/ros2_foxy/ros2-linux/opt/rviz_ogre_vendor/lib:/home/lindelani/ros2_foxy/ros2-linux/lib'), ('HOME', '/home/lindelani'), ('CONDA_SHLVL', '0'), ('OLDPWD', '/home/lindelani/ros2_ws/src/audio_common'), ('DESKTOP_SESSION', 'ubuntu'), ('ROS_PYTHON_VERSION', '3'), ('GNOME_SHELL_SESSION_MODE', 'ubuntu'), ('GTK_MODULES', 'gail:atk-bridge'), ('MANAGERPID', '1545'), ('DBUS_SESSION_BUS_ADDRESS', 'unix:path=/run/user/1000/bus'), ('COLORTERM', 'truecolor'), ('_CE_M', ''), ('TERMINATOR_DBUS_NAME', 'net.tenshu.Terminator21a9d5db22c73a993ff0b42f64b396873'), ('GIO_LAUNCHED_DESKTOP_FILE_PID', '8629'), ('MANDATORY_PATH', '/usr/share/gconf/ubuntu.mandatory.path'), ('IM_CONFIG_PHASE', '1'), ('COLCON_PREFIX_PATH', '/home/lindelani/ros2_ws/install:/home/lindelani/ros2_foxy/ros2-linux'), ('ROS_DISTRO', 'foxy'), ('LOGNAME', 'lindelani'), ('JOURNAL_STREAM', '8:55639'), ('_', '/usr/bin/colcon'), ('ROS_VERSION', '2'), ('PKG_CONFIG_PATH', '/home/lindelani/ros2_foxy/ros2-linux/lib/x86_64-linux-gnu/pkgconfig:/home/lindelani/ros2_foxy/ros2-linux/lib/pkgconfig'), ('XDG_SESSION_CLASS', 'user'), ('DEFAULTS_PATH', '/usr/share/gconf/ubuntu.default.path'), ('USERNAME', 'lindelani'), ('TERM', 'xterm-256color'), ('GNOME_DESKTOP_SESSION_ID', 'this-is-deprecated'), ('_CE_CONDA', ''), ('ROS_LOCALHOST_ONLY', '0'), ('WINDOWPATH', '2'), ('PATH', '/home/lindelani/ros2_foxy/ros2-linux/bin:/home/lindelani/anaconda3/condabin:/home/lindelani/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin'), ('SESSION_MANAGER', 'local/lindelani-IdeaPad-Flex-5-14ARE05:@/tmp/.ICE-unix/1807,unix/lindelani-IdeaPad-Flex-5-14ARE05:/tmp/.ICE-unix/1807'), ('INVOCATION_ID', 'bf7b285e62a944d793dcb894e5064a81'), ('XDG_MENU_PREFIX', 'gnome-'), ('XDG_RUNTIME_DIR', '/run/user/1000'), ('DISPLAY', ':0'), ('TERMINATOR_DBUS_PATH', '/net/tenshu/Terminator2'), ('LANG', 'en_US.UTF-8'), ('XDG_CURRENT_DESKTOP', 'ubuntu:GNOME'), ('XMODIFIERS', '@im=ibus'), ('XDG_SESSION_DESKTOP', 'ubuntu'), ('XAUTHORITY', '/run/user/1000/gdm/Xauthority'), ('LS_COLORS', 'rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=30;41:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.zst=01;31:*.tzst=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.wim=01;31:*.swm=01;31:*.dwm=01;31:*.esd=01;31:*.jpg=01;35:*.jpeg=01;35:*.mjpg=01;35:*.mjpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.m4a=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.oga=00;36:*.opus=00;36:*.spx=00;36:*.xspf=00;36:'), ('SSH_AUTH_SOCK', '/run/user/1000/keyring/ssh'), ('AMENT_PREFIX_PATH', '/home/lindelani/ros2_ws/install/my_py_pkg:/home/lindelani/ros2_ws/install/my_cpp_pkg:/home/lindelani/ros2_ws/install/audio_common_msgs:/home/lindelani/ros2_foxy/ros2-linux'), ('CONDA_PYTHON_EXE', '/home/lindelani/anaconda3/bin/python'), ('SHELL', '/bin/bash'), ('TERMINATOR_UUID', 'urn:uuid:1e789671-8f19-4608-9c12-196b046a6e60'), ('QT_ACCESSIBILITY', '1'), ('GDMSESSION', 'ubuntu'), ('LESSCLOSE', '/usr/bin/lesspipe %s %s'), ('GPG_AGENT_INFO', '/run/user/1000/gnupg/S.gpg-agent:0:1'), ('QT_IM_MODULE', 'ibus'), ('PWD', '/home/lindelani/ros2_ws/src/audio_common/audio_capture/build/audio_capture'), ('LC_ALL', 'en_US.UTF-8'), ('XDG_CONFIG_DIRS', '/etc/xdg/xdg-ubuntu:/etc/xdg'), ('CONDA_EXE', '/home/lindelani/anaconda3/bin/conda'), ('XDG_DATA_DIRS', '/usr/share/ubuntu:/home/lindelani/.local/share/flatpak/exports/share:/var/lib/flatpak/exports/share:/usr/local/share/:/usr/share/:/var/lib/snapd/desktop'), ('PYTHONPATH', '/home/lindelani/ros2_ws/install/my_py_pkg/lib/python3.8/site-packages:/home/lindelani/ros2_ws/install/audio_common_msgs/lib/python3.8/site-packages:/home/lindelani/ros2_foxy/ros2-linux/lib/python3.8/site-packages'), ('COLCON', '1'), ('VTE_VERSION', '6003'), ('CMAKE_PREFIX_PATH', '/home/lindelani/ros2_ws/install/my_cpp_pkg:/home/lindelani/ros2_ws/install/audio_common_msgs:/home/lindelani/ros2_foxy/ros2-linux:/home/lindelani/ros2_ws/install/my_py_pkg')]), 'shell': False}
+[6.724634] (-) TimerEvent: {}
+[6.732674] (audio_capture) StdoutLine: {'line': b'-- Install configuration: ""\n'}
+[6.733024] (audio_capture) StdoutLine: {'line': b'-- Installing: /home/lindelani/ros2_ws/src/audio_common/audio_capture/install/audio_capture/lib/audio_capture/audio_capture\n'}
+[6.733706] (audio_capture) StdoutLine: {'line': b'-- Set runtime path of "/home/lindelani/ros2_ws/src/audio_common/audio_capture/install/audio_capture/lib/audio_capture/audio_capture" to ""\n'}
+[6.734150] (audio_capture) StdoutLine: {'line': b'-- Installing: /home/lindelani/ros2_ws/src/audio_common/audio_capture/install/audio_capture/share/audio_capture/launch\n'}
+[6.734353] (audio_capture) StdoutLine: {'line': b'-- Installing: /home/lindelani/ros2_ws/src/audio_common/audio_capture/install/audio_capture/share/audio_capture/launch/capture_to_file.launch.xml\n'}
+[6.734518] (audio_capture) StdoutLine: {'line': b'-- Installing: /home/lindelani/ros2_ws/src/audio_common/audio_capture/install/audio_capture/share/audio_capture/launch/capture.launch.xml\n'}
+[6.734751] (audio_capture) StdoutLine: {'line': b'-- Installing: /home/lindelani/ros2_ws/src/audio_common/audio_capture/install/audio_capture/share/audio_capture/launch/capture_wave.launch.xml\n'}
+[6.735034] (audio_capture) StdoutLine: {'line': b'-- Installing: /home/lindelani/ros2_ws/src/audio_common/audio_capture/install/audio_capture/share/ament_index/resource_index/package_run_dependencies/audio_capture\n'}
+[6.735223] (audio_capture) StdoutLine: {'line': b'-- Installing: /home/lindelani/ros2_ws/src/audio_common/audio_capture/install/audio_capture/share/ament_index/resource_index/parent_prefix_path/audio_capture\n'}
+[6.735376] (audio_capture) StdoutLine: {'line': b'-- Installing: /home/lindelani/ros2_ws/src/audio_common/audio_capture/install/audio_capture/share/audio_capture/environment/ament_prefix_path.sh\n'}
+[6.735636] (audio_capture) StdoutLine: {'line': b'-- Installing: /home/lindelani/ros2_ws/src/audio_common/audio_capture/install/audio_capture/share/audio_capture/environment/ament_prefix_path.dsv\n'}
+[6.735803] (audio_capture) StdoutLine: {'line': b'-- Installing: /home/lindelani/ros2_ws/src/audio_common/audio_capture/install/audio_capture/share/audio_capture/environment/path.sh\n'}
+[6.735957] (audio_capture) StdoutLine: {'line': b'-- Installing: /home/lindelani/ros2_ws/src/audio_common/audio_capture/install/audio_capture/share/audio_capture/environment/path.dsv\n'}
+[6.736110] (audio_capture) StdoutLine: {'line': b'-- Installing: /home/lindelani/ros2_ws/src/audio_common/audio_capture/install/audio_capture/share/audio_capture/local_setup.bash\n'}
+[6.736367] (audio_capture) StdoutLine: {'line': b'-- Installing: /home/lindelani/ros2_ws/src/audio_common/audio_capture/install/audio_capture/share/audio_capture/local_setup.sh\n'}
+[6.736623] (audio_capture) StdoutLine: {'line': b'-- Installing: /home/lindelani/ros2_ws/src/audio_common/audio_capture/install/audio_capture/share/audio_capture/local_setup.zsh\n'}
+[6.736778] (audio_capture) StdoutLine: {'line': b'-- Installing: /home/lindelani/ros2_ws/src/audio_common/audio_capture/install/audio_capture/share/audio_capture/local_setup.dsv\n'}
+[6.736931] (audio_capture) StdoutLine: {'line': b'-- Installing: /home/lindelani/ros2_ws/src/audio_common/audio_capture/install/audio_capture/share/audio_capture/package.dsv\n'}
+[6.737082] (audio_capture) StdoutLine: {'line': b'-- Installing: /home/lindelani/ros2_ws/src/audio_common/audio_capture/install/audio_capture/share/ament_index/resource_index/packages/audio_capture\n'}
+[6.737250] (audio_capture) StdoutLine: {'line': b'-- Installing: /home/lindelani/ros2_ws/src/audio_common/audio_capture/install/audio_capture/share/audio_capture/cmake/audio_captureConfig.cmake\n'}
+[6.737415] (audio_capture) StdoutLine: {'line': b'-- Installing: /home/lindelani/ros2_ws/src/audio_common/audio_capture/install/audio_capture/share/audio_capture/cmake/audio_captureConfig-version.cmake\n'}
+[6.737584] (audio_capture) StdoutLine: {'line': b'-- Installing: /home/lindelani/ros2_ws/src/audio_common/audio_capture/install/audio_capture/share/audio_capture/package.xml\n'}
+[6.738892] (audio_capture) CommandEnded: {'returncode': 0}
+[6.820825] (audio_capture) JobEnded: {'identifier': 'audio_capture', 'rc': 0}
+[6.822097] (-) EventReactorShutdown: {}

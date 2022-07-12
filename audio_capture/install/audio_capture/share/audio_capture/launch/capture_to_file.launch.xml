@@ -1,9 +1,9 @@
 <launch>
-  <arg name="device" default=""/>
+  <arg name="device" default="hw:1,1"/>
   <arg name="bitrate" default="128"/>
   <arg name="channels" default="1"/>
   <arg name="sample_rate" default="16000"/>
-  <arg name="dst" default="./output_1.mp3"/>
+  <arg name="dst" default="/tmp/output.mp3"/>
   <arg name="format" default="mp3"/>
   <arg name="sample_format" default="S16LE"/>
   <arg name="ns" default="audio"/>

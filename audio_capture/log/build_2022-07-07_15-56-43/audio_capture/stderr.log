@@ -1,0 +1,4 @@
+[01m[K/home/lindelani/ros2_ws/src/audio_common/audio_capture/src/audio_capture.cpp:[m[K In static member function ‘[01m[Kstatic gboolean audio_transport::RosGstCapture::onMessage(GstBus*, GstMessage*, gpointer)[m[K’:
+[01m[K/home/lindelani/ros2_ws/src/audio_common/audio_capture/src/audio_capture.cpp:207:42:[m[K [01;35m[Kwarning: [m[Kunused parameter ‘[01m[Kbus[m[K’ [[01;35m[K-Wunused-parameter[m[K]
+  207 |       static gboolean onMessage ([01;35m[KGstBus *bus[m[K, GstMessage *message, gpointer userData)
+      |                                  [01;35m[K~~~~~~~~^~~[m[K

@@ -1,0 +1,8 @@
+source;share/audio_capture/hook/cmake_prefix_path.ps1
+source;share/audio_capture/hook/cmake_prefix_path.dsv
+source;share/audio_capture/hook/cmake_prefix_path.sh
+source;share/audio_capture/local_setup.bash
+source;share/audio_capture/local_setup.dsv
+source;share/audio_capture/local_setup.ps1
+source;share/audio_capture/local_setup.sh
+source;share/audio_capture/local_setup.zsh

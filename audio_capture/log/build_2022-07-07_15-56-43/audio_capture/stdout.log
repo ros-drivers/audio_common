@@ -1,0 +1,70 @@
+-- The C compiler identification is GNU 9.4.0
+-- The CXX compiler identification is GNU 9.4.0
+-- Check for working C compiler: /usr/bin/cc
+-- Check for working C compiler: /usr/bin/cc -- works
+-- Detecting C compiler ABI info
+-- Detecting C compiler ABI info - done
+-- Detecting C compile features
+-- Detecting C compile features - done
+-- Check for working CXX compiler: /usr/bin/c++
+-- Check for working CXX compiler: /usr/bin/c++ -- works
+-- Detecting CXX compiler ABI info
+-- Detecting CXX compiler ABI info - done
+-- Detecting CXX compile features
+-- Detecting CXX compile features - done
+-- Found ament_cmake: 0.9.9 (/home/lindelani/ros2_foxy/ros2-linux/share/ament_cmake/cmake)
+-- Found PythonInterp: /usr/bin/python3 (found suitable version "3.8.10", minimum required is "3") 
+-- Using PYTHON_EXECUTABLE: /usr/bin/python3
+-- Found rclcpp: 2.4.1 (/home/lindelani/ros2_foxy/ros2-linux/share/rclcpp/cmake)
+-- Using all available rosidl_typesupport_c: rosidl_typesupport_connext_c;rosidl_typesupport_fastrtps_c;rosidl_typesupport_introspection_c
+-- Found rosidl_adapter: 1.2.1 (/home/lindelani/ros2_foxy/ros2-linux/share/rosidl_adapter/cmake)
+-- Could not find RTI Connext - skipping rosidl_typesupport_connext_c
+-- Could not find RTI Connext - skipping rosidl_typesupport_connext_cpp
+-- Found OpenSSL: /usr/lib/x86_64-linux-gnu/libcrypto.so (found version "1.1.1f")  
+-- Found FastRTPS: /home/lindelani/ros2_foxy/ros2-linux/include  
+-- Using all available rosidl_typesupport_cpp: rosidl_typesupport_connext_cpp;rosidl_typesupport_fastrtps_cpp;rosidl_typesupport_introspection_cpp
+-- Found rmw_implementation_cmake: 1.0.3 (/home/lindelani/ros2_foxy/ros2-linux/share/rmw_implementation_cmake/cmake)
+-- Using RMW implementation 'rmw_fastrtps_cpp' as default
+-- Looking for pthread.h
+-- Looking for pthread.h - found
+-- Performing Test CMAKE_HAVE_LIBC_PTHREAD
+-- Performing Test CMAKE_HAVE_LIBC_PTHREAD - Failed
+-- Looking for pthread_create in pthreads
+-- Looking for pthread_create in pthreads - not found
+-- Looking for pthread_create in pthread
+-- Looking for pthread_create in pthread - found
+-- Found Threads: TRUE  
+-- Found audio_common_msgs: 0.3.12 (/home/lindelani/ros2_ws/install/audio_common_msgs/share/audio_common_msgs/cmake)
+-- Found PkgConfig: /usr/bin/pkg-config (found version "0.29.1") 
+-- Checking for module 'gstreamer-1.0'
+--   Found gstreamer-1.0, version 1.16.2
+-- Found Boost: /usr/lib/x86_64-linux-gnu/cmake/Boost-1.71.0/BoostConfig.cmake (found version "1.71.0") found components: thread 
+-- Configuring done
+-- Generating done
+-- Build files have been written to: /home/lindelani/ros2_ws/src/audio_common/audio_capture/build/audio_capture
+[35m[1mScanning dependencies of target audio_capture[0m
+[ 50%] [32mBuilding CXX object CMakeFiles/audio_capture.dir/src/audio_capture.cpp.o[0m
+[100%] [32m[1mLinking CXX executable audio_capture[0m
+[100%] Built target audio_capture
+-- Install configuration: ""
+-- Installing: /home/lindelani/ros2_ws/src/audio_common/audio_capture/install/audio_capture/lib/audio_capture/audio_capture
+-- Set runtime path of "/home/lindelani/ros2_ws/src/audio_common/audio_capture/install/audio_capture/lib/audio_capture/audio_capture" to ""
+-- Installing: /home/lindelani/ros2_ws/src/audio_common/audio_capture/install/audio_capture/share/audio_capture/launch
+-- Installing: /home/lindelani/ros2_ws/src/audio_common/audio_capture/install/audio_capture/share/audio_capture/launch/capture_to_file.launch.xml
+-- Installing: /home/lindelani/ros2_ws/src/audio_common/audio_capture/install/audio_capture/share/audio_capture/launch/capture.launch.xml
+-- Installing: /home/lindelani/ros2_ws/src/audio_common/audio_capture/install/audio_capture/share/audio_capture/launch/capture_wave.launch.xml
+-- Installing: /home/lindelani/ros2_ws/src/audio_common/audio_capture/install/audio_capture/share/ament_index/resource_index/package_run_dependencies/audio_capture
+-- Installing: /home/lindelani/ros2_ws/src/audio_common/audio_capture/install/audio_capture/share/ament_index/resource_index/parent_prefix_path/audio_capture
+-- Installing: /home/lindelani/ros2_ws/src/audio_common/audio_capture/install/audio_capture/share/audio_capture/environment/ament_prefix_path.sh
+-- Installing: /home/lindelani/ros2_ws/src/audio_common/audio_capture/install/audio_capture/share/audio_capture/environment/ament_prefix_path.dsv
+-- Installing: /home/lindelani/ros2_ws/src/audio_common/audio_capture/install/audio_capture/share/audio_capture/environment/path.sh
+-- Installing: /home/lindelani/ros2_ws/src/audio_common/audio_capture/install/audio_capture/share/audio_capture/environment/path.dsv
+-- Installing: /home/lindelani/ros2_ws/src/audio_common/audio_capture/install/audio_capture/share/audio_capture/local_setup.bash
+-- Installing: /home/lindelani/ros2_ws/src/audio_common/audio_capture/install/audio_capture/share/audio_capture/local_setup.sh
+-- Installing: /home/lindelani/ros2_ws/src/audio_common/audio_capture/install/audio_capture/share/audio_capture/local_setup.zsh
+-- Installing: /home/lindelani/ros2_ws/src/audio_common/audio_capture/install/audio_capture/share/audio_capture/local_setup.dsv
+-- Installing: /home/lindelani/ros2_ws/src/audio_common/audio_capture/install/audio_capture/share/audio_capture/package.dsv
+-- Installing: /home/lindelani/ros2_ws/src/audio_common/audio_capture/install/audio_capture/share/ament_index/resource_index/packages/audio_capture
+-- Installing: /home/lindelani/ros2_ws/src/audio_common/audio_capture/install/audio_capture/share/audio_capture/cmake/audio_captureConfig.cmake
+-- Installing: /home/lindelani/ros2_ws/src/audio_common/audio_capture/install/audio_capture/share/audio_capture/cmake/audio_captureConfig-version.cmake
+-- Installing: /home/lindelani/ros2_ws/src/audio_common/audio_capture/install/audio_capture/share/audio_capture/package.xml
