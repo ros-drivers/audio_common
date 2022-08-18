@@ -2,8 +2,8 @@
 Changelog for package sound_play
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.3.14 (2022-08-18)
+-------------------
 * Merge pull request `#193 <https://github.com/ros-drivers/audio_common/issues/193>`_ from knorth55/refactor-soundplay-node
 * refactor soundplay_node.py
 * Merge pull request `#192 <https://github.com/ros-drivers/audio_common/issues/192>`_ from knorth55/fix-file-open-issue
