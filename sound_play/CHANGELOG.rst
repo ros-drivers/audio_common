@@ -2,6 +2,38 @@
 Changelog for package sound_play
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Merge pull request `#193 <https://github.com/ros-drivers/audio_common/issues/193>`_ from knorth55/refactor-soundplay-node
+* refactor soundplay_node.py
+* Merge pull request `#192 <https://github.com/ros-drivers/audio_common/issues/192>`_ from knorth55/fix-file-open-issue
+* fix typo causing file open issue
+* Merge pull request `#191 <https://github.com/ros-drivers/audio_common/issues/191>`_ from knorth55/flite-default-voice-dir
+* add default voice dir for flite_plugin
+* Merge pull request `#190 <https://github.com/ros-drivers/audio_common/issues/190>`_ from ros-drivers/knorth55-patch-1
+* Update soundplay_node.py
+* Merge pull request `#187 <https://github.com/ros-drivers/audio_common/issues/187>`_ from knorth55/fix-typo
+* fix typo in soundplay_node.py
+* Merge pull request `#185 <https://github.com/ros-drivers/audio_common/issues/185>`_ from knorth55/sound-play-flite-plugin
+  add flite plugin for sound_play
+* Merge pull request `#183 <https://github.com/ros-drivers/audio_common/issues/183>`_ from knorth55/sound-play-plugin
+  add soundplay plugin feature
+* add flite in sound_play dependency
+* refactor FestivalPlugin
+* add flite plugin
+* change default_voice to None
+* add plugin arg in soundplay_node.launch
+* refactor codes
+* add output screen in soundplay_node.launch
+* add soundplay plugin attribute
+* Merge pull request `#184 <https://github.com/ros-drivers/audio_common/issues/184>`_ from knorth55/default-voice
+* add default_voice in soundplay_node.launch
+* Merge pull request `#182 <https://github.com/ros-drivers/audio_common/issues/182>`_ from iory/is-speaking
+* Improve is_speaking by checking goal status
+* Merge pull request `#181 <https://github.com/ros-drivers/audio_common/issues/181>`_ from knorth55/refactor-is-speaking
+* refactor is_speaking.py
+* Contributors: JSK fetch user, Shingo Kitagawa, iory
+
 0.3.13 (2022-04-07)
 -------------------
 * Merge pull request `#176 <https://github.com/ros-drivers/audio_common/issues/176>`_ from iory/is-speeching
