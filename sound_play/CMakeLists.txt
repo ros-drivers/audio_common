@@ -29,6 +29,7 @@ catkin_install_python(PROGRAMS
 
 install(FILES
   soundplay_node.launch
+  sound_play_plugin.yaml
   test.launch
   DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION})
 
