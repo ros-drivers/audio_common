@@ -358,6 +358,12 @@ class SoundPlayNode(object):
                     rospy.logdebug('Loading plugin in {}'.format(plugin_y))
         plugin_dict = {}
         for plugin_yaml in plugin_yamls:
+            if not os.path.exists(plugin_yaml):
+                rospy.logerr(
+                    'Failed to load plugin yaml: {}'.format(plugin_yaml))
+                rospy.logerr(
+                    'Missing plugin yaml: {}'.format(plugin_yaml))
+                continue
             with open(plugin_yaml) as f:
                 plugin_descs = yaml.safe_load(f)
             for plugin_desc in plugin_descs:
