@@ -2,6 +2,14 @@
 Changelog for package sound_play
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Merge pull request `#200 <https://github.com/ros-drivers/audio_common/issues/200>`_ from knorth55/yaml-missing
+* show error and skip loading when plugin yaml is missing
+* Merge pull request `#199 <https://github.com/ros-drivers/audio_common/issues/199>`_ from knorth55/install-plugin-yaml
+* fix missing install in CMakeLists.txt
+* Contributors: Shingo Kitagawa
+
 0.3.14 (2022-08-18)
 -------------------
 * Merge pull request `#193 <https://github.com/ros-drivers/audio_common/issues/193>`_ from knorth55/refactor-soundplay-node
