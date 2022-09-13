@@ -302,7 +302,11 @@ class SoundClient(object):
     def stopAll(self):
         self.stop(SoundRequest.ALL)
 
-    def sendMsg(self, snd, cmd, s, arg2="", vol=1.0, replace=True, **kwargs):
+    def sendMsg(
+        self, snd, cmd, s, arg2="", vol=1.0, replace=True,
+        server_timeout=rospy.Duration(),result_timeout=rospy.Duration(),
+        **kwargs
+    ):
         """
         Internal method that publishes the sound request, either directly as a
         SoundRequest to the soundplay_node or through the actionlib interface
@@ -344,14 +348,15 @@ class SoundClient(object):
         else:  # Block until result comes back.
             assert self.actionclient, 'Actionclient must exist'
             rospy.logdebug('Sending action client sound request [blocking]')
-            self.actionclient.wait_for_server()
+            if not self.actionclient.wait_for_server(timeout=server_timeout):
+                return
             goal = SoundRequestGoal()
             goal.sound_request = msg
             while not replace and self._playing:
                 rospy.sleep(0.1)
             self.actionclient.send_goal(goal)
-            self.actionclient.wait_for_result()
-            rospy.logdebug('sound request response received')
+            if self.actionclient.wait_for_result(timeout=result_timeout):
+                rospy.logdebug('sound request response received')
         return
 
     def _action_status_cb(self, msg):
