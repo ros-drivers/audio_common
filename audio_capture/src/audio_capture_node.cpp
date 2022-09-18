@@ -7,6 +7,7 @@
 #include <rclcpp_components/register_node_macro.hpp>
 
 #include "audio_common_msgs/msg/audio_data.hpp"
+#include "audio_common_msgs/msg/audio_data_stamped.hpp"
 #include "audio_common_msgs/msg/audio_info.hpp"
 
 namespace audio_capture
@@ -52,6 +53,7 @@ namespace audio_capture
         this->get_parameter("device", device);
 
         _pub = this->create_publisher<audio_common_msgs::msg::AudioData>("audio", 10);
+        _pub_stamped = this->create_publisher<audio_common_msgs::msg::AudioDataStamped>("audio_stamped", 10);
         _pub_info = this->create_publisher<audio_common_msgs::msg::AudioInfo>("audio_info", 1);
 
         _loop = g_main_loop_new(NULL, false);
@@ -184,6 +186,11 @@ namespace audio_capture
         _pub->publish(msg);
       }
 
+      void publishStamped( const audio_common_msgs::msg::AudioDataStamped &msg )
+      {
+        _pub_stamped->publish(msg);
+      }
+
       static GstFlowReturn onNewBuffer (GstAppSink *appsink, gpointer userData)
       {
         AudioCaptureNode *server = reinterpret_cast<AudioCaptureNode*>(userData);
@@ -195,15 +202,19 @@ namespace audio_capture
         GstBuffer *buffer = gst_sample_get_buffer(sample);
 
         audio_common_msgs::msg::AudioData msg;
+        audio_common_msgs::msg::AudioDataStamped stamped_msg;
+        stamped_msg.header.stamp = this->get_clock()->now;
         gst_buffer_map(buffer, &map, GST_MAP_READ);
         msg.data.resize( map.size );
 
         memcpy( &msg.data[0], map.data, map.size );
+        stamped_msg.audio = msg;
 
         gst_buffer_unmap(buffer, &map);
         gst_sample_unref(sample);
 
         server->publish(msg);
+        server->publishStamped(stamped_msg);
 
         return GST_FLOW_OK;
       }
@@ -225,6 +236,7 @@ namespace audio_capture
 
     private:
       rclcpp::Publisher<audio_common_msgs::msg::AudioData>::SharedPtr _pub;
+      rclcpp::Publisher<audio_common_msgs::msg::AudioDataStamped>::SharedPtr _pub_stamped;
       rclcpp::Publisher<audio_common_msgs::msg::AudioInfo>::SharedPtr _pub_info;
 
       boost::thread _gst_thread;
