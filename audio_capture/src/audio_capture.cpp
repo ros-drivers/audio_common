@@ -6,6 +6,7 @@
 #include <ros/ros.h>
 
 #include "audio_common_msgs/AudioData.h"
+#include "audio_common_msgs/AudioDataStamped.h"
 #include "audio_common_msgs/AudioInfo.h"
 
 namespace audio_transport
@@ -40,6 +41,7 @@ namespace audio_transport
         ros::param::param<std::string>("~device", device, "");
 
         _pub = _nh.advertise<audio_common_msgs::AudioData>("audio", 10, true);
+        _pub_stamped = _nh.advertise<audio_common_msgs::AudioDataStamped>("audio_stamped", 10, true);
         _pub_info = _nh.advertise<audio_common_msgs::AudioInfo>("audio_info", 1, true);
 
         _loop = g_main_loop_new(NULL, false);
@@ -172,8 +174,17 @@ namespace audio_transport
         _pub.publish(msg);
       }
 
+      void publishStamped( const audio_common_msgs::AudioDataStamped &msg )
+      {
+        _pub_stamped.publish(msg);
+      }
+
       static GstFlowReturn onNewBuffer (GstAppSink *appsink, gpointer userData)
       {
+        audio_common_msgs::AudioData msg;
+        audio_common_msgs::AudioDataStamped stamped_msg;
+        stamped_msg.header.stamp = ros::Time::now();
+
         RosGstCapture *server = reinterpret_cast<RosGstCapture*>(userData);
         GstMapInfo map;
 
@@ -182,16 +193,17 @@ namespace audio_transport
 
         GstBuffer *buffer = gst_sample_get_buffer(sample);
 
-        audio_common_msgs::AudioData msg;
         gst_buffer_map(buffer, &map, GST_MAP_READ);
         msg.data.resize( map.size );
 
         memcpy( &msg.data[0], map.data, map.size );
+        stamped_msg.audio = msg;
 
         gst_buffer_unmap(buffer, &map);
         gst_sample_unref(sample);
 
         server->publish(msg);
+        server->publishStamped(stamped_msg);
 
         return GST_FLOW_OK;
       }
@@ -214,6 +226,7 @@ namespace audio_transport
     private:
       ros::NodeHandle _nh;
       ros::Publisher _pub;
+      ros::Publisher _pub_stamped;
       ros::Publisher _pub_info;
 
       boost::thread _gst_thread;
