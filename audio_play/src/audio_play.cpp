@@ -137,6 +137,7 @@ namespace audio_transport
         GstFlowReturn ret;
 
         g_signal_emit_by_name(_source, "push-buffer", buffer, &ret);
+        gst_buffer_unref(buffer);
       }
 
      static void cb_newpad (GstElement *decodebin, GstPad *pad, 
