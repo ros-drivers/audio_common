@@ -27,23 +27,23 @@ namespace audio_transport
         std::string sample_format;
 
         // The destination of the audio
-        this->declare_parameter<std::string>("~dst", "alsasink");
-        this->declare_parameter<std::string>("~device", std::string());
-        this->declare_parameter<bool>("~do_timestamp",  true);
-        this->declare_parameter<std::string>("~format", "mp3");
-        this->declare_parameter<int>("~channels", 1);
-        this->declare_parameter<int>("~depth", 16);
-        this->declare_parameter<int>("~sample_rate", 16000);
-        this->declare_parameter<std::string>("~sample_format", "S16LE");
+        this->declare_parameter<std::string>("dst", "alsasink");
+        this->declare_parameter<std::string>("device", std::string());
+        this->declare_parameter<bool>("do_timestamp",  true);
+        this->declare_parameter<std::string>("format", "mp3");
+        this->declare_parameter<int>("channels", 1);
+        this->declare_parameter<int>("depth", 16);
+        this->declare_parameter<int>("sample_rate", 16000);
+        this->declare_parameter<std::string>("sample_format", "S16LE");
 
-        this->get_parameter("~dst", dst_type);
-        this->get_parameter("~device", device);
-        this->get_parameter("~do_timestamp", do_timestamp);
-        this->get_parameter("~format", format);
-        this->get_parameter("~channels", channels);
-        this->get_parameter("~depth", depth);
-        this->get_parameter("~sample_rate", sample_rate);
-        this->get_parameter("~sample_format", sample_format);
+        this->get_parameter("dst", dst_type);
+        this->get_parameter("device", device);
+        this->get_parameter("do_timestamp", do_timestamp);
+        this->get_parameter("format", format);
+        this->get_parameter("channels", channels);
+        this->get_parameter("depth", depth);
+        this->get_parameter("sample_rate", sample_rate);
+        this->get_parameter("sample_format", sample_format);
 
         _sub = this->create_subscription<audio_common_msgs::msg::AudioData>(
             "audio", 10, std::bind(&RosGstPlay::onAudio, this, std::placeholders::_1));

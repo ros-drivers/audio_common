@@ -21,31 +21,31 @@ namespace audio_transport
         std::string device;
 
         // Need to encoding or publish raw wave data
-        this->declare_parameter<std::string>("~format", "mp3");
-        this->declare_parameter<std::string>("~sample_format", "S16LE");
-        this->get_parameter("~format", _format);
-        this->get_parameter("~sample_format", _sample_format);
+        this->declare_parameter<std::string>("format", "mp3");
+        this->declare_parameter<std::string>("sample_format", "S16LE");
+        this->get_parameter("format", _format);
+        this->get_parameter("sample_format", _sample_format);
 
         // The bitrate at which to encode the audio
-        this->declare_parameter<int>("~bitrate", 192);
-        this->get_parameter("~bitrate", _bitrate);
+        this->declare_parameter<int>("bitrate", 192);
+        this->get_parameter("bitrate", _bitrate);
 
         // only available for raw data
-        this->declare_parameter<int>("~channels", 1);
-        this->declare_parameter<int>("~depth", 16);
-        this->declare_parameter<int>("~sample_rate", 16000);
-        this->get_parameter("~channels", _channels);
-        this->get_parameter("~depth", _depth);
-        this->get_parameter("~sample_rate", _sample_rate);
+        this->declare_parameter<int>("channels", 1);
+        this->declare_parameter<int>("depth", 16);
+        this->declare_parameter<int>("sample_rate", 16000);
+        this->get_parameter("channels", _channels);
+        this->get_parameter("depth", _depth);
+        this->get_parameter("sample_rate", _sample_rate);
 
         // The destination of the audio
-        this->declare_parameter<std::string>("~dst", "appsink");
-        this->get_parameter("~dst", dst_type);
+        this->declare_parameter<std::string>("dst", "appsink");
+        this->get_parameter("dst", dst_type);
 
         // The source of the audio
-        //this->declare_parameter<std::string>("~src", source_type, "alsasrc");
-        this->declare_parameter<std::string>("~device", "");
-        this->get_parameter("~device", device);
+        //this->declare_parameter<std::string>("src", source_type, "alsasrc");
+        this->declare_parameter<std::string>("device", "");
+        this->get_parameter("device", device);
 
         _pub = this->create_publisher<audio_common_msgs::msg::AudioData>("audio", 10);
         _pub_info = this->create_publisher<audio_common_msgs::msg::AudioInfo>("audio_info", 1);
