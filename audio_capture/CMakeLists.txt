@@ -11,27 +11,43 @@ endif()
 
 find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
+find_package(rclcpp_components REQUIRED)
 find_package(audio_common_msgs REQUIRED)
 find_package(PkgConfig)
 pkg_check_modules(GST1.0 gstreamer-1.0 REQUIRED)
 find_package(Boost REQUIRED COMPONENTS thread)
 
-include_directories(rclcpp audio_common_msgs)
-include_directories(SYSTEM ${Boost_INCLUDE_DIRS} ${GST1.0_INCLUDE_DIRS})
+add_library(${PROJECT_NAME} SHARED
+  src/audio_capture.cpp
+)
 
-add_executable(audio_capture src/audio_capture.cpp)
-ament_target_dependencies(audio_capture
+target_include_directories(${PROJECT_NAME} PRIVATE ${Boost_INCLUDE_DIRS} ${GST1.0_INCLUDE_DIRS})
+ament_target_dependencies(${PROJECT_NAME}
   rclcpp
+  rclcpp_components
   audio_common_msgs
 )
-target_link_libraries(audio_capture ${GST1.0_LIBRARIES} ${Boost_LIBRARIES})
 
-install(TARGETS audio_capture
-  RUNTIME DESTINATION lib/${PROJECT_NAME}
+target_link_libraries(${PROJECT_NAME} ${GST1.0_LIBRARIES} ${Boost_LIBRARIES})
+
+rclcpp_components_register_node(
+  ${PROJECT_NAME}
+  PLUGIN "audio_transport::RosGstCapture"
+  EXECUTABLE audio_capture_node
+)
+
+install(TARGETS audio_capture_node ${PROJECT_NAME}
+  LIBRARY DESTINATION lib
+  ARCHIVE DESTINATION lib
+  RUNTIME DESTINATION bin
 )
 
 install(DIRECTORY launch
   DESTINATION share/${PROJECT_NAME}
+)
+
+ament_export_libraries(
+  ${PROJECT_NAME}
 )
 
 ament_package()

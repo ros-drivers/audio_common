@@ -3,15 +3,14 @@
   <arg name="ns" default="audio"/>
   <arg name="dst" default="alsasink"/>
   <arg name="do_timestamp" default="false"/>
-  <arg name="format" default="mp3"/>
+  <arg name="format" default="wave"/>
   <arg name="channels" default="1"/>
-  <arg name="sample_rate" default="16000"/>
+  <arg name="sample_rate" default="44100"/>
   <arg name="sample_format" default="S16LE"/>
   <arg name="audio_topic" default="audio" />
 
   <group>
-    <push-ros-namespace namespace="$(var ns)"/>
-    <node name="audio_play" pkg="audio_play" exec="audio_play" output="screen">
+    <node name="audio_play_node" pkg="audio_play" exec="audio_play_node" output="screen">
       <param name="device" value="$(var device)"/>
       <param name="dst" value="$(var dst)"/>
       <param name="do_timestamp" value="$(var do_timestamp)"/>
