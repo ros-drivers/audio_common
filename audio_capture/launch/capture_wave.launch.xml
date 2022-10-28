@@ -2,7 +2,7 @@
   <arg name="device" default="" />
 
   <!-- publish audio data as wav format -->
-  <node name="audio_capture_node" pkg="audio_capture" exec="audio_capture_node" output="screen">
+  <node name="audio_capture" pkg="audio_capture" exec="audio_capture" output="screen">
     <param name="device" value="" />
     <param name="format" value="wave" />
     <param name="channels" value="1" />

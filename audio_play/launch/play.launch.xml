@@ -10,7 +10,7 @@
   <arg name="audio_topic" default="audio" />
 
   <group>
-    <node name="audio_play_node" pkg="audio_play" exec="audio_play_node" output="screen">
+    <node name="audio_play" pkg="audio_play" exec="audio_play" output="screen">
       <param name="device" value="$(var device)"/>
       <param name="dst" value="$(var dst)"/>
       <param name="do_timestamp" value="$(var do_timestamp)"/>

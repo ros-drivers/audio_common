@@ -17,26 +17,26 @@ find_package(PkgConfig)
 pkg_check_modules(GST1.0 gstreamer-1.0 REQUIRED)
 find_package(Boost REQUIRED COMPONENTS thread)
 
-add_library(${PROJECT_NAME} SHARED
+add_library(${PROJECT_NAME}_lib SHARED
   src/audio_play.cpp
 )
 
-target_include_directories(${PROJECT_NAME} PRIVATE ${GST1.0_INCLUDE_DIRS})
-ament_target_dependencies(${PROJECT_NAME}
+target_include_directories(${PROJECT_NAME}_lib PRIVATE ${GST1.0_INCLUDE_DIRS})
+ament_target_dependencies(${PROJECT_NAME}_lib
   rclcpp
   rclcpp_components
   audio_common_msgs
 )
 
-target_link_libraries(${PROJECT_NAME} ${GST1.0_LIBRARIES} ${Boost_LIBRARIES})
+target_link_libraries(${PROJECT_NAME}_lib ${GST1.0_LIBRARIES} ${Boost_LIBRARIES})
 
 rclcpp_components_register_node(
-  ${PROJECT_NAME}
+  ${PROJECT_NAME}_lib
   PLUGIN "audio_transport::RosGstPlay"
-  EXECUTABLE audio_play_node
+  EXECUTABLE ${PROJECT_NAME}
 )
 
-install(TARGETS audio_play_node ${PROJECT_NAME} 
+install(TARGETS ${PROJECT_NAME} ${PROJECT_NAME}_lib
   LIBRARY DESTINATION lib
   ARCHIVE DESTINATION lib
   RUNTIME DESTINATION bin
@@ -47,7 +47,7 @@ install(DIRECTORY launch
 )
 
 ament_export_libraries(
-  ${PROJECT_NAME}
+  ${PROJECT_NAME}_lib
 )
 
 ament_package()

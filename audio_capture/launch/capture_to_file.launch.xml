@@ -10,7 +10,7 @@
 
   <group>
     <push-ros-namespace namespace="$(var ns)"/>
-    <node name="audio_capture_node" pkg="audio_capture" exec="audio_capture_node" output="screen">
+    <node name="audio_capture" pkg="audio_capture" exec="audio_capture" output="screen">
       <param name="bitrate" value="$(var bitrate)"/>
       <param name="device" value="$(var device)"/>
       <param name="channels" value="$(var channels)"/>
