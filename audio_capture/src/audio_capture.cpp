@@ -4,6 +4,7 @@
 #include <boost/thread.hpp>
 
 #include <rclcpp/rclcpp.hpp>
+#include <rclcpp_components/register_node_macro.hpp>
 
 #include "audio_common_msgs/msg/audio_data.hpp"
 #include "audio_common_msgs/msg/audio_info.hpp"
@@ -13,9 +14,12 @@ namespace audio_transport
   class RosGstCapture: public rclcpp::Node
   {
     public:
-      RosGstCapture()
-      : Node("audio_capture")
+      RosGstCapture(const rclcpp::NodeOptions &options)
+      :
+       Node("audio_capture", options)
       {
+        gst_init(nullptr, nullptr);
+
         _bitrate = 192;
         std::string dst_type;
         std::string device;
@@ -233,11 +237,4 @@ namespace audio_transport
   };
 }
 
-int main (int argc, char **argv)
-{
-  rclcpp::init(argc, argv);
-  gst_init(&argc, &argv);
-  rclcpp::spin(std::make_shared<audio_transport::RosGstCapture>());
-  rclcpp::shutdown();
-  return 0;
-}
+RCLCPP_COMPONENTS_REGISTER_NODE(audio_transport::RosGstCapture)

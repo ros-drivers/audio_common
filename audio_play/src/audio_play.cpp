@@ -3,6 +3,7 @@
 #include <boost/thread.hpp>
 
 #include <rclcpp/rclcpp.hpp>
+#include <rclcpp_components/register_node_macro.hpp>
 
 #include "audio_common_msgs/msg/audio_data.hpp"
 
@@ -11,9 +12,11 @@ namespace audio_transport
   class RosGstPlay: public rclcpp::Node
   {
     public:
-      RosGstPlay()
-      : Node("audio_play")
+      RosGstPlay(const rclcpp::NodeOptions &options)
+      : Node("audio_play", options)
       {
+        gst_init(nullptr, nullptr);
+
         GstPad *audiopad;
         GstCaps *caps;
 
@@ -194,12 +197,7 @@ namespace audio_transport
   };
 }
 
+RCLCPP_COMPONENTS_REGISTER_NODE(audio_transport::RosGstPlay)
 
-int main (int argc, char **argv)
-{
-  rclcpp::init(argc, argv);
-  gst_init(&argc, &argv);
-  rclcpp::spin(std::make_shared<audio_transport::RosGstPlay>());
-  rclcpp::shutdown();
-  return 0;
-}
+
+
