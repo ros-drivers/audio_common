@@ -18,7 +18,7 @@ pkg_check_modules(GST1.0 gstreamer-1.0 REQUIRED)
 find_package(Boost REQUIRED COMPONENTS thread)
 
 add_library(${PROJECT_NAME} SHARED
-  src/audio_capture.cpp
+  src/audio_capture_node.cpp
 )
 
 target_include_directories(${PROJECT_NAME} PRIVATE ${Boost_INCLUDE_DIRS} ${GST1.0_INCLUDE_DIRS})
@@ -32,7 +32,7 @@ target_link_libraries(${PROJECT_NAME} ${GST1.0_LIBRARIES} ${Boost_LIBRARIES})
 
 rclcpp_components_register_node(
   ${PROJECT_NAME}
-  PLUGIN "audio_transport::RosGstCapture"
+  PLUGIN "audio_capture::AudioCaptureNode"
   EXECUTABLE audio_capture_node
 )
 
