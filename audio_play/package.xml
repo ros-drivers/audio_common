@@ -21,6 +21,7 @@
    <build_depend>audio_common_msgs</build_depend>
    <build_depend>boost</build_depend>
    <build_depend>rclcpp</build_depend>
+   <build_depend>rclcpp_components</build_depend>
 
    <build_depend>libgstreamer1.0-dev</build_depend>
    <build_depend>libgstreamer-plugins-base1.0-dev</build_depend>
