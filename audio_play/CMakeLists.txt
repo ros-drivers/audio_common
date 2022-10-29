@@ -18,7 +18,7 @@ pkg_check_modules(GST1.0 gstreamer-1.0 REQUIRED)
 find_package(Boost REQUIRED COMPONENTS thread)
 
 add_library(${PROJECT_NAME} SHARED
-  src/audio_play.cpp
+  src/audio_play_node.cpp
 )
 
 target_include_directories(${PROJECT_NAME} PRIVATE ${GST1.0_INCLUDE_DIRS})
@@ -32,7 +32,7 @@ target_link_libraries(${PROJECT_NAME} ${GST1.0_LIBRARIES} ${Boost_LIBRARIES})
 
 rclcpp_components_register_node(
   ${PROJECT_NAME}
-  PLUGIN "audio_transport::RosGstPlay"
+  PLUGIN "audio_play::AudioPlayNode"
   EXECUTABLE audio_play_node
 )
 

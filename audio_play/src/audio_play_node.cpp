@@ -7,13 +7,13 @@
 
 #include "audio_common_msgs/msg/audio_data.hpp"
 
-namespace audio_transport
+namespace audio_play
 {
-  class RosGstPlay: public rclcpp::Node
+  class AudioPlayNode: public rclcpp::Node
   {
     public:
-      RosGstPlay(const rclcpp::NodeOptions &options)
-      : Node("audio_play", options)
+      AudioPlayNode(const rclcpp::NodeOptions &options)
+      : Node("audio_play_node", options)
       {
         gst_init(nullptr, nullptr);
 
@@ -49,7 +49,7 @@ namespace audio_transport
         this->get_parameter("sample_format", sample_format);
 
         _sub = this->create_subscription<audio_common_msgs::msg::AudioData>(
-            "audio", 10, std::bind(&RosGstPlay::onAudio, this, std::placeholders::_1));
+            "audio", 10, std::bind(&AudioPlayNode::onAudio, this, std::placeholders::_1));
 
         _loop = g_main_loop_new(NULL, false);
 
@@ -157,7 +157,7 @@ namespace audio_transport
      static void cb_newpad (GstElement *decodebin, GstPad *pad, 
                              gpointer data)
       {
-        RosGstPlay *client = reinterpret_cast<RosGstPlay*>(data);
+        AudioPlayNode *client = reinterpret_cast<AudioPlayNode*>(data);
 
         GstCaps *caps;
         GstStructure *str;
@@ -197,7 +197,7 @@ namespace audio_transport
   };
 }
 
-RCLCPP_COMPONENTS_REGISTER_NODE(audio_transport::RosGstPlay)
+RCLCPP_COMPONENTS_REGISTER_NODE(audio_play::AudioPlayNode)
 
 
 
