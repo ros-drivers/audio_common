@@ -29,7 +29,7 @@ def generate_launch_description():
     )
     _format_launch_arg = DeclareLaunchArgument(
         'format',
-        default_value='wave'
+        default_value='mp3'
     )
     _bitrate_launch_arg = DeclareLaunchArgument(
         'bitrate',
