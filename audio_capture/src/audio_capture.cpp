@@ -183,6 +183,7 @@ namespace audio_transport
       {
         audio_common_msgs::AudioData msg;
         audio_common_msgs::AudioDataStamped stamped_msg;
+        // TODO(knorth55):  audio stamp should be get from gstreamer data
         stamped_msg.header.stamp = ros::Time::now();
 
         RosGstCapture *server = reinterpret_cast<RosGstCapture*>(userData);
