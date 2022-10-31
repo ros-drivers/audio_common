@@ -4,18 +4,22 @@
 #include <boost/thread.hpp>
 
 #include <rclcpp/rclcpp.hpp>
+#include <rclcpp_components/register_node_macro.hpp>
 
 #include "audio_common_msgs/msg/audio_data.hpp"
 #include "audio_common_msgs/msg/audio_info.hpp"
 
-namespace audio_transport
+namespace audio_capture
 {
-  class RosGstCapture: public rclcpp::Node
+  class AudioCaptureNode: public rclcpp::Node
   {
     public:
-      RosGstCapture()
-      : Node("audio_capture")
+      AudioCaptureNode(const rclcpp::NodeOptions &options)
+      :
+       Node("audio_capture_node", options)
       {
+        gst_init(nullptr, nullptr);
+
         _bitrate = 192;
         std::string dst_type;
         std::string device;
@@ -162,7 +166,7 @@ namespace audio_transport
         _pub_info->publish(info_msg);
       }
 
-      ~RosGstCapture()
+      ~AudioCaptureNode()
       {
         g_main_loop_quit(_loop);
         gst_element_set_state(_pipeline, GST_STATE_NULL);
@@ -182,7 +186,7 @@ namespace audio_transport
 
       static GstFlowReturn onNewBuffer (GstAppSink *appsink, gpointer userData)
       {
-        RosGstCapture *server = reinterpret_cast<RosGstCapture*>(userData);
+        AudioCaptureNode *server = reinterpret_cast<AudioCaptureNode*>(userData);
         GstMapInfo map;
 
         GstSample *sample;
@@ -206,7 +210,7 @@ namespace audio_transport
 
       static gboolean onMessage (GstBus *bus, GstMessage *message, gpointer userData)
       {
-        RosGstCapture *server = reinterpret_cast<RosGstCapture*>(userData);
+        AudioCaptureNode *server = reinterpret_cast<AudioCaptureNode*>(userData);
         GError *err;
         gchar *debug;
 
@@ -233,11 +237,4 @@ namespace audio_transport
   };
 }
 
-int main (int argc, char **argv)
-{
-  rclcpp::init(argc, argv);
-  gst_init(&argc, &argv);
-  rclcpp::spin(std::make_shared<audio_transport::RosGstCapture>());
-  rclcpp::shutdown();
-  return 0;
-}
+RCLCPP_COMPONENTS_REGISTER_NODE(audio_capture::AudioCaptureNode)
