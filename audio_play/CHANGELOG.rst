@@ -2,8 +2,8 @@
 Changelog for package audio_play
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.3.16 (2022-12-23)
+-------------------
 * Merge pull request `#216 <https://github.com/ros-drivers/audio_common/issues/216>`_ from knorth55/launch-update
 * update play.launch
 * Merge pull request `#206 <https://github.com/ros-drivers/audio_common/issues/206>`_ from knorth55/fix-205

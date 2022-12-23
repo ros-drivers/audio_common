@@ -2,8 +2,8 @@
 Changelog for package audio_capture
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.3.16 (2022-12-23)
+-------------------
 * Merge pull request `#204 <https://github.com/ros-drivers/audio_common/issues/204>`_ from knorth55/audio-capture-stamped
 * add todo comment
 * publish audio stamped in audio_capture.cpp

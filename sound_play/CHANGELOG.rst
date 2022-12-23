@@ -2,8 +2,8 @@
 Changelog for package sound_play
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.3.16 (2022-12-23)
+-------------------
 * Merge pull request `#203 <https://github.com/ros-drivers/audio_common/issues/203>`_ from nakane11/timeout
 * refactor libsoundplay.py
 * Add timeout to wait_for_server and wait_for_result
