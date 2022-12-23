@@ -2,6 +2,15 @@
 Changelog for package audio_capture
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Merge pull request `#204 <https://github.com/ros-drivers/audio_common/issues/204>`_ from knorth55/audio-capture-stamped
+* add todo comment
+* publish audio stamped in audio_capture.cpp
+* Merge pull request `#216 <https://github.com/ros-drivers/audio_common/issues/216>`_ from knorth55/launch-update
+* update audio_capture launch
+* Contributors: Shingo Kitagawa
+
 0.3.15 (2022-08-29)
 -------------------
 

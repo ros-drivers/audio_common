@@ -2,6 +2,14 @@
 Changelog for package audio_play
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Merge pull request `#216 <https://github.com/ros-drivers/audio_common/issues/216>`_ from knorth55/launch-update
+* update play.launch
+* Merge pull request `#206 <https://github.com/ros-drivers/audio_common/issues/206>`_ from knorth55/fix-205
+* unref buffer in audio_play to avoid memory leak
+* Contributors: Shingo Kitagawa
+
 0.3.15 (2022-08-29)
 -------------------
 
