@@ -46,6 +46,11 @@ namespace audio_transport
 
         _loop = g_main_loop_new(NULL, false);
         _pipeline = gst_pipeline_new("ros_pipeline");
+        GstClock *clock = gst_system_clock_obtain();
+        g_object_set(clock, "clock-type", GST_CLOCK_TYPE_REALTIME, NULL);
+        gst_pipeline_use_clock(GST_PIPELINE_CAST(_pipeline), clock);
+        gst_object_unref(clock);
+
         _bus = gst_pipeline_get_bus(GST_PIPELINE(_pipeline));
         gst_bus_add_signal_watch(_bus);
         g_signal_connect(_bus, "message::error",
@@ -183,8 +188,6 @@ namespace audio_transport
       {
         audio_common_msgs::AudioData msg;
         audio_common_msgs::AudioDataStamped stamped_msg;
-        // TODO(knorth55):  audio stamp should be get from gstreamer data
-        stamped_msg.header.stamp = ros::Time::now();
 
         RosGstCapture *server = reinterpret_cast<RosGstCapture*>(userData);
         GstMapInfo map;
@@ -193,6 +196,16 @@ namespace audio_transport
         g_signal_emit_by_name(appsink, "pull-sample", &sample);
 
         GstBuffer *buffer = gst_sample_get_buffer(sample);
+
+        if( ros::Time::isSimTime() )
+        {
+          stamped_msg.header.stamp = ros::Time::now();
+        }
+        else
+        {
+          GstClockTime buffer_time = gst_element_get_base_time(server->_source)+GST_BUFFER_PTS(buffer);
+          stamped_msg.header.stamp.fromNSec(buffer_time);
+        }
 
         gst_buffer_map(buffer, &map, GST_MAP_READ);
         msg.data.resize( map.size );
