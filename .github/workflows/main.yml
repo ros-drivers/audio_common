@@ -1,4 +1,4 @@
-name: CI
+name: ROS2 CI
 on:
   push:
   pull_request:
