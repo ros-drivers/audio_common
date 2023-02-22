@@ -587,11 +587,14 @@ class SoundPlayNode(rclpy.node.Node):
     def sleep(self, duration):
         time.sleep(duration)
 
+    def get_sound_length(self):
+        sound_length = len(self.builtinsounds) \
+            + len(self.voicesounds) + len(self.filesounds)
+        return sound_length
+
     def idle_loop(self):
         self.last_activity_time = self.get_clock().now()
-        length = len(self.builtinsounds) \
-            + len(self.voicesounds) + len(self.filesounds)
-        while (length > 0 and rclpy.ok()):
+        while (self.get_sound_length() > 0 and rclpy.ok()):
             loop_time = self.get_clock().now() - self.last_activity_time
             if loop_time > rclpy.duration.Duration(seconds=10):
                 break
