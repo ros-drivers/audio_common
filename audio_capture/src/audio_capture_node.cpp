@@ -58,6 +58,11 @@ namespace audio_capture
 
         _loop = g_main_loop_new(NULL, false);
         _pipeline = gst_pipeline_new("ros_pipeline");
+        GstClock *clock = gst_system_clock_obtain();
+        g_object_set(clock, "clock-type", GST_CLOCK_TYPE_REALTIME, NULL);
+        gst_pipeline_use_clock(GST_PIPELINE_CAST(_pipeline), clock);
+        gst_object_unref(clock);
+
         _bus = gst_pipeline_get_bus(GST_PIPELINE(_pipeline));
         gst_bus_add_signal_watch(_bus);
         g_signal_connect(_bus, "message::error",
@@ -203,7 +208,10 @@ namespace audio_capture
 
         audio_common_msgs::msg::AudioData msg;
         audio_common_msgs::msg::AudioDataStamped stamped_msg;
-        stamped_msg.header.stamp = this->get_clock()->now;
+        GstClockTime buffer_time = gst_element_get_base_time(server->_source)+GST_BUFFER_PTS(buffer);
+        stamped_msg.header.stamp.sec = RCL_NS_TO_S(buffer_time);
+        stamped_msg.header.stamp.nanosec = buffer_time - RCL_S_TO_NS(stamped_msg.header.stamp.sec);
+
         gst_buffer_map(buffer, &map, GST_MAP_READ);
         msg.data.resize( map.size );
 
