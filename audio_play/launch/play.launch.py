@@ -7,13 +7,13 @@ from launch_ros.actions import Node
 def generate_launch_description():
     _dst = LaunchConfiguration('dst')
     _device = LaunchConfiguration('device')
+    _do_timestamp = LaunchConfiguration('do_timestamp')
     _format = LaunchConfiguration('format')
     _bitrate = LaunchConfiguration('bitrate')
     _channels = LaunchConfiguration('channels')
     _depth = LaunchConfiguration('depth')
     _sample_rate = LaunchConfiguration('sample_rate')
     _sample_format = LaunchConfiguration('sample_format')
-    _do_timestamp = LaunchConfiguration('do_timestamp')
     _ns = LaunchConfiguration('ns')
     _audio_topic = LaunchConfiguration('audio_topic')
 
@@ -24,6 +24,10 @@ def generate_launch_description():
     _device_launch_arg = DeclareLaunchArgument(
         'device',
         default_value=''
+    )
+    _do_timestamp_launch_arg = DeclareLaunchArgument(
+        'do_timestamp',
+        default_value='false'
     )
     _format_launch_arg = DeclareLaunchArgument(
         'format',
@@ -49,10 +53,6 @@ def generate_launch_description():
         'sample_format',
         default_value='S16LE'
     )
-    _do_timestamp_launch_arg = DeclareLaunchArgument(
-        'do_timestamp',
-        default_value='false'
-    )
     _ns_launch_arg = DeclareLaunchArgument(
         'ns',
         default_value='audio'
@@ -73,26 +73,26 @@ def generate_launch_description():
         parameters=[{
             'dst': _dst,
             'device': _device,
+            'do_timestamp': _do_timestamp,
             'format': _format,
             'bitrate': _bitrate,
             'channels': _channels,
             'depth': _depth,
             'sample_rate': _sample_rate,
             'sample_format': _sample_format,
-            'do_timestamp': _do_timestamp,
         }],
     )
 
     return LaunchDescription([
         _dst_launch_arg,
         _device_launch_arg,
+        _do_timestamp_launch_arg,
         _format_launch_arg,
         _bitrate_launch_arg,
         _channels_launch_arg,
         _depth_launch_arg,
         _sample_rate_launch_arg,
         _sample_format_launch_arg,
-        _do_timestamp_launch_arg,
         _ns_launch_arg,
         _audio_topic_launch_arg,
         _audio_play_node,
