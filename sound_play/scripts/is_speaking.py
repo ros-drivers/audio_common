@@ -19,11 +19,10 @@ class IsSpeakingNode(rclpy.node.Node):
         self.is_speaking = False
         self.pub_speech_flag = self.create_publisher(
             Bool, '~/output/is_speaking', 1)
-        self.create_timer(0.01, self.speech_timer_cb)
+        self.timer = self.create_timer(0.01, self.speech_timer_cb)
 
     def __del__(self):
         self.destroy_timer(self.timer)
-        self.dispose()
 
     def check_speak_status(self, status_msg):
         """Returns True when speaking.
