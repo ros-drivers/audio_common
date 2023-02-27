@@ -1,0 +1,14 @@
+github-action:
+  - .github/**/*
+audio_capture:
+  - audio_capture/**/*
+audio_common:
+  - audio_common/**/*
+audio_common_msgs:
+  - audio_common_msgs/**/*
+audio_play:
+  - audio_play/**/*
+sound_play:
+  - sound_play/**/*
+readme:
+  - REAEME.md
