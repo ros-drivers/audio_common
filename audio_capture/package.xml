@@ -34,6 +34,7 @@
    <exec_depend>rclcpp_components</exec_depend>
 
    <exec_depend>gstreamer1.0</exec_depend>
+   <exec_depend>gstreamer1.0-alsa</exec_depend>
    <exec_depend>gstreamer1.0-plugins-base</exec_depend>
    <exec_depend>gstreamer1.0-plugins-good</exec_depend>
    <exec_depend>gstreamer1.0-plugins-ugly</exec_depend>

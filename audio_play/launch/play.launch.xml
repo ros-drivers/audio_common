@@ -1,17 +1,18 @@
 <launch>
-  <arg name="device" default=""/>
-  <arg name="ns" default="audio"/>
   <arg name="dst" default="alsasink"/>
+  <arg name="device" default=""/>
   <arg name="do_timestamp" default="false"/>
   <arg name="format" default="mp3"/>
   <arg name="channels" default="1"/>
   <arg name="sample_rate" default="16000"/>
   <arg name="sample_format" default="S16LE"/>
+  <arg name="ns" default="audio"/>
   <arg name="audio_topic" default="audio" />
 
   <group>
     <push-ros-namespace namespace="$(var ns)"/>
     <node name="audio_play" pkg="audio_play" exec="audio_play_node" output="screen">
+      <remap from="audio" to="$(var audio_topic)" />
       <param name="device" value="$(var device)"/>
       <param name="dst" value="$(var dst)"/>
       <param name="do_timestamp" value="$(var do_timestamp)"/>
@@ -19,7 +20,6 @@
       <param name="channels" value="$(var channels)"/>
       <param name="sample_rate" value="$(var sample_rate)"/>
       <param name="sample_format" value="$(var sample_format)"/>
-      <remap from="audio" to="$(var audio_topic)" />
     </node>
   </group>
 </launch>

@@ -219,8 +219,11 @@ class SoundPlayNode(rclpy.node.Node):
 
         self.declare_parameter('loop_rate', 100)
         self.declare_parameter('device', 'default')
+        self.declare_parameter(
+            'default_voice', 'voice_kal_diphone')
         self.loop_rate = self.get_parameter('loop_rate').value
         self.device = self.get_parameter('device').value
+        self.default_voice = self.get_parameter('default_voice').value
 
         self.diagnostic_pub = self.create_publisher(
             DiagnosticArray, "/diagnostics", 1)
@@ -350,7 +353,10 @@ class SoundPlayNode(rclpy.node.Node):
                     prefix='sound_play', suffix='.wav')
                 txtfilename = txtfile.name
                 os.close(wavfile)
-                voice = data.arg2
+                if data.arg2 == '':
+                    voice = self.default_voice
+                else:
+                    voice = data.arg2
                 try:
                     try:
                         if hasattr(data.arg, 'decode'):
@@ -581,11 +587,14 @@ class SoundPlayNode(rclpy.node.Node):
     def sleep(self, duration):
         time.sleep(duration)
 
+    def get_sound_length(self):
+        sound_length = len(self.builtinsounds) \
+            + len(self.voicesounds) + len(self.filesounds)
+        return sound_length
+
     def idle_loop(self):
         self.last_activity_time = self.get_clock().now()
-        length = len(self.builtinsounds) \
-            + len(self.voicesounds) + len(self.filesounds)
-        while (length > 0 and rclpy.ok()):
+        while (self.get_sound_length() > 0 and rclpy.ok()):
             loop_time = self.get_clock().now() - self.last_activity_time
             if loop_time > rclpy.duration.Duration(seconds=10):
                 break
