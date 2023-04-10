@@ -14,10 +14,14 @@ class FlitePlugin(SoundPlayPlugin):
 
     def __init__(self):
         super(FlitePlugin, self).__init__()
-        self.rospack = rospkg.RosPack()
-        self.default_voice_path = os.path.join(
-            self.rospack.get_path('sound_play'),
-            'resources/flitevox')
+        self._default_voice_path = None
+
+    def get_default_voice_path(self):
+        if self._default_voice_path is None:
+            self._default_voice_path = os.path.join(
+                rospkg.RosPack().get_path('sound_play'),
+                'resources/flitevox')
+        return self._default_voice_path
 
     def sound_play_say_plugin(self, text, voice):
         if voice is None or voice == '':
@@ -29,7 +33,7 @@ class FlitePlugin(SoundPlayPlugin):
                 voice = voice
             else:
                 voice = os.path.join(
-                    self.default_voice_path, voice)
+                    self.get_default_voice_path(), voice)
         (wavfile, wavfilename) = tempfile.mkstemp(
             prefix='sound_play', suffix='.wav')
         os.close(wavfile)
