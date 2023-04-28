@@ -304,7 +304,7 @@ class SoundClient(object):
 
     def sendMsg(
         self, snd, cmd, s, arg2="", vol=1.0, replace=True,
-        server_timeout=rospy.Duration(),result_timeout=rospy.Duration(),
+        server_timeout=None, result_timeout=None,
         **kwargs
     ):
         """
@@ -348,15 +348,23 @@ class SoundClient(object):
         else:  # Block until result comes back.
             assert self.actionclient, 'Actionclient must exist'
             rospy.logdebug('Sending action client sound request [blocking]')
-            if not self.actionclient.wait_for_server(timeout=server_timeout):
-                return
+
+            if server_timeout is None or server_timeout > rospy.Duration(0):
+                if server_timeout is None:
+                    server_timeout = rospy.Duration()
+                if not self.actionclient.wait_for_server(timeout=server_timeout):
+                    return
+
             goal = SoundRequestGoal()
             goal.sound_request = msg
             while not replace and self._playing:
                 rospy.sleep(0.1)
             self.actionclient.send_goal(goal)
-            if self.actionclient.wait_for_result(timeout=result_timeout):
-                rospy.logdebug('sound request response received')
+            if result_timeout is None or result_timeout > rospy.Duration(0):
+                if result_timeout is None:
+                    result_timeout = rospy.Duration()
+                if self.actionclient.wait_for_result(timeout=result_timeout):
+                    rospy.logdebug('sound request response received')
         return
 
     def _action_status_cb(self, msg):
