@@ -1,12 +1,11 @@
 #!/usr/bin/env python
 
 import collections
-import cv2
 import numpy as np
 import rospy
 
 # from audio_common_msgs.msg import AudioData
-from cv_bridge import CvBridge, CvBridgeError
+from cv_bridge import CvBridge
 from scipy import signal
 from sensor_msgs.msg import ChannelFloat32, Image
 
@@ -40,11 +39,12 @@ class View():
         mins = np.min(Sxx)
         maxs = np.max(Sxx)
         Sxx -= mins
-        print Sxx.shape, mins, maxs
+        print(Sxx.shape, mins, maxs)
         self.im = (Sxx * 50).astype(np.uint8)
         # self.im[y0:y1+1, i, :] = 255
         self.pub.publish(self.bridge.cv2_to_imgmsg(self.im, "mono8"))
         # rospy.signal_shutdown("")
+
 
 if __name__ == '__main__':
     rospy.init_node('spectrogram')
