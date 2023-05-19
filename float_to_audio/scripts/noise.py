@@ -56,6 +56,7 @@ class Noise():
         self.pub.publish(self.msg)
         # rospy.signal_shutdown("debug quit")
 
+
 if __name__ == '__main__':
     rospy.init_node('noise')
     noise = Noise()

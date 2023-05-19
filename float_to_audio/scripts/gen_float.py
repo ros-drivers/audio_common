@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # Lucas Walter
-# Generate a series of float arrays where number of samples * array rate = sample rate 
+# Generate a series of float arrays where number of samples * array rate = sample rate
 # (e.g 1000 samples/msg * 16 msgs/sec = 16 KHz)
 #
 # TODO(lucasw)
@@ -45,7 +45,7 @@ class GenFloat():
             # square wave
             sc = 0.2
             ind = 0
-            if self.counter % self.period[ind] < self.period[ind]/2:
+            if self.counter % self.period[ind] < self.period[ind] / 2:
                 val += sc
             else:
                 val -= sc
@@ -62,6 +62,7 @@ class GenFloat():
             self.counter += 1
 
         self.pub.publish(self.msg)
+
 
 if __name__ == '__main__':
     rospy.init_node('gen_float')
