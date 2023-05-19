@@ -1,12 +1,11 @@
 #!/usr/bin/env python
 
 import collections
-import cv2
 import numpy as np
 import rospy
 
 # from audio_common_msgs.msg import AudioData
-from cv_bridge import CvBridge, CvBridgeError
+from cv_bridge import CvBridge
 from sensor_msgs.msg import ChannelFloat32, Image
 
 
@@ -36,14 +35,15 @@ class View():
             if i >= len(self.buffer):
                 break
             sample = self.buffer[i]
-            sample *= height/2
-            sample += height/2
+            sample *= height / 2
+            sample += height / 2
             y = int(sample) % height
             y0 = min(last_y, y)
             y1 = max(last_y, y)
-            self.im[y0:y1+1, i, :] = 255
+            self.im[y0:y1 + 1, i, :] = 255
             last_y = y
         self.pub.publish(self.bridge.cv2_to_imgmsg(self.im, "bgr8"))
+
 
 if __name__ == '__main__':
     rospy.init_node('view_audio')
