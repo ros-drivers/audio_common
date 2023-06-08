@@ -2,8 +2,8 @@
 Changelog for package sound_play
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.3.17 (2023-06-08)
+-------------------
 * Merge pull request `#231 <https://github.com/ros-drivers/audio_common/issues/231>`_ from knorth55/no-wait-mode
 * dont wait when rospy.Duration(0) is set for timeout
 * Merge pull request `#229 <https://github.com/ros-drivers/audio_common/issues/229>`_ from furushchev/flite-plugin-lazy-load

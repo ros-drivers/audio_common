@@ -2,8 +2,8 @@
 Changelog for package audio_capture
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.3.17 (2023-06-08)
+-------------------
 * Merge pull request `#220 <https://github.com/ros-drivers/audio_common/issues/220>`_ from v4hn/master
 * on real systems publish system clock time in capture node
 * The capture node is hard-coded to alsasrc
