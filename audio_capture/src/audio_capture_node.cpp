@@ -22,6 +22,7 @@ namespace audio_capture
         gst_init(nullptr, nullptr);
 
         _bitrate = 192;
+        std::string src_type;
         std::string dst_type;
         std::string device;
 
@@ -48,7 +49,8 @@ namespace audio_capture
         this->get_parameter("dst", dst_type);
 
         // The source of the audio
-        //this->declare_parameter<std::string>("src", source_type, "alsasrc");
+        this->declare_parameter<std::string>("src", "alsasrc");
+        this->get_parameter("src", src_type);
         this->declare_parameter<std::string>("device", "");
         this->get_parameter("device", device);
 
@@ -85,7 +87,7 @@ namespace audio_capture
           g_object_set( G_OBJECT(_sink), "location", dst_type.c_str(), NULL);
         }
 
-        _source = gst_element_factory_make("alsasrc", "source");
+        _source = gst_element_factory_make(src_type.c_str(), "source");
         // if device isn't specified, it will use the default which is
         // the alsa default source.
         // A valid device will be of the foram hw:0,0 with other numbers
