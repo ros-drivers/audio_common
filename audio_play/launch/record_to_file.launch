@@ -1,0 +1,25 @@
+<launch>
+  <arg name="dst" default="/tmp/output_audio.mp3"/>
+  <arg name="device" default=""/>
+  <arg name="do_timestamp" default="false"/>
+  <arg name="format" default="mp3"/>
+  <arg name="channels" default="1"/>
+  <arg name="depth" default="16"/>
+  <arg name="sample_rate" default="16000"/>
+  <arg name="sample_format" default="S16LE"/>
+  <arg name="ns" default="audio"/>
+  <arg name="audio_topic" default="audio" />
+
+  <include file="$(find audio_play)/launch/play.launch">
+    <arg name="dst" value="$(arg dst)"/>
+    <arg name="device" value="$(arg device)"/>
+    <arg name="do_timestamp" value="$(arg do_timestamp)"/>
+    <arg name="format" value="$(arg format)"/>
+    <arg name="channels" value="$(arg channels)"/>
+    <arg name="depth" value="$(arg depth)"/>
+    <arg name="sample_rate" value="$(arg sample_rate)"/>
+    <arg name="sample_format" value="$(arg sample_format)"/>
+    <arg name="ns" value="$(arg ns)"/>
+    <arg name="audio_topic" value="$(arg audio_topic)" />
+  </include>
+</launch>
