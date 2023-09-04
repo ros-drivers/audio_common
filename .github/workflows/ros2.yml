@@ -21,6 +21,12 @@ jobs:
           - ROS_DISTRO: galactic
             ROS_REPO: testing
             CMAKE_ARGS: '-DCMAKE_BUILD_TYPE=Release'
+          - ROS_DISTRO: humble
+            ROS_REPO: testing
+            CMAKE_ARGS: '-DCMAKE_BUILD_TYPE=Debug'
+          - ROS_DISTRO: humble
+            ROS_REPO: testing
+            CMAKE_ARGS: '-DCMAKE_BUILD_TYPE=Release'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1
