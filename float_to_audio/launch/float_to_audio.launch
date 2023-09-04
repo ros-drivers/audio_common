@@ -1,0 +1,53 @@
+<?xml version="1.0"?>
+<launch>
+  <arg name="ns" default="audio" doc="namespace"/>
+  <arg name="format" default="mp3" doc="mp3 or flac"/>
+  <arg name="float_sample_rate" default="44100"/>
+  <arg name="loopback" default="true"/>
+  <arg name="gen_audio" default="true"/>
+
+  <group ns="$(arg ns)">
+    <node name="gen_float" pkg="float_to_audio" type="gen_float.py"
+        output="screen"
+        if="$(arg gen_audio)">
+      <param name="sample_rate" value="$(arg float_sample_rate)"/>
+    </node>
+    <!--node name="noise" pkg="float_to_audio" type="noise.py"
+        output="screen">
+      <param name="sample_rate" value="$(arg float_sample_rate)"/>
+    </node-->
+    <node name="view_input" pkg="audio_to_float" type="view.py">
+      <remap from="decoded" to="samples"/>
+      <remap from="image" to="image_input"/>
+      <param name="fade1" value="0.5"/>
+      <param name="fade2" value="0.5"/>
+    </node>
+
+    <node name="float_to_audio" pkg="float_to_audio" type="float_to_audio"
+        output="screen">
+      <param name="input_sample_rate" value="$(arg float_sample_rate)"/>
+      <param name="format" value="$(arg format)"/>
+    </node>
+
+    <node name="audio_play" pkg="audio_play" type="audio_play" output="screen">
+      <param name="dst" value="alsasink"/>
+    </node>
+
+    <group if="$(arg loopback)">
+    <node name="audio_to_float" pkg="audio_to_float" type="audio_to_float"
+        output="screen">
+    </node>
+    <node name="view_output" pkg="audio_to_float" type="view.py">
+      <remap from="decoded" to="decoded"/>
+      <remap from="image" to="image_output"/>
+      <param name="fade1" value="0.5"/>
+      <param name="fade2" value="0.5"/>
+    </node>
+    </group>
+
+    <!-- TODO(lucasw) rqt config/float_to_audio.perspective -->
+    <node name="rqt" pkg="rqt_gui" type="rqt_gui"
+        args="--clear-config --perspective-file $(find float_to_audio)/config/float_to_audio.perspective"/>
+
+  </group>
+</launch>

@@ -127,6 +127,22 @@ namespace audio_transport
             gst_bin_add_many( GST_BIN(_pipeline), _source, _filter, _sink, NULL);
             link_ok = gst_element_link_many( _source, _filter, _sink, NULL);
           }
+#if 0
+          GstCaps *caps;
+          // caps = gst_caps_new_simple("audio/x-raw-int",
+          caps = gst_caps_new_simple("audio/x-raw",
+                                     "channels", G_TYPE_INT, _channels,
+                                     "width",    G_TYPE_INT, _depth,
+                                     "depth",    G_TYPE_INT, _depth,
+                                     "rate",     G_TYPE_INT, _sample_rate,
+                                     "signed",   G_TYPE_BOOLEAN, TRUE,
+                                     NULL);
+
+          g_object_set( G_OBJECT(_sink), "caps", caps, NULL);
+          gst_caps_unref(caps);
+          gst_bin_add_many( GST_BIN(_pipeline), _source, _sink, NULL);
+          link_ok = gst_element_link_many( _source, _sink, NULL);
+#endif
         } else {
           ROS_ERROR_STREAM("format must be \"wave\" or \"mp3\"");
           exitOnMainThread(1);
