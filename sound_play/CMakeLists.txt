@@ -26,6 +26,7 @@ install(PROGRAMS
 install(DIRECTORY include/${PROJECT_NAME}/
   DESTINATION include/${PROJECT_NAME}
 )
+ament_export_include_directories(include)
 
 install(DIRECTORY launch
   DESTINATION share/${PROJECT_NAME}
@@ -34,5 +35,7 @@ install(DIRECTORY launch
 install(DIRECTORY sounds
   DESTINATION share/${PROJECT_NAME}
 )
+
+ament_export_dependencies(rosidl_default_runtime sound_play_msgs)
 
 ament_package()
