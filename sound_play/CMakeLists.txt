@@ -13,25 +13,9 @@ find_package(ament_cmake REQUIRED)
 find_package(rosidl_default_generators REQUIRED)
 find_package(audio_common_msgs REQUIRED)
 find_package(action_msgs REQUIRED)
+find_package(sound_play_msgs)
 
 include_directories(rclcpp audio_common_msgs action_msgs builtin_interfaces)
-
-set(msg_files
-  "msg/SoundRequest.msg"
-)
-
-set(action_files
-  "action/SoundRequest.action"
-)
-
-rosidl_generate_interfaces(${PROJECT_NAME}
-  ${msg_files}
-  ${action_files}
-  DEPENDENCIES
-    action_msgs
-    audio_common_msgs
-    builtin_interfaces
-)
 
 ament_python_install_package(${PROJECT_NAME})
 
