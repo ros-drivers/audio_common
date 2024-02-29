@@ -166,6 +166,12 @@ namespace audio_capture
 
         _gst_thread = boost::thread( boost::bind(g_main_loop_run, _loop) );
 
+        _timer_info = rclcpp::create_timer(this, get_clock(), std::chrono::seconds(5), [this] { publishInfo(); });
+        publishInfo();
+      }
+
+      void publishInfo() {
+
         audio_common_msgs::msg::AudioInfo info_msg;
         info_msg.channels = _channels;
         info_msg.sample_rate = _sample_rate;
@@ -248,6 +254,8 @@ namespace audio_capture
       rclcpp::Publisher<audio_common_msgs::msg::AudioData>::SharedPtr _pub;
       rclcpp::Publisher<audio_common_msgs::msg::AudioDataStamped>::SharedPtr _pub_stamped;
       rclcpp::Publisher<audio_common_msgs::msg::AudioInfo>::SharedPtr _pub_info;
+
+      rclcpp::TimerBase::SharedPtr _timer_info;
 
       boost::thread _gst_thread;
 
