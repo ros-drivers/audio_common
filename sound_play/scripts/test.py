@@ -41,7 +41,7 @@ import rclpy
 
 from sound_play.libsoundplay import SoundClient
 
-from sound_play.msg import SoundRequest
+from sound_play_msgs.msg import SoundRequest
 
 
 if __name__ == '__main__':

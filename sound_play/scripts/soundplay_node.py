@@ -51,8 +51,8 @@ import rclpy.node
 from diagnostic_msgs.msg import DiagnosticArray
 from diagnostic_msgs.msg import DiagnosticStatus
 from diagnostic_msgs.msg import KeyValue
-from sound_play.action import SoundRequest as SoundRequestAction
-from sound_play.msg import SoundRequest
+from sound_play_msgs.action import SoundRequest as SoundRequestAction
+from sound_play_msgs.msg import SoundRequest
 
 
 try:
