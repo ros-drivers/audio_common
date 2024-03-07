@@ -16,6 +16,8 @@ find_package(action_msgs REQUIRED)
 
 include_directories(rclcpp audio_common_msgs action_msgs builtin_interfaces)
 
+ament_python_install_package(${PROJECT_NAME})
+
 set(msg_files
   "msg/SoundRequest.msg"
 )
@@ -32,8 +34,6 @@ rosidl_generate_interfaces(${PROJECT_NAME}
     audio_common_msgs
     builtin_interfaces
 )
-
-ament_python_install_package(${PROJECT_NAME})
 
 install(PROGRAMS
   scripts/is_speaking.py
