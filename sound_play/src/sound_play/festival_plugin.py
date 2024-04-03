@@ -16,6 +16,9 @@ class FestivalPlugin(SoundPlayPlugin):
     def sound_play_say_plugin(self, text, voice):
         if voice is None or voice == '':
             voice = self._default_voice
+        encoding = 'ISO-8859-15'
+        if ':' in voice:
+            voice, encoding = voice.split(':', maxsplit=1)
         txtfile = tempfile.NamedTemporaryFile(
             prefix='sound_play', suffix='.txt')
         (wavfile, wavfilename) = tempfile.mkstemp(
@@ -26,10 +29,10 @@ class FestivalPlugin(SoundPlayPlugin):
             try:
                 if hasattr(text, 'decode'):
                     txtfile.write(
-                        text.decode('UTF-8').encode('ISO-8859-15'))
+                        text.decode('UTF-8').encode(encoding))
                 else:
                     txtfile.write(
-                        text.encode('ISO-8859-15'))
+                        text.encode(encoding))
             except UnicodeEncodeError:
                 if hasattr(text, 'decode'):
                     txtfile.write(text)
