@@ -6,8 +6,8 @@ from ament_index_python.packages import get_package_share_directory
 import rclpy
 import rclpy.action
 
-from sound_play.action import SoundRequest as SoundRequestAction
-from sound_play.msg import SoundRequest
+from sound_play_msgs.action import SoundRequest as SoundRequestAction
+from sound_play_msgs.msg import SoundRequest
 
 
 def sound_play_client(node, volume=1.0):

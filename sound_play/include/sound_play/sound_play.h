@@ -38,10 +38,9 @@
 #define __SOUND_PLAY__SOUND_PLAY__H__
 
 #include <string>
-#include <ros/ros.h>
-#include <ros/node_handle.h>
-#include <sound_play/SoundRequest.h>
-#include <boost/thread.hpp>
+#include <rclcpp/rclcpp.hpp>
+#include <sound_play_msgs/msg/sound_request.hpp>
+#include <mutex>
 
 namespace sound_play
 {
@@ -87,7 +86,7 @@ public:
      */
     void play()
     {
-      client_->sendMsg(snd_, SoundRequest::PLAY_ONCE, arg_, arg2_, vol_);
+      client_->sendMsg(snd_, sound_play_msgs::msg::SoundRequest::PLAY_ONCE, arg_, arg2_, vol_);
     }
 
     /** \brief Play the Sound repeatedly.
@@ -97,7 +96,7 @@ public:
      */
     void repeat()
     {
-      client_->sendMsg(snd_, SoundRequest::PLAY_START, arg_, arg2_, vol_);
+      client_->sendMsg(snd_, sound_play_msgs::msg::SoundRequest::PLAY_START, arg_, arg2_, vol_);
     }
 
     /** \brief Stop Sound playback.
@@ -106,7 +105,7 @@ public:
      */
     void stop()
     {
-      client_->sendMsg(snd_, SoundRequest::PLAY_STOP, arg_, arg2_, vol_);
+      client_->sendMsg(snd_, sound_play_msgs::msg::SoundRequest::PLAY_STOP, arg_, arg2_, vol_);
     }
   };
 
@@ -119,7 +118,7 @@ public:
    *
    * \param topic Topic to publish to.
    */
-  SoundClient(ros::NodeHandle &nh, const std::string &topic)
+  SoundClient(rclcpp::Node::SharedPtr nh, const std::string &topic)
   {
     init(nh, topic);
   }
@@ -127,10 +126,12 @@ public:
   /** \brief Create a SoundClient with the default topic
    *
    * Creates a SoundClient that publishes to "robotsound".
+   *
+   * \param nh Node handle to use when creating the topic.
    */
-  SoundClient()
+  SoundClient(rclcpp::Node::SharedPtr nh)
   {
-    init(ros::NodeHandle(), "robotsound");
+    init(nh, "robotsound");
   }
 
   /** \brief Create a voice Sound.
@@ -142,7 +143,7 @@ public:
    */
   Sound voiceSound(const std::string &s, float volume = 1.0f)
   {
-    return Sound(this, SoundRequest::SAY, s, "", volume);
+    return Sound(this, sound_play_msgs::msg::SoundRequest::SAY, s, "", volume);
   }
 
   /** \brief Create a wave Sound.
@@ -155,7 +156,7 @@ public:
    */
   Sound waveSound(const std::string &s, float volume = 1.0f)
   {
-    return Sound(this, SoundRequest::PLAY_FILE, s, "", volume);
+    return Sound(this, sound_play_msgs::msg::SoundRequest::PLAY_FILE, s, "", volume);
   }
 
   /** \brief Create a wave Sound from a package.
@@ -169,7 +170,7 @@ public:
    */
   Sound waveSoundFromPkg(const std::string &p, const std::string &s, float volume = 1.0f)
   {
-    return Sound(this, SoundRequest::PLAY_FILE, s, p, volume);
+    return Sound(this, sound_play_msgs::msg::SoundRequest::PLAY_FILE, s, p, volume);
   }
 
   /** \brief Create a builtin Sound.
@@ -194,7 +195,7 @@ public:
    */
   void say(const std::string &s, const std::string &voice="voice_kal_diphone", float volume = 1.0f)
   {
-    sendMsg(SoundRequest::SAY, SoundRequest::PLAY_ONCE, s, voice, volume);
+    sendMsg(sound_play_msgs::msg::SoundRequest::SAY, sound_play_msgs::msg::SoundRequest::PLAY_ONCE, s, voice, volume);
   }
 
   /** \brief Say a string repeatedly
@@ -206,7 +207,7 @@ public:
    */
   void repeat(const std::string &s, float volume = 1.0f)
   {
-    sendMsg(SoundRequest::SAY, SoundRequest::PLAY_START, s, "", volume);
+    sendMsg(sound_play_msgs::msg::SoundRequest::SAY, sound_play_msgs::msg::SoundRequest::PLAY_START, s, "", volume);
   }
 
   /** \brief Stop saying a string
@@ -218,7 +219,7 @@ public:
    */
   void stopSaying(const std::string &s)
   {
-    sendMsg(SoundRequest::SAY, SoundRequest::PLAY_STOP, s, "");
+    sendMsg(sound_play_msgs::msg::SoundRequest::SAY, sound_play_msgs::msg::SoundRequest::PLAY_STOP, s, "");
   }
 
   /** \brief Plays a WAV or OGG file
@@ -232,7 +233,7 @@ public:
    */
   void playWave(const std::string &s, float volume = 1.0f)
   {
-    sendMsg(SoundRequest::PLAY_FILE, SoundRequest::PLAY_ONCE, s, "", volume);
+    sendMsg(sound_play_msgs::msg::SoundRequest::PLAY_FILE, sound_play_msgs::msg::SoundRequest::PLAY_ONCE, s, "", volume);
   }
 
   /** \brief Plays a WAV or OGG file repeatedly
@@ -245,7 +246,7 @@ public:
    */
   void startWave(const std::string &s, float volume = 1.0f)
   {
-    sendMsg(SoundRequest::PLAY_FILE, SoundRequest::PLAY_START, s, "", volume);
+    sendMsg(sound_play_msgs::msg::SoundRequest::PLAY_FILE, sound_play_msgs::msg::SoundRequest::PLAY_START, s, "", volume);
   }
 
   /** \brief Stop playing a WAV or OGG file
@@ -257,7 +258,7 @@ public:
    */
   void stopWave(const std::string &s)
   {
-    sendMsg(SoundRequest::PLAY_FILE, SoundRequest::PLAY_STOP, s);
+    sendMsg(sound_play_msgs::msg::SoundRequest::PLAY_FILE, sound_play_msgs::msg::SoundRequest::PLAY_STOP, s);
   }
 
   /** \brief Plays a WAV or OGG file from a package
@@ -272,7 +273,7 @@ public:
    */
   void playWaveFromPkg(const std::string &p, const std::string &s, float volume = 1.0f)
   {
-    sendMsg(SoundRequest::PLAY_FILE, SoundRequest::PLAY_ONCE, s, p, volume);
+    sendMsg(sound_play_msgs::msg::SoundRequest::PLAY_FILE, sound_play_msgs::msg::SoundRequest::PLAY_ONCE, s, p, volume);
   }
 
   /** \brief Plays a WAV or OGG file repeatedly
@@ -286,7 +287,7 @@ public:
    */
   void startWaveFromPkg(const std::string &p, const std::string &s, float volume = 1.0f)
   {
-    sendMsg(SoundRequest::PLAY_FILE, SoundRequest::PLAY_START, s, p, volume);
+    sendMsg(sound_play_msgs::msg::SoundRequest::PLAY_FILE, sound_play_msgs::msg::SoundRequest::PLAY_START, s, p, volume);
   }
 
   /** \brief Stop playing a WAV or OGG file
@@ -300,7 +301,7 @@ public:
    */
   void stopWaveFromPkg(const std::string &p, const std::string &s)
   {
-    sendMsg(SoundRequest::PLAY_FILE, SoundRequest::PLAY_STOP, s, p);
+    sendMsg(sound_play_msgs::msg::SoundRequest::PLAY_FILE, sound_play_msgs::msg::SoundRequest::PLAY_STOP, s, p);
   }
 
   /** \brief Play a buildin sound
@@ -313,7 +314,7 @@ public:
    */
   void play(int sound, float volume = 1.0f)
   {
-    sendMsg(sound, SoundRequest::PLAY_ONCE, "", "", volume);
+    sendMsg(sound, sound_play_msgs::msg::SoundRequest::PLAY_ONCE, "", "", volume);
   }
 
   /** \brief Play a buildin sound repeatedly
@@ -326,7 +327,7 @@ public:
    */
   void start(int sound, float volume = 1.0f)
   {
-    sendMsg(sound, SoundRequest::PLAY_START, "", "", volume); 
+    sendMsg(sound, sound_play_msgs::msg::SoundRequest::PLAY_START, "", "", volume); 
   }
 
   /** \brief Stop playing a built-in sound
@@ -337,7 +338,7 @@ public:
    */
   void stop(int sound)
   {
-    sendMsg(sound, SoundRequest::PLAY_STOP);
+    sendMsg(sound, sound_play_msgs::msg::SoundRequest::PLAY_STOP);
   }
 
   /** \brief Stop all currently playing sounds
@@ -346,7 +347,7 @@ public:
    */
   void stopAll()
   {
-    stop(SoundRequest::ALL);
+    stop(sound_play_msgs::msg::SoundRequest::ALL);
   }
 
   /** \brief Turns warning messages on or off.
@@ -363,21 +364,21 @@ public:
   }
 
 private:
-  void init(ros::NodeHandle nh, const std::string &topic)
+  void init(rclcpp::Node::SharedPtr nh, const std::string &topic)
   {
     nh_ = nh;
-    pub_ = nh.advertise<sound_play::SoundRequest>(topic, 5);
+    pub_ = nh->create_publisher<sound_play_msgs::msg::SoundRequest>(topic, 5);
     quiet_ = false;
   }
 
   void sendMsg(int snd, int cmd, const std::string &s = "", const std::string &arg2 = "", const float &vol = 1.0f)
   {
-    boost::mutex::scoped_lock lock(mutex_);
+    const std::lock_guard<std::mutex> lock(mutex_);
 
-    if (!nh_.ok())
+    if (!nh_ || !pub_)
       return;
 
-    SoundRequest msg;
+    sound_play_msgs::msg::SoundRequest msg;
     msg.sound = snd;
     msg.command = cmd;
     msg.arg = s;
@@ -391,16 +392,16 @@ private:
     else
       msg.volume = vol;
 
-    pub_.publish(msg);
+    pub_->publish(msg);
 
-    if (pub_.getNumSubscribers() == 0 && !quiet_)
-      ROS_WARN("Sound command issued, but no node is subscribed to the topic. Perhaps you forgot to run soundplay_node.py");
+    if (pub_->get_subscription_count() == 0 && !quiet_)
+      RCLCPP_WARN(nh_->get_logger(), "Sound command issued, but no node is subscribed to the topic. Perhaps you forgot to run soundplay_node.py");
   }
 
   bool quiet_;
-  ros::NodeHandle nh_;
-  ros::Publisher pub_;
-  boost::mutex mutex_;
+  rclcpp::Node::SharedPtr nh_;
+  rclcpp::Publisher<sound_play_msgs::msg::SoundRequest>::SharedPtr pub_;
+  std::mutex mutex_;
 };
 
 typedef SoundClient::Sound Sound;

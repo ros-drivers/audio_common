@@ -12,7 +12,7 @@ import rclpy.utilities
 
 from sound_play.libsoundplay import SoundClient
 
-from sound_play.msg import SoundRequest
+from sound_play_msgs.msg import SoundRequest
 
 
 def play_explicit(node):
