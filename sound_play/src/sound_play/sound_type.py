@@ -1,4 +1,7 @@
 import os
+from pedalboard.io import AudioFile
+from pedalboard import Pedalboard, Reverb
+import tempfile
 import threading
 
 import rospy
@@ -25,7 +28,7 @@ class SoundType(object):
     LOOPING = 1
     COUNTING = 2
 
-    def __init__(self, file, device, volume=1.0):
+    def __init__(self, file, device, volume=1.0, reverb=0.0):
         self.lock = threading.RLock()
         self.state = self.STOPPED
         self.sound = Gst.ElementFactory.make("playbin", None)
@@ -38,17 +41,33 @@ class SoundType(object):
             self.sound.set_property("audio-sink", self.sink)
 
         if (":" in file):
-            uri = file
+            input_file = file.replace("file://")
         elif os.path.isfile(file):
-            uri = "file://" + os.path.abspath(file)
+            input_file = file
         else:
             rospy.logerr('Error: URI is invalid: %s' % file)
+
+        if reverb > 0.0:
+            (wavfile, wavfilename) = tempfile.mkstemp(
+                prefix='sound_play', suffix='.wav')
+            os.close(wavfile)
+            board = Pedalboard([Reverb(room_size=reverb)])
+            with AudioFile(input_file) as f:
+                with AudioFile(wavfilename, 'w', f.samplerate, f.num_channels) as o:
+                    while f.tell() < f.frames:
+                        chunk = f.read(f.samplerate)
+                        effected = board(chunk, f.samplerate, reset=False)
+                        o.write(effected)
+            uri = "file://" + os.path.abspath(wavfilename)
+        else:
+            uri = "file://" + os.path.abspath(input_file)
 
         self.uri = uri
         self.volume = volume
         self.sound.set_property('uri', uri)
         self.sound.set_property("volume", volume)
         self.staleness = 1
+        self.reverb = reverb
         self.file = file
 
         self.bus = self.sound.get_bus()

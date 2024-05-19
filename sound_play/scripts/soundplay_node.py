@@ -86,12 +86,13 @@ class SoundPlayNode(object):
     def select_sound(self, data):
         if data.sound == SoundRequest.PLAY_FILE:
             if not data.arg2:
-                if data.arg not in self.filesounds.keys():
+                if data.arg not in self.filesounds.keys()\
+                   or self.filesounds[data.arg].reverb != data.reverb:
                     rospy.logdebug(
                         'command for uncached wave: "%s"' % data.arg)
                     try:
                         self.filesounds[data.arg] = SoundType(
-                            data.arg, self.device, data.volume)
+                            data.arg, self.device, data.volume, data.reverb)
                     except Exception:
                         rospy.logerr(
                             'Error setting up to play "%s".'
@@ -115,7 +116,7 @@ class SoundPlayNode(object):
                         'command for uncached wave: "%s"' % absfilename)
                     try:
                         self.filesounds[absfilename] = SoundType(
-                            absfilename, self.device, data.volume)
+                            absfilename, self.device, data.volume, data.reverb)
                     except Exception:
                         rospy.logerr(
                             'Error setting up to play "%s" from package "%s".'
@@ -135,7 +136,8 @@ class SoundPlayNode(object):
                 sound = self.filesounds[absfilename]
         elif data.sound == SoundRequest.SAY:
             voice_key = data.arg + '---' + data.arg2
-            if voice_key not in self.voicesounds.keys():
+            if voice_key not in self.voicesounds.keys()\
+               or self.voicesounds[voice_key].reverb != data.reverb:
                 rospy.logdebug('command for uncached text: "%s"' % voice_key)
                 if self.plugin is None:
                     rospy.logerr(
@@ -151,7 +153,7 @@ class SoundPlayNode(object):
                         rospy.logerr('Failed to generate wavfile.')
                     else:
                         self.voicesounds[voice_key] = SoundType(
-                            wavfilename, self.device, data.volume)
+                            wavfilename, self.device, data.volume, data.reverb)
             else:
                 rospy.logdebug('command for cached text: "%s"' % voice_key)
                 voicesound = self.voicesounds[voice_key]
@@ -171,7 +173,7 @@ class SoundPlayNode(object):
                 if params[1] != 1:
                     volume = (volume + params[1])/2
                 self.builtinsounds[data.sound] = SoundType(
-                    params[0], self.device, volume)
+                    params[0], self.device, volume, data.reverb)
             sound = self.builtinsounds[data.sound]
         if sound.staleness != 0 and data.command != SoundRequest.PLAY_STOP:
             # This sound isn't counted in active_sounds
