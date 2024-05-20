@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<launch>
+  <arg name="ns" default="audio"/>
+
+  <include file="$(find audio_capture)/launch/capture.launch">
+  </include>
+  <group ns="$(arg ns)">
+  <node name="audio_to_float" pkg="audio_to_float" type="audio_to_float"
+      output="screen">
+  </node>
+  <node name="view" pkg="audio_to_float" type="view.py" />
+  </group>
+</launch>
