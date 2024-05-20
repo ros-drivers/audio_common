@@ -163,9 +163,9 @@ class SoundClient(object):
 ##
 ## \param text String to say
 
-    def say(self,text, voice='', volume=1.0, **kwargs):
+    def say(self,text, voice='', volume=1.0, reverb=0.0, **kwargs):
         self.sendMsg(SoundRequest.SAY, SoundRequest.PLAY_ONCE, text, voice,
-                     volume, **kwargs)
+                     volume, reverb, **kwargs)
 
 ## \brief Say a string repeatedly
 ##
@@ -303,7 +303,7 @@ class SoundClient(object):
         self.stop(SoundRequest.ALL)
 
     def sendMsg(
-        self, snd, cmd, s, arg2="", vol=1.0, replace=True,
+        self, snd, cmd, s, arg2="", vol=1.0, rv=0.0, replace=True,
         server_timeout=None, result_timeout=None,
         **kwargs
     ):
@@ -324,6 +324,7 @@ class SoundClient(object):
         msg.sound = snd
         # Threshold volume between 0 and 1.
         msg.volume = max(0, min(1, vol))
+        msg.reverb = max(0, min(1, rv))
         msg.command = cmd
         msg.arg = s
         msg.arg2 = arg2

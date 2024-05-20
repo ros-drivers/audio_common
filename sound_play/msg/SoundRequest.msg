@@ -25,6 +25,7 @@ int8 command # Indicates what to do with the sound
 
 # Volume at which to play the sound, with 0 as mute and 1.0 as 100%.
 float32 volume
+float32 reverb
 
 string arg # file name or text to say
 string arg2 # other arguments
