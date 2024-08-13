@@ -2,8 +2,8 @@
 Changelog for package sound_play
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.3.18 (2024-08-13)
+-------------------
 * Merge pull request `#249 <https://github.com/ros-drivers/audio_common/issues/249>`_ from peci1/patch-1
   festival_plugin: add support for different encodings
 * festival_plugin: add support for different encodings

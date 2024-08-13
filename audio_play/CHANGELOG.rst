@@ -2,8 +2,8 @@
 Changelog for package audio_play
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.3.18 (2024-08-13)
+-------------------
 * Merge pull request `#238 <https://github.com/ros-drivers/audio_common/issues/238>`_ from Kanazawanaoaki/add-record-to-file-launch
 * Add record to file launch
 * Contributors: Kanazawanaoaki, Shingo Kitagawa
