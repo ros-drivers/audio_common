@@ -57,7 +57,7 @@ from sound_play.sound_type import SoundType
 try:
     import gi
     gi.require_version('Gst', '1.0')
-    from gi.repository import GObject as GObject
+    from gi.repository import GLib as GLib
     from gi.repository import Gst as Gst
 except Exception:
     str = """
@@ -326,9 +326,8 @@ class SoundPlayNode(object):
     def __init__(self):
         Gst.init(None)
 
-        # Start gobject thread to receive gstreamer messages
-        GObject.threads_init()
-        self.g_loop = threading.Thread(target=GObject.MainLoop().run)
+        # Start glib thread to receive gstreamer messages
+        self.g_loop = threading.Thread(target=GLib.MainLoop().run)
         self.g_loop.daemon = True
         self.g_loop.start()
 
