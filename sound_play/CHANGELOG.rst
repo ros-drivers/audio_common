@@ -2,6 +2,13 @@
 Changelog for package sound_play
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Merge pull request `#249 <https://github.com/ros-drivers/audio_common/issues/249>`_ from peci1/patch-1
+  festival_plugin: add support for different encodings
+* festival_plugin: add support for different encodings
+* Contributors: Martin Pecka, Shingo Kitagawa
+
 0.3.17 (2023-06-08)
 -------------------
 * Merge pull request `#231 <https://github.com/ros-drivers/audio_common/issues/231>`_ from knorth55/no-wait-mode
