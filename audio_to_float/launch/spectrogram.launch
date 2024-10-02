@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<launch>
+
+  <arg name="float_sample_rate" default="16000"/>
+  <node name="gen_float" pkg="float_to_audio" type="gen_float.py"
+      output="screen" >
+    <param name="sample_rate" value="$(arg float_sample_rate)"/>
+  </node>
+
+  <node name="spectrogram" pkg="audio_to_float" type="spectrogram.py"
+      output="screen" >
+    <param name="sample_rate" value="$(arg float_sample_rate)"/>
+  </node>
+
+  <node name="view_input" pkg="audio_to_float" type="view.py">
+    <remap from="decoded" to="samples"/>
+    <remap from="image" to="image"/>
+    <param name="fade1" value="0.5"/>
+    <param name="fade2" value="0.5"/>
+  </node>
+
+</launch>

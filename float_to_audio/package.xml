@@ -1,0 +1,27 @@
+<package>
+   <name>float_to_audio</name>
+   <version>0.2.7</version>
+   <description>
+      Convert a float array topic into gstreamer audio message that can be played by audio_play.
+   </description>
+   <maintainer email="wsacul@gmail.com">Lucas Walter</maintainer>
+   <author>Lucas Walter</author>
+   <license>BSD</license>
+   <url type="website">http://ros.org/wiki/float_to_audio</url>
+   <url type="repository">https://github.com/ros-drivers/audio_common</url>
+   <url type="bugtracker">https://github.com/ros-drivers/audio_common/issues</url>
+
+   <buildtool_depend>catkin</buildtool_depend>
+
+   <build_depend>roscpp</build_depend>
+   <build_depend>audio_common_msgs</build_depend>
+   <build_depend>libgstreamer1.0-dev</build_depend>
+   <build_depend>libgstreamer-plugins-base1.0-dev</build_depend>
+
+   <run_depend>roscpp</run_depend>
+   <run_depend>audio_common_msgs</run_depend>
+   <run_depend>libgstreamer1.0-0</run_depend>
+   <run_depend>libgstreamer-plugins-base1.0-0</run_depend>
+   <run_depend>gstreamer1.0-plugins-ugly</run_depend>
+   <run_depend>gstreamer1.0-plugins-good</run_depend>
+</package>
