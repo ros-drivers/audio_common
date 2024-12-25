@@ -3,6 +3,8 @@
 #include <gst/app/gstappsink.h>
 #include <boost/thread.hpp>
 
+#include <diagnostic_updater/diagnostic_updater.hpp>
+#include <diagnostic_updater/publisher.hpp>
 #include <rclcpp/rclcpp.hpp>
 #include <rclcpp_components/register_node_macro.hpp>
 
@@ -17,7 +19,8 @@ namespace audio_capture
     public:
       AudioCaptureNode(const rclcpp::NodeOptions &options)
       :
-       Node("audio_capture_node", options)
+       Node("audio_capture_node", options),
+       updater_(this)
       {
         gst_init(nullptr, nullptr);
 
@@ -55,8 +58,22 @@ namespace audio_capture
         this->get_parameter("device", device);
 
         _pub = this->create_publisher<audio_common_msgs::msg::AudioData>("audio", 10);
-        _pub_stamped = this->create_publisher<audio_common_msgs::msg::AudioDataStamped>("audio_stamped", 10);
         _pub_info = this->create_publisher<audio_common_msgs::msg::AudioInfo>("audio_info", 1);
+
+        rclcpp::Publisher<audio_common_msgs::msg::AudioDataStamped>::SharedPtr pub_stamped =
+          this->create_publisher<audio_common_msgs::msg::AudioDataStamped>("audio_stamped", 10);
+
+        this->declare_parameter<double>("desired_rate", 100.0);
+        _desired_rate = this->get_parameter("desired_rate").as_double();
+        this->declare_parameter<double>("diagnostic_tolerance", 0.1);
+        auto tolerance = this->get_parameter("diagnostic_tolerance").as_double();
+
+        updater_.setHardwareID("microphone");
+        _diagnosed_pub_stamped =
+          std::make_shared<diagnostic_updater::DiagnosedPublisher<audio_common_msgs::msg::AudioDataStamped>>(
+            pub_stamped, updater_,
+            diagnostic_updater::FrequencyStatusParam(&_desired_rate, &_desired_rate, tolerance, 10),
+            diagnostic_updater::TimeStampStatusParam());
 
         _loop = g_main_loop_new(NULL, false);
         _pipeline = gst_pipeline_new("ros_pipeline");
@@ -201,7 +218,7 @@ namespace audio_capture
 
       void publishStamped( const audio_common_msgs::msg::AudioDataStamped &msg )
       {
-        _pub_stamped->publish(msg);
+        _diagnosed_pub_stamped->publish(msg);
       }
 
       static GstFlowReturn onNewBuffer (GstAppSink *appsink, gpointer userData)
@@ -252,7 +269,6 @@ namespace audio_capture
 
     private:
       rclcpp::Publisher<audio_common_msgs::msg::AudioData>::SharedPtr _pub;
-      rclcpp::Publisher<audio_common_msgs::msg::AudioDataStamped>::SharedPtr _pub_stamped;
       rclcpp::Publisher<audio_common_msgs::msg::AudioInfo>::SharedPtr _pub_info;
 
       rclcpp::TimerBase::SharedPtr _timer_info;
@@ -264,6 +280,11 @@ namespace audio_capture
       int _bitrate, _channels, _depth, _sample_rate;
       GMainLoop *_loop;
       std::string _format, _sample_format;
+
+      diagnostic_updater::Updater updater_;
+      double _desired_rate;
+      std::shared_ptr<diagnostic_updater::DiagnosedPublisher<audio_common_msgs::msg::AudioDataStamped>>
+        _diagnosed_pub_stamped;
   };
 }
 
