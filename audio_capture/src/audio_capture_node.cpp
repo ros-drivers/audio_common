@@ -17,10 +17,8 @@ namespace audio_capture
   class AudioCaptureNode: public rclcpp::Node
   {
     public:
-      AudioCaptureNode(const rclcpp::NodeOptions &options)
-      :
-       Node("audio_capture_node", options),
-       updater_(this)
+      AudioCaptureNode(const rclcpp::NodeOptions & options)
+      : Node("audio_capture_node", options), updater_(this), _desired_rate(-1.0)
       {
         gst_init(nullptr, nullptr);
 
@@ -63,8 +61,6 @@ namespace audio_capture
         rclcpp::Publisher<audio_common_msgs::msg::AudioDataStamped>::SharedPtr pub_stamped =
           this->create_publisher<audio_common_msgs::msg::AudioDataStamped>("audio_stamped", 10);
 
-        this->declare_parameter<double>("desired_rate", 100.0);
-        _desired_rate = this->get_parameter("desired_rate").as_double();
         this->declare_parameter<double>("diagnostic_tolerance", 0.1);
         auto tolerance = this->get_parameter("diagnostic_tolerance").as_double();
 
@@ -245,6 +241,12 @@ namespace audio_capture
 
         gst_buffer_unmap(buffer, &map);
         gst_sample_unref(sample);
+
+        if (server->_desired_rate < 0) {
+          int buffer_size = map.size;
+          server->_desired_rate =
+            static_cast<double>(server->_sample_rate) / (buffer_size / (server->_channels * (server->_depth / 8)));
+        }
 
         server->publish(msg);
         server->publishStamped(stamped_msg);
