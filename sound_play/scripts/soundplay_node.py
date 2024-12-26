@@ -542,17 +542,17 @@ class SoundPlayNode(rclpy.node.Node):
                     success = True
                     while sound.get_playing():
                         sound.update()
+                        feedback = SoundRequestAction.Feedback()
+                        feedback.playing = sound.get_playing()
+                        feedback.stamp = (
+                            self.get_clock().now() - start_time).to_msg()
+                        goal_handle.publish_feedback(feedback)
                         if not goal_handle.is_active:
                             self.get_logger().info(
                                 'sound_play action: Preempted')
                             sound.stop()
                             success = False
                             break
-                        feedback = SoundRequestAction.Feedback()
-                        feedback.playing = sound.get_playing()
-                        feedback.stamp = (
-                            self.get_clock().now() - start_time).to_msg()
-                        goal_handle.publish_feedback(feedback)
                         self.sleep(1.0 / self.loop_rate)
                     if success:
                         result.playing = feedback.playing
