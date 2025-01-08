@@ -56,7 +56,8 @@ namespace audio_capture
 
         _pub = this->create_publisher<audio_common_msgs::msg::AudioData>("audio", 10);
         _pub_stamped = this->create_publisher<audio_common_msgs::msg::AudioDataStamped>("audio_stamped", 10);
-        _pub_info = this->create_publisher<audio_common_msgs::msg::AudioInfo>("audio_info", 1);
+        auto info_qos = rclcpp::QoS(rclcpp::KeepLast(1)).transient_local();
+        _pub_info = this->create_publisher<audio_common_msgs::msg::AudioInfo>("audio_info", info_qos);
 
         _loop = g_main_loop_new(NULL, false);
         _pipeline = gst_pipeline_new("ros_pipeline");
