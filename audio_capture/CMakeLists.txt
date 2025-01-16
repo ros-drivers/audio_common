@@ -13,6 +13,7 @@ find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(rclcpp_components REQUIRED)
 find_package(audio_common_msgs REQUIRED)
+find_package(diagnostic_updater REQUIRED)
 find_package(PkgConfig)
 pkg_check_modules(GST1.0 gstreamer-1.0 REQUIRED)
 find_package(Boost REQUIRED COMPONENTS thread)
@@ -26,6 +27,7 @@ ament_target_dependencies(${PROJECT_NAME}
   rclcpp
   rclcpp_components
   audio_common_msgs
+  diagnostic_updater
 )
 
 target_link_libraries(${PROJECT_NAME} ${GST1.0_LIBRARIES} ${Boost_LIBRARIES})
