@@ -56,7 +56,8 @@ namespace audio_capture
         this->get_parameter("device", device);
 
         _pub = this->create_publisher<audio_common_msgs::msg::AudioData>("audio", 10);
-        _pub_info = this->create_publisher<audio_common_msgs::msg::AudioInfo>("audio_info", 1);
+        auto info_qos = rclcpp::QoS(rclcpp::KeepLast(1)).transient_local();
+        _pub_info = this->create_publisher<audio_common_msgs::msg::AudioInfo>("audio_info", info_qos);
 
         rclcpp::Publisher<audio_common_msgs::msg::AudioDataStamped>::SharedPtr pub_stamped =
           this->create_publisher<audio_common_msgs::msg::AudioDataStamped>("audio_stamped", 10);
