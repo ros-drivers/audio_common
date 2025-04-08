@@ -12,6 +12,8 @@
   <arg name="sample_format" default="S16LE"/>
   <arg name="ns" default="audio"/>
   <arg name="audio_topic" default="audio"/>
+  <arg name="capture_volume" default="50"/>
+
 
   <group ns="$(arg ns)">
     <node name="audio_capture" pkg="audio_capture" type="audio_capture" output="screen">
@@ -24,6 +26,7 @@
       <param name="depth" value="$(arg depth)"/>
       <param name="sample_rate" value="$(arg sample_rate)"/>
       <param name="sample_format" value="$(arg sample_format)"/>
+      <param name="capture_volume" value="$(arg capture_volume)"/>
     </node>
   </group>
 

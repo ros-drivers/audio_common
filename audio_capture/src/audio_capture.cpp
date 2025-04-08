@@ -17,6 +17,7 @@ namespace audio_transport
       RosGstCapture()
       {
         _bitrate = 192;
+        _capture_volume = 50; // Default volume 50%
 
         std::string dst_type;
 
@@ -31,6 +32,11 @@ namespace audio_transport
         ros::param::param<int>("~channels", _channels, 1);
         ros::param::param<int>("~depth", _depth, 16);
         ros::param::param<int>("~sample_rate", _sample_rate, 16000);
+        
+        // The volume level for audio capture (0-100%)
+        ros::param::param<int>("~capture_volume", _capture_volume, 50);
+        // Ensure volume is within valid range
+        _capture_volume = std::max(0, std::min(_capture_volume, 100));
 
         // The destination of the audio
         ros::param::param<std::string>("~dst", dst_type, "appsink");
@@ -83,6 +89,18 @@ namespace audio_transport
           // ghcar *gst_device = device.c_str();
           g_object_set(G_OBJECT(_source), "device", device.c_str(), NULL);
         }
+        
+        // Create volume control element
+        _volume = gst_element_factory_make("volume", "volume");
+        if (!_volume) {
+          ROS_ERROR_STREAM("Failed to create volume element");
+          exitOnMainThread(1);
+        }
+        
+        // Set volume level (0-100% mapped to 0.0-1.0)
+        double volume_value = static_cast<double>(_capture_volume) / 100.0;
+        g_object_set(G_OBJECT(_volume), "volume", volume_value, NULL);
+        ROS_INFO("Setting capture volume to %d%% (%.2f)", _capture_volume, volume_value);
 
         GstCaps *caps;
         caps = gst_caps_new_simple("audio/x-raw",
@@ -114,18 +132,21 @@ namespace audio_transport
           g_object_set( G_OBJECT(_encode), "target", 1, NULL);
           g_object_set( G_OBJECT(_encode), "bitrate", _bitrate, NULL);
 
-          gst_bin_add_many( GST_BIN(_pipeline), _source, _filter, _convert, _encode, _sink, NULL);
-          link_ok = gst_element_link_many(_source, _filter, _convert, _encode, _sink, NULL);
+          // Add volume element to pipeline
+          gst_bin_add_many( GST_BIN(_pipeline), _source, _filter, _volume, _convert, _encode, _sink, NULL);
+          link_ok = gst_element_link_many(_source, _filter, _volume, _convert, _encode, _sink, NULL);
         } else if (_format == "wave") {
           if (dst_type == "appsink") {
             g_object_set( G_OBJECT(_sink), "caps", caps, NULL);
             gst_caps_unref(caps);
-            gst_bin_add_many( GST_BIN(_pipeline), _source, _sink, NULL);
-            link_ok = gst_element_link_many( _source, _sink, NULL);
+            // Add volume element to pipeline
+            gst_bin_add_many( GST_BIN(_pipeline), _source, _volume, _sink, NULL);
+            link_ok = gst_element_link_many( _source, _volume, _sink, NULL);
           } else {
             _filter = gst_element_factory_make("wavenc", "filter");
-            gst_bin_add_many( GST_BIN(_pipeline), _source, _filter, _sink, NULL);
-            link_ok = gst_element_link_many( _source, _filter, _sink, NULL);
+            // Add volume element to pipeline
+            gst_bin_add_many( GST_BIN(_pipeline), _source, _volume, _filter, _sink, NULL);
+            link_ok = gst_element_link_many( _source, _volume, _filter, _sink, NULL);
           }
         } else {
           ROS_ERROR_STREAM("format must be \"wave\" or \"mp3\"");
@@ -159,6 +180,9 @@ namespace audio_transport
         info_msg.bitrate = _bitrate;
         info_msg.coding_format = _format;
         _pub_info.publish(info_msg);
+        
+        // Start timer to check for parameter updates
+        _timer = _nh.createTimer(ros::Duration(1.0), &RosGstCapture::parameterCallback, this);
       }
 
       ~RosGstCapture()
@@ -167,6 +191,30 @@ namespace audio_transport
         gst_element_set_state(_pipeline, GST_STATE_NULL);
         gst_object_unref(_pipeline);
         g_main_loop_unref(_loop);
+      }
+      
+      // Check for volume parameter updates
+      void parameterCallback(const ros::TimerEvent& event)
+      {
+        int current_volume;
+        if(ros::param::get("~capture_volume", current_volume))
+        {
+          if(current_volume != _capture_volume)
+          {
+            _capture_volume = std::max(0, std::min(current_volume, 100));
+            updateVolume();
+          }
+        }
+      }
+      
+      // Update volume in GStreamer pipeline
+      void updateVolume()
+      {
+        if(_volume) {
+          double volume_value = static_cast<double>(_capture_volume) / 100.0;
+          ROS_INFO("Updating capture volume to %d%% (%.2f)", _capture_volume, volume_value);
+          g_object_set(G_OBJECT(_volume), "volume", volume_value, NULL);
+        }
       }
 
       void exitOnMainThread(int code)
@@ -242,12 +290,14 @@ namespace audio_transport
       ros::Publisher _pub;
       ros::Publisher _pub_stamped;
       ros::Publisher _pub_info;
+      ros::Subscriber _volume_sub;
+      ros::Timer _timer;
 
       boost::thread _gst_thread;
 
-      GstElement *_pipeline, *_source, *_filter, *_sink, *_convert, *_encode;
+      GstElement *_pipeline, *_source, *_filter, *_sink, *_convert, *_encode, *_volume;
       GstBus *_bus;
-      int _bitrate, _channels, _depth, _sample_rate;
+      int _bitrate, _channels, _depth, _sample_rate, _capture_volume;
       GMainLoop *_loop;
       std::string _format, _sample_format;
   };

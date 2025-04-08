@@ -33,6 +33,10 @@ namespace audio_transport
         ros::param::param<int>("~depth", depth, 16);
         ros::param::param<int>("~sample_rate", sample_rate, 16000);
         ros::param::param<std::string>("~sample_format", sample_format, "S16LE");
+        
+        // The volume level for audio playback (0-100%)
+        ros::param::param<int>("~play_volume", _play_volume, 50);
+        _play_volume = std::max(0, std::min(_play_volume, 100));
 
         _sub = _nh.subscribe("audio", 10, &RosGstPlay::onAudio, this);
 
@@ -61,14 +65,28 @@ namespace audio_transport
           _convert = gst_element_factory_make("audioconvert", "convert");
           audiopad = gst_element_get_static_pad(_convert, "sink");
           _resample = gst_element_factory_make("audioresample", "resample");
+          
+          // Create volume control element
+          _volume = gst_element_factory_make("volume", "volume");
+          if (!_volume) {
+            ROS_ERROR_STREAM("Failed to create volume element");
+            return;
+          }
+          
+          // Set volume level (0-100% mapped to 0.0-1.0)
+          double volume_value = static_cast<double>(_play_volume) / 100.0;
+          g_object_set(G_OBJECT(_volume), "volume", volume_value, NULL);
+          ROS_INFO("Setting play volume to %d%% (%.2f)", _play_volume, volume_value);
 
           _sink = gst_element_factory_make("alsasink", "sink");
           g_object_set(G_OBJECT(_sink), "sync", FALSE, NULL);
           if (!device.empty()) {
             g_object_set(G_OBJECT(_sink), "device", device.c_str(), NULL);
           }
-          gst_bin_add_many( GST_BIN(_audio), _convert, _resample, _sink, NULL);
-          gst_element_link_many(_convert, _resample, _sink, NULL);
+          
+          // Add volume element to pipeline
+          gst_bin_add_many( GST_BIN(_audio), _convert, _resample, _volume, _sink, NULL);
+          gst_element_link_many(_convert, _resample, _volume, _sink, NULL);
           gst_element_add_pad(_audio, gst_ghost_pad_new("sink", audiopad));
         }
         else
@@ -126,6 +144,41 @@ namespace audio_transport
         //gst_element_set_state(GST_ELEMENT(_playbin), GST_STATE_PLAYING);
 
         _gst_thread = boost::thread( boost::bind(g_main_loop_run, _loop) );
+        
+        // Start timer to check for parameter updates
+        _timer = _nh.createTimer(ros::Duration(1.0), &RosGstPlay::parameterCallback, this);
+      }
+      
+      ~RosGstPlay()
+      {
+        g_main_loop_quit(_loop);
+        gst_element_set_state(_pipeline, GST_STATE_NULL);
+        gst_object_unref(_pipeline);
+        g_main_loop_unref(_loop);
+      }
+      
+      // Check for volume parameter updates
+      void parameterCallback(const ros::TimerEvent& event)
+      {
+        int current_volume;
+        if(ros::param::get("~play_volume", current_volume))
+        {
+          if(current_volume != _play_volume)
+          {
+            _play_volume = std::max(0, std::min(current_volume, 100));
+            updateVolume();
+          }
+        }
+      }
+      
+      // Update volume in GStreamer pipeline
+      void updateVolume()
+      {
+        if(_volume) {
+          double volume_value = static_cast<double>(_play_volume) / 100.0;
+          ROS_INFO("Updating play volume to %d%% (%.2f)", _play_volume, volume_value);
+          g_object_set(G_OBJECT(_volume), "volume", volume_value, NULL);
+        }
       }
 
     private:
@@ -176,11 +229,14 @@ namespace audio_transport
 
       ros::NodeHandle _nh;
       ros::Subscriber _sub;
+      ros::Subscriber _volume_sub;
+      ros::Timer _timer;
       boost::thread _gst_thread;
 
-      GstElement *_pipeline, *_source, *_sink, *_decoder, *_convert, *_audio, *_resample, *_filter;
+      GstElement *_pipeline, *_source, *_sink, *_decoder, *_convert, *_audio, *_resample, *_filter, *_volume;
       GstElement *_playbin;
       GMainLoop *_loop;
+      int _play_volume; // Volume control (0-100%)
   };
 }
 
