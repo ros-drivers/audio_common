@@ -353,17 +353,20 @@ class SoundPlayNode(rclpy.node.Node):
                     prefix='sound_play', suffix='.wav')
                 txtfilename = txtfile.name
                 os.close(wavfile)
+                encoding = 'ISO-8859-15'
                 if data.arg2 == '':
                     voice = self.default_voice
                 else:
                     voice = data.arg2
+                    if ':' in voice:
+                        voice, encoding = voice.split(':', maxsplit=1)
                 try:
                     try:
                         if hasattr(data.arg, 'decode'):
                             txtfile.write(
-                                data.arg.decode('UTF-8').encode('ISO-8859-15'))
+                                data.arg.decode('UTF-8').encode(encoding))
                         else:
-                            txtfile.write(data.arg.encode('ISO-8859-15'))
+                            txtfile.write(data.arg.encode(encoding))
                     except UnicodeEncodeError:
                         if hasattr(data.arg, 'decode'):
                             txtfile.write(data.arg)
