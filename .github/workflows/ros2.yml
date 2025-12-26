@@ -11,7 +11,7 @@ jobs:
   industrial_ci:
     strategy:
       matrix:
-        ROS_DISTRO: [humble, iron, rolling]
+        ROS_DISTRO: [humble, jazzy, kilted, rolling]
         ROS_REPO: [testing, main]
         CMAKE_ARGS: ['-DCMAKE_BUILD_TYPE=Debug', '-DCMAKE_BUILD_TYPE=Release']
     runs-on: ubuntu-latest
