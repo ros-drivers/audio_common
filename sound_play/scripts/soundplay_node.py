@@ -430,7 +430,6 @@ class SoundPlayNode(rclpy.node.Node):
         return sound
 
     def callback(self, data):
-        self.get_logger().error('callback: {}'.format(str(data)))
         if not self.initialized:
             return
         with self.mutex:
