@@ -22,14 +22,8 @@
    <buildtool_depend>rosidl_generator_py</buildtool_depend>
    <buildtool_depend>python3-setuptools</buildtool_depend>
 
-   <build_depend>action_msgs</build_depend>
-   <build_depend>audio_common_msgs</build_depend>
    <build_depend>boost</build_depend>
-   <build_depend>builtin_interfaces</build_depend>
 
-   <exec_depend>action_msgs</exec_depend>
-   <exec_depend>audio_common_msgs</exec_depend>
-   <exec_depend>builtin_interfaces</exec_depend>
    <exec_depend>festival</exec_depend>
    <exec_depend>launch_xml</exec_depend>
    <exec_depend>rclpy</exec_depend>

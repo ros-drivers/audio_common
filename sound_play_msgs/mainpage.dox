@@ -1,0 +1,11 @@
+/**
+\mainpage
+\htmlinclude manifest.html
+
+\b sound_play_msgs contain messages for playing sound via ROS.
+
+
+\section codeapi Code API
+
+
+*/
