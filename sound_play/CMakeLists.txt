@@ -10,6 +10,7 @@ if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
 endif()
 
 find_package(ament_cmake REQUIRED)
+find_package(ament_cmake_python REQUIRED)
 find_package(rosidl_default_generators REQUIRED)
 find_package(audio_common_msgs REQUIRED)
 find_package(action_msgs REQUIRED)
@@ -33,7 +34,13 @@ rosidl_generate_interfaces(${PROJECT_NAME}
     builtin_interfaces
 )
 
-ament_python_install_package(${PROJECT_NAME})
+# Install Python package from subdirectory
+# Note: Cannot use ament_python_install_package due to target name conflict with rosidl_generate_interfaces
+# Install Python modules manually to the same location as generated interfaces
+install(DIRECTORY ${PROJECT_NAME}/
+  DESTINATION local/lib/python3.10/dist-packages/${PROJECT_NAME}
+  FILES_MATCHING PATTERN "*.py"
+)
 
 install(PROGRAMS
   scripts/is_speaking.py
@@ -56,6 +63,12 @@ install(DIRECTORY launch
 )
 
 install(DIRECTORY sounds
+  DESTINATION share/${PROJECT_NAME}
+)
+
+# Install plugin configuration
+install(FILES
+  sound_play_plugin.yaml
   DESTINATION share/${PROJECT_NAME}
 )
 

@@ -46,5 +46,6 @@
 
    <export>
       <build_type>ament_cmake</build_type>
+      <sound_play plugin="${prefix}/sound_play_plugin.yaml" />
    </export>
 </package>

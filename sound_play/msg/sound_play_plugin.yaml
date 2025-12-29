@@ -1,0 +1,2 @@
+- name: sound_play/piper_plugin
+  module: sound_play.piper_tts_plugin.PiperTTSPlugin
