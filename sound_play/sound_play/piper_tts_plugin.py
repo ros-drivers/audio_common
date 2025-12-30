@@ -59,39 +59,39 @@ class PiperTTSPlugin(SoundPlayPlugin):
         if self.voice is None:
             print(f"[PiperTTS] 错误: 语音模型未加载")
             return None
-        
+
         # 创建临时文件
         fd, wavfilename = tempfile.mkstemp(
             suffix='.wav',
             prefix='piper_tts_'
         )
         os.close(fd)
-        
+
         try:
             # 使用 Piper Python API 合成语音
+            # Piper 新版 API: synthesize(text) -> bytes (PCM 16-bit)
+            audio_bytes = self.voice.synthesize(text)
+
+            # 写入 WAV 文件
             with wave.open(wavfilename, 'wb') as wav_file:
-                # 设置音频参数
                 wav_file.setnchannels(self.AUDIO_CHANNELS)
                 wav_file.setsampwidth(self.AUDIO_SAMPLE_WIDTH)
                 wav_file.setframerate(self.voice.config.sample_rate)
-                
-                # 合成音频并写入
-            for audio_bytes in self.voice.synthesize_stream(text):
                 wav_file.writeframes(audio_bytes)
-            
+
             # 验证文件
             if not os.path.exists(wavfilename):
                 print(f"[PiperTTS] 输出文件未生成")
                 return None
-            
+
             if os.path.getsize(wavfilename) == 0:
                 print(f"[PiperTTS] 输出文件为空")
                 os.remove(wavfilename)
                 return None
-            
+
             print(f"[PiperTTS] 合成成功: {wavfilename}")
             return wavfilename
-            
+
         except Exception as e:
             print(f"[PiperTTS] 异常: {e}")
             if os.path.exists(wavfilename):
