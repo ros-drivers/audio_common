@@ -76,8 +76,8 @@ class PiperTTSPlugin(SoundPlayPlugin):
                 wav_file.setframerate(self.voice.config.sample_rate)
                 
                 # 合成音频并写入
-                for audio_bytes in self.voice.synthesize_stream_raw(text):
-                    wav_file.writeframes(audio_bytes)
+            for audio_bytes in self.voice.synthesize_stream(text):
+                wav_file.writeframes(audio_bytes)
             
             # 验证文件
             if not os.path.exists(wavfilename):
