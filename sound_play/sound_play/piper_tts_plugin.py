@@ -68,36 +68,18 @@ class PiperTTSPlugin(SoundPlayPlugin):
         os.close(fd)
 
         try:
-            # Piper API 兼容 bytes 或 generator
-            audio_data = self.voice.synthesize(text)
+            # 可选：自定义合成参数
+            try:
+                from piper import SynthesisConfig
+                syn_config = SynthesisConfig()
+            except Exception:
+                syn_config = None
 
-            audio_chunks = []
-
-            if isinstance(audio_data, (bytes, bytearray)):
-                audio_chunks.append(audio_data)
-            else:
-                for chunk in audio_data:
-                    # Piper 新版：AudioChunk
-                    if hasattr(chunk, "samples"):
-                        audio_chunks.append(chunk.samples.tobytes())
-
-                    # 中间版：array / memoryview / numpy
-                    elif hasattr(chunk, "tobytes"):
-                        audio_chunks.append(chunk.tobytes())
-
-                    # 兜底（极少发生）
-                    else:
-                        audio_chunks.append(bytes(chunk))
-
-            audio_bytes = b"".join(audio_chunks)
-
-
-            # 写入 WAV 文件
             with wave.open(wavfilename, 'wb') as wav_file:
-                wav_file.setnchannels(self.AUDIO_CHANNELS)
-                wav_file.setsampwidth(self.AUDIO_SAMPLE_WIDTH)
-                wav_file.setframerate(self.voice.config.sample_rate)
-                wav_file.writeframes(audio_bytes)
+                if syn_config:
+                    self.voice.synthesize_wav(text, wav_file, syn_config=syn_config)
+                else:
+                    self.voice.synthesize_wav(text, wav_file)
 
             # 验证文件
             if not os.path.exists(wavfilename):
