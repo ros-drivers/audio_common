@@ -70,11 +70,27 @@ class PiperTTSPlugin(SoundPlayPlugin):
         try:
             # Piper API 兼容 bytes 或 generator
             audio_data = self.voice.synthesize(text)
-            if isinstance(audio_data, bytes):
-                audio_bytes = audio_data
+
+            audio_chunks = []
+
+            if isinstance(audio_data, (bytes, bytearray)):
+                audio_chunks.append(audio_data)
             else:
-                # 兼容 generator/chunk
-                audio_bytes = b"".join(audio_data)
+                for chunk in audio_data:
+                    # Piper 新版：AudioChunk
+                    if hasattr(chunk, "samples"):
+                        audio_chunks.append(chunk.samples.tobytes())
+
+                    # 中间版：array / memoryview / numpy
+                    elif hasattr(chunk, "tobytes"):
+                        audio_chunks.append(chunk.tobytes())
+
+                    # 兜底（极少发生）
+                    else:
+                        audio_chunks.append(bytes(chunk))
+
+            audio_bytes = b"".join(audio_chunks)
+
 
             # 写入 WAV 文件
             with wave.open(wavfilename, 'wb') as wav_file:
