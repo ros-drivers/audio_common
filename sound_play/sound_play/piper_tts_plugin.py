@@ -1,10 +1,16 @@
 """
-Piper TTS Plugin - ROS1 style synchronous implementation
+Piper TTS Plugin - Using piper-tts Python API
 """
 
 import os
 import tempfile
-import subprocess
+import wave
+
+try:
+    from piper import PiperVoice
+except ImportError:
+    print("[PiperTTS] 错误: 需要安装 piper-tts: pip install piper-tts")
+    PiperVoice = None
 
 try:
     from sound_play.sound_play_plugin import SoundPlayPlugin
@@ -13,31 +19,48 @@ except ImportError:
 
 
 class PiperTTSPlugin(SoundPlayPlugin):
+    # 音频格式常量
+    AUDIO_CHANNELS = 1  # 单声道
+    AUDIO_SAMPLE_WIDTH = 2  # 16-bit (2 bytes)
+    
     def __init__(self):
         super(PiperTTSPlugin, self).__init__()
         
         # Piper 配置（可通过 ROS 参数覆盖）
-        self.piper_executable = '/usr/local/bin/piper'
         self.model_path = '/opt/piper/models/zh_CN-huayan-medium.onnx'
-        self.timeout = 10
+        self.config_path = self.model_path + '.json'
+        self.voice = None
         
-        # 验证可用性
+        # 验证可用性并加载模型
         self._check_availability()
     
     def _check_availability(self):
-        if not os.path.exists(self.piper_executable):
-            print(f"[PiperTTS] 错误: Piper 未找到: {self.piper_executable}")
+        if PiperVoice is None:
+            print(f"[PiperTTS] 错误: piper-tts 库未安装")
             return
         
         if not os.path.exists(self.model_path):
             print(f"[PiperTTS] 错误: 模型未找到: {self.model_path}")
             return
         
-        print(f"[PiperTTS] 初始化成功")
-        print(f"[PiperTTS] 可执行文件: {self.piper_executable}")
-        print(f"[PiperTTS] 模型: {self.model_path}")
+        if not os.path.exists(self.config_path):
+            print(f"[PiperTTS] 警告: 配置文件未找到: {self.config_path}")
+        
+        try:
+            # 加载 Piper 语音模型
+            self.voice = PiperVoice.load(self.model_path, config_path=self.config_path, use_cuda=False)
+            print(f"[PiperTTS] 初始化成功")
+            print(f"[PiperTTS] 模型: {self.model_path}")
+        except Exception as e:
+            print(f"[PiperTTS] 加载模型失败: {e}")
+            self.voice = None
     
     def sound_play_say_plugin(self, text, voice):
+        if self.voice is None:
+            print(f"[PiperTTS] 错误: 语音模型未加载")
+            return None
+        
+        # 创建临时文件
         fd, wavfilename = tempfile.mkstemp(
             suffix='.wav',
             prefix='piper_tts_'
@@ -45,31 +68,16 @@ class PiperTTSPlugin(SoundPlayPlugin):
         os.close(fd)
         
         try:
-            # 调用 Piper
-            process = subprocess.Popen(
-                [
-                    self.piper_executable,
-                    '--model', self.model_path,
-                    '--output_file', wavfilename
-                ],
-                stdin=subprocess.PIPE,
-                stdout=subprocess.PIPE,
-                stderr=subprocess.PIPE,
-                text=True
-            )
-            
-            # 发送文本并等待完成
-            stdout, stderr = process.communicate(
-                input=text,
-                timeout=self.timeout
-            )
-            
-            # 检查结果
-            if process.returncode != 0:
-                print(f"[PiperTTS] 合成失败: {stderr}")
-                if os.path.exists(wavfilename):
-                    os.remove(wavfilename)
-                return None
+            # 使用 Piper Python API 合成语音
+            with wave.open(wavfilename, 'wb') as wav_file:
+                # 设置音频参数
+                wav_file.setnchannels(self.AUDIO_CHANNELS)
+                wav_file.setsampwidth(self.AUDIO_SAMPLE_WIDTH)
+                wav_file.setframerate(self.voice.config.sample_rate)
+                
+                # 合成音频并写入
+                for audio_bytes in self.voice.synthesize_stream_raw(text):
+                    wav_file.writeframes(audio_bytes)
             
             # 验证文件
             if not os.path.exists(wavfilename):
@@ -84,14 +92,9 @@ class PiperTTSPlugin(SoundPlayPlugin):
             print(f"[PiperTTS] 合成成功: {wavfilename}")
             return wavfilename
             
-        except subprocess.TimeoutExpired:
-            print(f"[PiperTTS] 合成超时")
-            process.kill()
-            if os.path.exists(wavfilename):
-                os.remove(wavfilename)
-            return None
         except Exception as e:
             print(f"[PiperTTS] 异常: {e}")
             if os.path.exists(wavfilename):
                 os.remove(wavfilename)
             return None
+
