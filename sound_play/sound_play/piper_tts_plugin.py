@@ -68,9 +68,13 @@ class PiperTTSPlugin(SoundPlayPlugin):
         os.close(fd)
 
         try:
-            # 使用 Piper Python API 合成语音
-            # Piper 新版 API: synthesize(text) -> bytes (PCM 16-bit)
-            audio_bytes = self.voice.synthesize(text)
+            # Piper API 兼容 bytes 或 generator
+            audio_data = self.voice.synthesize(text)
+            if isinstance(audio_data, bytes):
+                audio_bytes = audio_data
+            else:
+                # 兼容 generator/chunk
+                audio_bytes = b"".join(audio_data)
 
             # 写入 WAV 文件
             with wave.open(wavfilename, 'wb') as wav_file:
