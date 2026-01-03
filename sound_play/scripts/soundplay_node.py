@@ -638,10 +638,17 @@ class SoundPlayNode(rclpy.node.Node):
             # Force only one sound at a time
             self.stopall()
             result = SoundRequestAction.Result()
+            feedback = SoundRequestAction.Feedback()
             try:
                 if (data.sound == SoundRequest.ALL
                         and data.command == SoundRequest.PLAY_STOP):
                     self.stopall()
+                    # ✅ 为stopall场景初始化feedback
+                    feedback.playing = False
+                    feedback.stamp = self.get_clock().now().to_msg()
+                    result.playing = feedback.playing
+                    result.stamp = feedback.stamp
+                    goal_handle.succeed()
                 else:
                     sound = self.select_sound(data)
                     sound.command(data.command)
