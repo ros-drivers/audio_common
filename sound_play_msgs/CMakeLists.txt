@@ -11,7 +11,6 @@ endif()
 
 find_package(ament_cmake REQUIRED)
 find_package(rosidl_default_generators REQUIRED)
-find_package(audio_common_msgs REQUIRED)
 find_package(action_msgs REQUIRED)
 
 set(msg_files
@@ -27,7 +26,6 @@ rosidl_generate_interfaces(${PROJECT_NAME}
   ${action_files}
   DEPENDENCIES
     action_msgs
-    audio_common_msgs
     builtin_interfaces
 )
 
