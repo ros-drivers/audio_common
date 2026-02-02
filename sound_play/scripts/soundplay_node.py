@@ -588,6 +588,11 @@ class SoundPlayNode(rclpy.node.Node):
 
     def diagnostics(self, state):
         try:
+            # 忽略状态 2 (ERROR)：空闲时的误导性错误信息
+            # 保留状态 0 (OK) 和状态 1 (WARN)
+            if state == 2:
+                return
+            
             da = DiagnosticArray()
             ds = DiagnosticStatus()
             ds.name = self.get_name() + ": Node State"
