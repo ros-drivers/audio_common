@@ -33,7 +33,11 @@ rosidl_generate_interfaces(${PROJECT_NAME}
     builtin_interfaces
 )
 
-ament_python_install_package(${PROJECT_NAME})
+# Install Python package manually to avoid conflicts with rosidl_generate_interfaces
+install(DIRECTORY ${PROJECT_NAME}/
+  DESTINATION lib/python3.12/site-packages/${PROJECT_NAME}
+  FILES_MATCHING PATTERN "*.py"
+)
 
 install(PROGRAMS
   scripts/is_speaking.py
