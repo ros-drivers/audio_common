@@ -39,8 +39,8 @@ import rclpy
 import rclpy.action
 
 from action_msgs.msg import GoalStatusArray
-from sound_play.action import SoundRequest as SoundRequestAction
-from sound_play.msg import SoundRequest
+from sound_play_msgs.action import SoundRequest as SoundRequestAction
+from sound_play_msgs.msg import SoundRequest
 
 
 # \brief Class that publishes messages to the sound_play node.
