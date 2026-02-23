@@ -22,15 +22,26 @@ add_library(${PROJECT_NAME} SHARED
   src/audio_capture_node.cpp
 )
 
-target_include_directories(${PROJECT_NAME} PRIVATE ${Boost_INCLUDE_DIRS} ${GST1.0_INCLUDE_DIRS})
-ament_target_dependencies(${PROJECT_NAME}
-  rclcpp
-  rclcpp_components
-  audio_common_msgs
-  diagnostic_updater
+target_include_directories(${PROJECT_NAME}
+  PRIVATE
+    ${rclcpp_INCLUDE_DIRS}
+    ${rclcpp_components_INCLUDE_DIRS}
+    ${audio_common_msgs_INCLUDE_DIRS}
+    ${diagnostic_updater_INCLUDE_DIRS}
+    ${Boost_INCLUDE_DIRS}
+    ${GST1.0_INCLUDE_DIRS}
 )
 
-target_link_libraries(${PROJECT_NAME} ${GST1.0_LIBRARIES} ${Boost_LIBRARIES})
+target_link_libraries(${PROJECT_NAME}
+  PUBLIC
+    ${rclcpp_LIBRARIES}
+    ${rclcpp_components_LIBRARIES}
+    ${audio_common_msgs_LIBRARIES}
+    ${diagnostic_updater_LIBRARIES}
+  PRIVATE
+    ${GST1.0_LIBRARIES}
+    ${Boost_LIBRARIES}
+)
 
 rclcpp_components_register_node(
   ${PROJECT_NAME}
