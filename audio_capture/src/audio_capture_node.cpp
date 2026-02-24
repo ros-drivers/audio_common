@@ -137,16 +137,18 @@ namespace audio_capture
                                    NULL);
 
         gboolean link_ok;
+
+        _convert = gst_element_factory_make("audioconvert", "convert");
+        if (!_convert) {
+          RCLCPP_ERROR_STREAM(this->get_logger(), "Failed to create audioconvert element");
+          exitOnMainThread(1);
+        }
+
+
         if (_format == "mp3"){
           _filter = gst_element_factory_make("capsfilter", "filter");
           g_object_set( G_OBJECT(_filter), "caps", caps, NULL);
           gst_caps_unref(caps);
-
-          _convert = gst_element_factory_make("audioconvert", "convert");
-          if (!_convert) {
-            RCLCPP_ERROR_STREAM(this->get_logger(), "Failed to create audioconvert element");
-            exitOnMainThread(1);
-          }
 
           _encode = gst_element_factory_make("lamemp3enc", "encoder");
           if (!_encode) {
@@ -162,8 +164,8 @@ namespace audio_capture
           if (dst_type == "appsink") {
             g_object_set( G_OBJECT(_sink), "caps", caps, NULL);
             gst_caps_unref(caps);
-            gst_bin_add_many( GST_BIN(_pipeline), _source, _sink, NULL);
-            link_ok = gst_element_link_many( _source, _sink, NULL);
+            gst_bin_add_many( GST_BIN(_pipeline), _source, _convert, _sink, NULL);
+            link_ok = gst_element_link_many( _source, _convert, _sink, NULL);
           } else {
             _filter = gst_element_factory_make("wavenc", "filter");
             gst_bin_add_many( GST_BIN(_pipeline), _source, _filter, _sink, NULL);
