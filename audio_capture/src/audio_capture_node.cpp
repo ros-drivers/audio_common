@@ -262,7 +262,7 @@ namespace audio_capture
         gchar *debug;
 
         gst_message_parse_error(message, &err, &debug);
-        // RCLCPP_ERROR_STREAM(this->get_logger(), "gstreamer: " << err->message);
+        RCLCPP_ERROR_STREAM(server->get_logger(), "gstreamer: " << err->message);
         g_error_free(err);
         g_free(debug);
         g_main_loop_quit(server->_loop);
