@@ -27,32 +27,46 @@ namespace audio_capture
         std::string dst_type;
         std::string device;
 
+        rcl_interfaces::msg::ParameterDescriptor param_desc;
+
         // Need to encoding or publish raw wave data
-        this->declare_parameter<std::string>("format", "mp3");
-        this->declare_parameter<std::string>("sample_format", "S16LE");
+        param_desc.description = "Audio format to encode or publish (mp3 or wave)";
+        this->declare_parameter<std::string>("format", "mp3", param_desc);
+        param_desc.description = "Sample format for raw wave data (e.g., S16LE)";
+        this->declare_parameter<std::string>("sample_format", "S16LE", param_desc);
         this->get_parameter("format", _format);
         this->get_parameter("sample_format", _sample_format);
 
         // The bitrate at which to encode the audio
-        this->declare_parameter<int>("bitrate", 192);
+        param_desc.description = "The bitrate at which to encode the audio";
+        this->declare_parameter<int>("bitrate", 192, param_desc);
         this->get_parameter("bitrate", _bitrate);
 
         // only available for raw data
-        this->declare_parameter<int>("channels", 1);
-        this->declare_parameter<int>("depth", 16);
-        this->declare_parameter<int>("sample_rate", 16000);
+        param_desc.description = "Number of audio channels (only for raw data)";
+        this->declare_parameter<int>("channels", 1, param_desc);
+        param_desc.description = "Audio depth in bits (only for raw data)";
+        this->declare_parameter<int>("depth", 16, param_desc);
+        param_desc.description = "Sample rate in Hz (only for raw data)";
+        this->declare_parameter<int>("sample_rate", 16000, param_desc);
         this->get_parameter("channels", _channels);
         this->get_parameter("depth", _depth);
         this->get_parameter("sample_rate", _sample_rate);
 
         // The destination of the audio
-        this->declare_parameter<std::string>("dst", "appsink");
+        param_desc.description = "The destination of the audio (e.g., appsink or a "
+                                 "filepath; use appsink to publish to ROS)";
+        this->declare_parameter<std::string>("dst", "appsink", param_desc);
         this->get_parameter("dst", dst_type);
 
         // The source of the audio
-        this->declare_parameter<std::string>("src", "alsasrc");
+        param_desc.description =
+            "The source of the audio (e.g., alsasrc or pulsesrc)";
+        this->declare_parameter<std::string>("src", "alsasrc", param_desc);
         this->get_parameter("src", src_type);
-        this->declare_parameter<std::string>("device", "");
+        param_desc.description = "The device of the audio source (e.g., hw:0,0; "
+                                 "default is the system default)";
+        this->declare_parameter<std::string>("device", "", param_desc);
         this->get_parameter("device", device);
 
         _pub = this->create_publisher<audio_common_msgs::msg::AudioData>("audio", 10);
