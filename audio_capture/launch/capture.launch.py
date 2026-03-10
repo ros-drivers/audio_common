@@ -5,6 +5,7 @@ from launch_ros.actions import Node
 
 
 def generate_launch_description():
+    _src = LaunchConfiguration('src')
     _dst = LaunchConfiguration('dst')
     _device = LaunchConfiguration('device')
     _format = LaunchConfiguration('format')
@@ -16,6 +17,10 @@ def generate_launch_description():
     _ns = LaunchConfiguration('ns')
     _audio_topic = LaunchConfiguration('audio_topic')
 
+    _src_launch_arg = DeclareLaunchArgument(
+        'src',
+        default_value='alsasrc'
+    )
     _dst_launch_arg = DeclareLaunchArgument(
         'dst',
         default_value='appsink'
@@ -66,6 +71,7 @@ def generate_launch_description():
             ('audio', _audio_topic),
         ],
         parameters=[{
+            'src': _src,
             'dst': _dst,
             'device': _device,
             'format': _format,
@@ -78,6 +84,7 @@ def generate_launch_description():
     )
 
     return LaunchDescription([
+        _src_launch_arg,
         _dst_launch_arg,
         _device_launch_arg,
         _format_launch_arg,
