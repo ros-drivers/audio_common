@@ -28,31 +28,53 @@ namespace audio_capture
         std::string device;
 
         // Need to encoding or publish raw wave data
-        this->declare_parameter<std::string>("format", "mp3");
-        this->declare_parameter<std::string>("sample_format", "S16LE");
+        rcl_interfaces::msg::ParameterDescriptor audio_format_param_desc;
+        audio_format_param_desc.description = "Audio format to encode or publish (mp3 or wave)";
+        this->declare_parameter<std::string>("format", "mp3", audio_format_param_desc);
+        rcl_interfaces::msg::ParameterDescriptor sample_format_param_desc;
+        sample_format_param_desc.description = "Sample format for raw wave data (e.g., S16LE)";
+        this->declare_parameter<std::string>("sample_format", "S16LE", sample_format_param_desc);
+
         this->get_parameter("format", _format);
         this->get_parameter("sample_format", _sample_format);
 
         // The bitrate at which to encode the audio
-        this->declare_parameter<int>("bitrate", 192);
+        rcl_interfaces::msg::ParameterDescriptor bitrate_param_desc;
+        bitrate_param_desc.description = "The bitrate at which to encode the audio";
+        this->declare_parameter<int>("bitrate", 192, bitrate_param_desc);
         this->get_parameter("bitrate", _bitrate);
 
         // only available for raw data
-        this->declare_parameter<int>("channels", 1);
-        this->declare_parameter<int>("depth", 16);
-        this->declare_parameter<int>("sample_rate", 16000);
+        rcl_interfaces::msg::ParameterDescriptor nb_channels_param_desc;
+        nb_channels_param_desc.description = "Number of audio channels (only for raw data)";
+        this->declare_parameter<int>("channels", 1, nb_channels_param_desc);
+        rcl_interfaces::msg::ParameterDescriptor nb_bits_param_desc;
+        nb_bits_param_desc.description = "Audio depth in bits (only for raw data)";
+        this->declare_parameter<int>("depth", 16, nb_bits_param_desc);
+        rcl_interfaces::msg::ParameterDescriptor sample_rate_param_desc;
+        sample_rate_param_desc.description = "Sample rate in Hz (only for raw data)";
+        this->declare_parameter<int>("sample_rate", 16000, sample_rate_param_desc);
         this->get_parameter("channels", _channels);
         this->get_parameter("depth", _depth);
         this->get_parameter("sample_rate", _sample_rate);
 
         // The destination of the audio
-        this->declare_parameter<std::string>("dst", "appsink");
+        rcl_interfaces::msg::ParameterDescriptor dst_param_desc;
+        dst_param_desc.description = "The destination of the audio (e.g., appsink or a "
+                                 "filepath; use appsink to publish to ROS)";
+        this->declare_parameter<std::string>("dst", "appsink", dst_param_desc);
         this->get_parameter("dst", dst_type);
 
         // The source of the audio
-        this->declare_parameter<std::string>("src", "alsasrc");
+        rcl_interfaces::msg::ParameterDescriptor src_param_desc;
+        src_param_desc.description =
+            "The source of the audio (e.g., alsasrc or pulsesrc)";
+        this->declare_parameter<std::string>("src", "alsasrc", src_param_desc);
         this->get_parameter("src", src_type);
-        this->declare_parameter<std::string>("device", "");
+        rcl_interfaces::msg::ParameterDescriptor device_param_desc;
+        device_param_desc.description = "The device of the audio source (e.g., hw:0,0; "
+                                 "default is the system default)";
+        this->declare_parameter<std::string>("device", "", device_param_desc);
         this->get_parameter("device", device);
 
         _pub = this->create_publisher<audio_common_msgs::msg::AudioData>("audio", 10);
@@ -262,7 +284,7 @@ namespace audio_capture
         gchar *debug;
 
         gst_message_parse_error(message, &err, &debug);
-        // RCLCPP_ERROR_STREAM(this->get_logger(), "gstreamer: " << err->message);
+        RCLCPP_ERROR_STREAM(server->get_logger(), "gstreamer: " << err->message);
         g_error_free(err);
         g_free(debug);
         g_main_loop_quit(server->_loop);
