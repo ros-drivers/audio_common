@@ -1,5 +1,5 @@
 <!-- 
-This launch file starts soundplay_node.py, which is the node that plays
+This launch file starts soundplay_node_cpp, which is the C++ node that plays
 sounds based on messages on the robotsound topic.  
 -->
 
@@ -8,7 +8,7 @@ sounds based on messages on the robotsound topic.
   <arg name="loop_rate" default="100" />
   <arg name="default_voice" default="voice_kal_diphone" />
 
-  <node name="soundplay_node" pkg="sound_play" exec="soundplay_node.py">
+  <node name="soundplay_node" pkg="sound_play" exec="soundplay_node_cpp">
     <param name="device" value="$(var device)" />
     <param name="loop_rate" value="$(var loop_rate)" />
     <param name="default_voice" value="$(var default_voice)" />

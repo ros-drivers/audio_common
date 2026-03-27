@@ -13,8 +13,18 @@ find_package(ament_cmake REQUIRED)
 find_package(rosidl_default_generators REQUIRED)
 find_package(audio_common_msgs REQUIRED)
 find_package(action_msgs REQUIRED)
+find_package(rclcpp REQUIRED)
+find_package(rclcpp_action REQUIRED)
+find_package(diagnostic_msgs REQUIRED)
+find_package(ament_index_cpp REQUIRED)
 
-include_directories(rclcpp audio_common_msgs action_msgs builtin_interfaces)
+find_package(PkgConfig REQUIRED)
+pkg_check_modules(GST REQUIRED gstreamer-1.0)
+
+include_directories(
+  include
+  ${GST_INCLUDE_DIRS}
+)
 
 set(msg_files
   "msg/SoundRequest.msg"
@@ -31,6 +41,24 @@ rosidl_generate_interfaces(${PROJECT_NAME}
     action_msgs
     audio_common_msgs
     builtin_interfaces
+)
+
+# Build C++ soundplay node
+add_executable(soundplay_node_cpp src/soundplay_node.cpp)
+ament_target_dependencies(soundplay_node_cpp
+  rclcpp
+  rclcpp_action
+  diagnostic_msgs
+  ament_index_cpp
+)
+target_link_libraries(soundplay_node_cpp ${GST_LIBRARIES})
+
+# Need to link against the generated interfaces
+rosidl_get_typesupport_target(cpp_typesupport_target ${PROJECT_NAME} "rosidl_typesupport_cpp")
+target_link_libraries(soundplay_node_cpp "${cpp_typesupport_target}")
+
+install(TARGETS soundplay_node_cpp
+  DESTINATION lib/${PROJECT_NAME}
 )
 
 # Install Python package manually to avoid conflicts with rosidl_generate_interfaces
