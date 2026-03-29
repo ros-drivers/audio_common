@@ -170,8 +170,15 @@ namespace audio_capture
           if (dst_type == "appsink") {
             g_object_set( G_OBJECT(_sink), "caps", caps, NULL);
             gst_caps_unref(caps);
-            gst_bin_add_many( GST_BIN(_pipeline), _source, _sink, NULL);
-            link_ok = gst_element_link_many( _source, _sink, NULL);
+
+            _convert = gst_element_factory_make("audioconvert", "convert");
+            if (!_convert) {
+              RCLCPP_ERROR_STREAM(this->get_logger(), "Failed to create audioconvert element");
+              exitOnMainThread(1);
+            }
+
+            gst_bin_add_many( GST_BIN(_pipeline), _source, _convert, _sink, NULL);
+            link_ok = gst_element_link_many( _source, _convert, _sink, NULL);
           } else {
             _filter = gst_element_factory_make("wavenc", "filter");
             gst_bin_add_many( GST_BIN(_pipeline), _source, _filter, _sink, NULL);
