@@ -2,8 +2,8 @@
 Changelog for package audio_capture
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.4.0 (2026-04-14)
+------------------
 * Merge pull request `#274 <https://github.com/ros-drivers/audio_common/issues/274>`_ from knorth55/pass-audio-convert
   pass to audio convert after _source
 * pass audio convert

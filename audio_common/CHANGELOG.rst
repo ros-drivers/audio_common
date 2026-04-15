@@ -2,8 +2,8 @@
 Changelog for package audio_common
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.4.0 (2026-04-14)
+------------------
 * Merge pull request `#264 <https://github.com/ros-drivers/audio_common/issues/264>`_ from knorth55/ros2-sound-play-msgs
   split sound_play_msgs package
 * add sound_play_msgs package
