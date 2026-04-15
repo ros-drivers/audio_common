@@ -2,6 +2,41 @@
 Changelog for package sound_play
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Merge pull request `#267 <https://github.com/ros-drivers/audio_common/issues/267>`_ from knorth55/ros2-fix-rolling
+  replace ament_target_dependencies
+* remove CMAKE_CXX flags
+* Merge pull request `#264 <https://github.com/ros-drivers/audio_common/issues/264>`_ from knorth55/ros2-sound-play-msgs
+  split sound_play_msgs package
+* follow review
+* Merge pull request `#262 <https://github.com/ros-drivers/audio_common/issues/262>`_ from knorth55/ros2-remove-error
+  remove unnecessary logerror
+* modify python code
+* add sound_play_msgs package
+* remove unnecessary logerror
+* Merge pull request `#260 <https://github.com/ros-drivers/audio_common/issues/260>`_ from peci1/ros2-encodings
+  add support for different encodings
+* add support for different encodings
+* Merge remote-tracking branch 'origin/ros2' into feature/qos
+* Merge pull request `#255 <https://github.com/ros-drivers/audio_common/issues/255>`_ from knorth55/fix-245
+  Fix `#245 <https://github.com/ros-drivers/audio_common/issues/245>`_
+* set feedback first
+* Merge pull request `#224 <https://github.com/ros-drivers/audio_common/issues/224>`_ from knorth55/ros2-backport
+* refactor is_speaking
+* fix typo causing file open issue
+* add default_voice in soundplay_node.launch
+* Improve is_speaking by checking goal status
+* Merge pull request `#217 <https://github.com/ros-drivers/audio_common/issues/217>`_ from knorth55/ros2-missing-buildtool-depend
+* add rosidl_generator_py in buildtool_depend
+* Merge pull request `#178 <https://github.com/ros-drivers/audio_common/issues/178>`_ from knorth55/ros2
+* sound_play: migrate to ros2
+* Merge pull request `#176 <https://github.com/ros-drivers/audio_common/issues/176>`_ from iory/is-speeching
+* Add is_speaking.py to catkin_install_python
+* Fixed name speeching to speaking
+* Add is_speeching node for checking robot is speaking
+* Contributors: Martin Pecka, Shingo Kitagawa, Tatsuro Sakaguchi, iory
+
 0.3.12 (2021-09-01)
 -------------------
 * Merge pull request `#175 <https://github.com/ros-drivers/audio_common/issues/175>`_ from iory/rate

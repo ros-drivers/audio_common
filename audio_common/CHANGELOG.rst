@@ -2,6 +2,15 @@
 Changelog for package audio_common
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Merge pull request `#264 <https://github.com/ros-drivers/audio_common/issues/264>`_ from knorth55/ros2-sound-play-msgs
+  split sound_play_msgs package
+* add sound_play_msgs package
+* Merge pull request `#178 <https://github.com/ros-drivers/audio_common/issues/178>`_ from knorth55/ros2
+* audio_common: migrate to ros2
+* Contributors: Shingo Kitagawa
+
 0.3.12 (2021-09-01)
 -------------------
 * Merge branch 'master' into master

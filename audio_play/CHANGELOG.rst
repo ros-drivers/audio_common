@@ -2,6 +2,30 @@
 Changelog for package audio_play
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Merge pull request `#267 <https://github.com/ros-drivers/audio_common/issues/267>`_ from knorth55/ros2-fix-rolling
+  replace ament_target_dependencies
+* remove CMAKE_CXX flags
+* replace ament_target_dependencies
+* Merge pull request `#224 <https://github.com/ros-drivers/audio_common/issues/224>`_ from knorth55/ros2-backport
+* refactor audio_play launch files
+* unref buffer in audio_play to avoid memory leak
+* Merge pull request `#215 <https://github.com/ros-drivers/audio_common/issues/215>`_ from knorth55/weeshal/components
+* add missing build_depend
+* add play.launch.py in audio_play
+* rename to audio_play_node
+* converted nodes to components
+* Merge pull request `#208 <https://github.com/ros-drivers/audio_common/issues/208>`_ from weeshal/bugfix/parameter_names
+* removing ros1 namespacing
+* Merge pull request `#188 <https://github.com/ros-drivers/audio_common/issues/188>`_ from Patrick-AA/ros2-patch
+* changed ns to push-ros-namespace
+* Merge pull request `#178 <https://github.com/ros-drivers/audio_common/issues/178>`_ from knorth55/ros2
+* audio_play: migrate to ros2
+* Merge pull request `#179 <https://github.com/ros-drivers/audio_common/issues/179>`_ from tkmtnt7000/PR-remap-audio-topic
+* audio_play: add audio_topic option
+* Contributors: Naoto Tsukamoto, Patrick-AA, Shingo Kitagawa, Vishal Giridhar, vishalgi
+
 0.3.12 (2021-09-01)
 -------------------
 * Merge branch 'master' into master

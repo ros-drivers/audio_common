@@ -2,6 +2,17 @@
 Changelog for package audio_common_msgs
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Merge pull request `#267 <https://github.com/ros-drivers/audio_common/issues/267>`_ from knorth55/ros2-fix-rolling
+  replace ament_target_dependencies
+* remove CMAKE_CXX flags
+* Merge pull request `#224 <https://github.com/ros-drivers/audio_common/issues/224>`_ from knorth55/ros2-backport
+* add AudioDataStamped.msg
+* Merge pull request `#178 <https://github.com/ros-drivers/audio_common/issues/178>`_ from knorth55/ros2
+* audio_common_msgs: migrate to ros2
+* Contributors: Shingo Kitagawa
+
 0.3.12 (2021-09-01)
 -------------------
 * Merge branch 'master' into master

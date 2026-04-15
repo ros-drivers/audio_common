@@ -2,6 +2,61 @@
 Changelog for package audio_capture
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Merge pull request `#274 <https://github.com/ros-drivers/audio_common/issues/274>`_ from knorth55/pass-audio-convert
+  pass to audio convert after _source
+* pass audio convert
+* Merge pull request `#272 <https://github.com/ros-drivers/audio_common/issues/272>`_ from sbgisen/bugfix/pulsesrc-pipeline
+  Fix crash when using wave format with pulsesrc
+* Add audioconvert
+* Merge pull request `#270 <https://github.com/ros-drivers/audio_common/issues/270>`_ from socialminds-ai/audio-capture-qol
+  Minor quality-of-life fixes for audio_capture
+* Merge pull request `#269 <https://github.com/ros-drivers/audio_common/issues/269>`_ from socialminds-ai/capture-src
+  audio_capture: make it possible to configure the gstreamer input plugin
+* audio_capture: document the node parameters
+* audio_capture: print out errors in the gstreamer pipeline
+* audio_capture: make it possible to configure the gstreamer input plugin
+  This is especially useful to use pulseaudio (pulsesrc) instead of
+  alsa, which is convenient when working inside Docker containers
+* Merge pull request `#267 <https://github.com/ros-drivers/audio_common/issues/267>`_ from knorth55/ros2-fix-rolling
+  replace ament_target_dependencies
+* remove CMAKE_CXX flags
+* replace ament_target_dependencies
+* Merge pull request `#257 <https://github.com/ros-drivers/audio_common/issues/257>`_ from sbgisen/feature/qos
+  Set transient local to audio info publisher
+* Merge remote-tracking branch 'origin/ros2' into feature/qos
+* Merge pull request `#254 <https://github.com/ros-drivers/audio_common/issues/254>`_ from sbgisen/feature/diagnostic
+  Publish diagnostic
+* Set transient local to audio info publisher
+* Auto detect rate
+* Publish diagnostic
+* Merge pull request `#236 <https://github.com/ros-drivers/audio_common/issues/236>`_ from anrp-tri/anrp/info
+  Publish audio_info on a schedule
+* Merge pull request `#237 <https://github.com/ros-drivers/audio_common/issues/237>`_ from anrp-tri/anrp/flexsrc
+* Allow audio_capture node to specify src type
+  Allows use of pulsesrc and other options.
+* Publish audio_info on a schedule
+  Make sure that latecomers can get the codec details.
+* Merge pull request `#224 <https://github.com/ros-drivers/audio_common/issues/224>`_ from knorth55/ros2-backport
+* on real systems publish system clock time in capture node
+* publish audio stamped in audio_capture.cpp
+* The capture node is hard-coded to alsasrc
+* Merge pull request `#215 <https://github.com/ros-drivers/audio_common/issues/215>`_ from knorth55/weeshal/components
+* use include for audio_capture launch.xml
+* fix typo in capture_to_file.launch.py
+* add missing build_depend
+* add launch.pya in audio_capture
+* rename to audio_capture_node
+* converted nodes to components
+* Merge pull request `#208 <https://github.com/ros-drivers/audio_common/issues/208>`_ from weeshal/bugfix/parameter_names
+* removing ros1 namespacing
+* Merge pull request `#188 <https://github.com/ros-drivers/audio_common/issues/188>`_ from Patrick-AA/ros2-patch
+* changed ns to push-ros-namespace
+* Merge pull request `#178 <https://github.com/ros-drivers/audio_common/issues/178>`_ from knorth55/ros2
+* audio_capture: migrate to ros2
+* Contributors: Andrew Patrikalakis, Patrick-AA, Shingo Kitagawa, Séverin Lemaignan, Tatsuro Sakaguchi, Vishal Giridhar, v4hn, vishalgi
+
 0.3.12 (2021-09-01)
 -------------------
 * Merge branch 'master' into master
