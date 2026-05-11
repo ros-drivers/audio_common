@@ -10,17 +10,15 @@
    </description>
    <maintainer email="namniart@gmail.com">Austin Hendrix</maintainer>
    <maintainer email="shingogo.5511@gmail.com">Shingo Kitagawa</maintainer>
-   <author>Blaise Gassend</author>
    <license>BSD</license>
    <url type="website">http://ros.org/wiki/sound_play</url>
    <url type="repository">https://github.com/ros-drivers/audio_common</url>
    <url type="bugtracker">https://github.com/ros-drivers/audio_common/issues</url>
+   <author>Blaise Gassend</author>
 
    <buildtool_depend>ament_cmake</buildtool_depend>
    <buildtool_depend>ament_cmake_python</buildtool_depend>
    <buildtool_depend>python3-setuptools</buildtool_depend>
-
-   <depend>sound_play_msgs</depend>
 
    <build_depend>action_msgs</build_depend>
    <build_depend>audio_common_msgs</build_depend>
