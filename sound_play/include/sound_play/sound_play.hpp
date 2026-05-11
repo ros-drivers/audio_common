@@ -37,6 +37,7 @@
 #ifndef __SOUND_PLAY__SOUND_PLAY__HPP__
 #define __SOUND_PLAY__SOUND_PLAY__HPP__
 
+#include <atomic>
 #include <string>
 #include <rclcpp/rclcpp.hpp>
 #include <sound_play_msgs/msg/sound_request.hpp>
@@ -398,14 +399,6 @@ private:
     int snd, int cmd, const std::string & s = "", const std::string & arg2 = "",
     const float & vol = 1.0f)
   {
-    // Lock guard looks useless as no ressouces is being shared
-    const std::lock_guard<std::mutex> lock(mutex_);
-
-    // Init should fail before this call and should not be silenced
-    if (!nh_ || !pub_) {
-      return;
-    }
-
     sound_play_msgs::msg::SoundRequest msg;
     msg.sound = snd;
     msg.command = cmd;
@@ -431,10 +424,9 @@ private:
     }
   }
 
-  bool quiet_;
+  std::atomic<bool> quiet_{false};
   rclcpp::Node::SharedPtr nh_;
   rclcpp::Publisher<sound_play_msgs::msg::SoundRequest>::SharedPtr pub_;
-  std::mutex mutex_;
 };
 
 typedef SoundClient::Sound Sound;
