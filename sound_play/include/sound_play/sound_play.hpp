@@ -398,8 +398,10 @@ private:
     int snd, int cmd, const std::string & s = "", const std::string & arg2 = "",
     const float & vol = 1.0f)
   {
+    // Lock guard looks useless as no ressouces is being shared
     const std::lock_guard<std::mutex> lock(mutex_);
 
+    // Init should fail before this call and should not be silenced
     if (!nh_ || !pub_) {
       return;
     }
@@ -421,6 +423,7 @@ private:
 
     pub_->publish(msg);
 
+    // TODO: Add this to diagnostics
     if (pub_->get_subscription_count() == 0 && !quiet_) {
       RCLCPP_WARN(
         nh_->get_logger(),
