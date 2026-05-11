@@ -2,10 +2,11 @@ cmake_minimum_required(VERSION 3.5)
 project(sound_play)
 
 find_package(ament_cmake REQUIRED)
+find_package(ament_cmake_auto REQUIRED)
 find_package(rosidl_default_generators REQUIRED)
 find_package(audio_common_msgs REQUIRED)
 find_package(action_msgs REQUIRED)
-find_package(sound_play_msgs)
+find_package(sound_play_msgs REQUIRED)
 
 include_directories(rclcpp audio_common_msgs action_msgs builtin_interfaces)
 
@@ -35,6 +36,17 @@ install(DIRECTORY launch
 install(DIRECTORY sounds
   DESTINATION share/${PROJECT_NAME}
 )
+
+
+if(BUILD_TESTING)
+  ament_auto_find_test_dependencies()
+  ament_lint_auto_find_test_dependencies()
+
+  ament_auto_add_gtest(sound_play_test
+    test/sound_play_mock_test.cpp
+  )
+endif()
+
 
 ament_export_dependencies(rosidl_default_runtime sound_play_msgs)
 
