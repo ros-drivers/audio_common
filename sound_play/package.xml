@@ -39,6 +39,12 @@
    <exec_depend>gstreamer1.0-plugins-good</exec_depend>
    <exec_depend>python3-gi</exec_depend>
 
+  <test_depend>ament_lint_auto</test_depend>
+  <test_depend>ament_lint_common</test_depend>
+  <test_depend>ament_cmake_gtest</test_depend>
+  <test_depend>rclcpp</test_depend>
+  <test_depend>sound_play_msgs</test_depend>
+
    <export>
       <build_type>ament_cmake</build_type>
    </export>
