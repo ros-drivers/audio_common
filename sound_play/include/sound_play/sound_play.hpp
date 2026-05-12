@@ -68,7 +68,9 @@ public:
 private:
     int snd_;
     float vol_;
+    // @brief file name or text to say
     std::string arg_;
+    // @brief other arguments
     std::string arg2_;
     SoundClient * client_;
 
