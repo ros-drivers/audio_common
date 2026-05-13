@@ -10,11 +10,11 @@
    </description>
    <maintainer email="namniart@gmail.com">Austin Hendrix</maintainer>
    <maintainer email="shingogo.5511@gmail.com">Shingo Kitagawa</maintainer>
+   <author>Blaise Gassend</author>
    <license>BSD</license>
    <url type="website">http://ros.org/wiki/sound_play</url>
    <url type="repository">https://github.com/ros-drivers/audio_common</url>
    <url type="bugtracker">https://github.com/ros-drivers/audio_common/issues</url>
-   <author>Blaise Gassend</author>
 
    <buildtool_depend>ament_cmake</buildtool_depend>
    <buildtool_depend>ament_cmake_auto</buildtool_depend>
@@ -40,11 +40,9 @@
    <exec_depend>gstreamer1.0-plugins-good</exec_depend>
    <exec_depend>python3-gi</exec_depend>
 
-  <test_depend>ament_lint_auto</test_depend>
-  <test_depend>ament_lint_common</test_depend>
-  <test_depend>ament_cmake_gtest</test_depend>
-  <test_depend>rclcpp</test_depend>
-  <test_depend>sound_play_msgs</test_depend>
+   <test_depend>ament_cmake_gtest</test_depend>
+   <test_depend>rclcpp</test_depend>
+   <test_depend>sound_play_msgs</test_depend>
 
    <export>
       <build_type>ament_cmake</build_type>
