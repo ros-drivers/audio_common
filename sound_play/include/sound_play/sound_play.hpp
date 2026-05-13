@@ -376,7 +376,7 @@ private:
     quiet_ = false;
   }
 
-  void sendMsg( int snd, int cmd, const std::string & s = "", const std::string & arg2 = "", const float & vol = 1.0f)
+  void sendMsg(int snd, int cmd, const std::string &s = "", const std::string &arg2 = "", const float &vol = 1.0f)
   {
     sound_play_msgs::msg::SoundRequest msg;
     msg.sound = snd;
