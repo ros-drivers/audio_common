@@ -73,7 +73,7 @@ public:
     std::string arg2_;
     SoundClient *client_;
 
-    Sound(SoundClient * sc, int snd, const std::string & arg, const std::string arg2 = std::string(), const float vol = 1.0f)
+    Sound(SoundClient *sc, int snd, const std::string &arg, const std::string arg2 = std::string(), const float vol = 1.0f)
     {
       client_ = sc;
       snd_ = snd;
