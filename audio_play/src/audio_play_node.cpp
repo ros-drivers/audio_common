@@ -6,8 +6,8 @@
 // license that can be found in the LICENSE file or at
 // https://developers.google.com/open-source/licenses/bsd
 
-#include <gst/gst.h>
 #include <gst/app/gstappsrc.h>
+#include <gst/gst.h>
 #include <boost/thread.hpp>
 
 #include <rclcpp/rclcpp.hpp>
@@ -15,15 +15,18 @@
 
 #include "audio_common_msgs/msg/audio_data.hpp"
 
-namespace audio_play {
-class AudioPlayNode : public rclcpp::Node {
+namespace audio_play
+{
+class AudioPlayNode : public rclcpp::Node
+{
 public:
-  explicit AudioPlayNode(const rclcpp::NodeOptions &options)
-    : Node("audio_play_node", options) {
+  explicit AudioPlayNode(const rclcpp::NodeOptions & options)
+  : Node("audio_play_node", options)
+  {
     gst_init(nullptr, nullptr);
 
-    GstPad *audiopad;
-    GstCaps *caps;
+    GstPad * audiopad;
+    GstCaps * caps;
 
     std::string dst_type;
     std::string device;
@@ -54,7 +57,7 @@ public:
     this->get_parameter("sample_format", sample_format);
 
     _sub = this->create_subscription<audio_common_msgs::msg::AudioData>(
-        "audio", 10, std::bind(&AudioPlayNode::onAudio, this, std::placeholders::_1));
+      "audio", 10, std::bind(&AudioPlayNode::onAudio, this, std::placeholders::_1));
 
     _loop = g_main_loop_new(NULL, false);
 
@@ -64,11 +67,12 @@ public:
 
     // _playbin = gst_element_factory_make("playbin2", "uri_play");
     // g_object_set( G_OBJECT(_playbin), "uri", "file:///home/test/test.mp3", NULL);
-    caps = gst_caps_new_simple("audio/x-raw", "format", G_TYPE_STRING,
-                               sample_format.c_str(), "rate", G_TYPE_INT, sample_rate,
-                               "channels", G_TYPE_INT, channels, "width", G_TYPE_INT,
-                               depth, "depth", G_TYPE_INT, depth, "signed", G_TYPE_BOOLEAN,
-                               TRUE, "layout", G_TYPE_STRING, "interleaved", NULL);
+    caps = gst_caps_new_simple(
+      "audio/x-raw", "format", G_TYPE_STRING,
+      sample_format.c_str(), "rate", G_TYPE_INT, sample_rate,
+      "channels", G_TYPE_INT, channels, "width", G_TYPE_INT,
+      depth, "depth", G_TYPE_INT, depth, "signed", G_TYPE_BOOLEAN,
+      TRUE, "layout", G_TYPE_STRING, "interleaved", NULL);
 
     if (dst_type == "alsasink") {
       _audio = gst_bin_new("audiobin");
@@ -130,8 +134,9 @@ public:
   }
 
 private:
-  void onAudio(const audio_common_msgs::msg::AudioData::SharedPtr msg) const {
-    GstBuffer *buffer = gst_buffer_new_and_alloc(msg->data.size());
+  void onAudio(const audio_common_msgs::msg::AudioData::SharedPtr msg) const
+  {
+    GstBuffer * buffer = gst_buffer_new_and_alloc(msg->data.size());
     gst_buffer_fill(buffer, 0, &msg->data[0], msg->data.size());
     GstFlowReturn ret;
 
@@ -139,12 +144,13 @@ private:
     gst_buffer_unref(buffer);
   }
 
-  static void cb_newpad(GstElement *decodebin, GstPad *pad, gpointer data) {
-    AudioPlayNode *client = reinterpret_cast<AudioPlayNode *>(data);
+  static void cb_newpad(GstElement * decodebin, GstPad * pad, gpointer data)
+  {
+    AudioPlayNode * client = reinterpret_cast<AudioPlayNode *>(data);
 
-    GstCaps *caps;
-    GstStructure *str;
-    GstPad *audiopad;
+    GstCaps * caps;
+    GstStructure * str;
+    GstPad * audiopad;
 
     /* only link once */
     audiopad = gst_element_get_static_pad(client->_audio, "sink");
@@ -173,9 +179,10 @@ private:
   rclcpp::Subscription<audio_common_msgs::msg::AudioData>::SharedPtr _sub;
   boost::thread _gst_thread;
 
-  GstElement *_pipeline, *_source, *_sink, *_decoder, *_convert, *_audio, *_resample, *_filter;
-  GstElement *_playbin;
-  GMainLoop *_loop;
+  GstElement * _pipeline, * _source, * _sink, * _decoder, * _convert, * _audio, * _resample,
+    * _filter;
+  GstElement * _playbin;
+  GMainLoop * _loop;
 };
 }  // namespace audio_play
 

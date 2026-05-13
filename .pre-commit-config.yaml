@@ -62,12 +62,6 @@ repos:
       args: ["--extend-ignore=E501"]
 
   # CPP hooks
-  - repo: https://github.com/pre-commit/mirrors-clang-format
-    rev: v22.1.4
-    hooks:
-      - id: clang-format
-        args: ['-fallback-style=none', '-i']
-
   - repo: local
     hooks:
       - id: ament_cppcheck
@@ -85,7 +79,8 @@ repos:
         entry: ament_cpplint
         language: system
         files: \.(h\+\+|h|hh|hxx|hpp|cuh|c|cc|cpp|cu|c\+\+|cxx|tpp|txx)$
-        args: ["--linelength=100", "--filter=-whitespace/newline"]
+        args: ["--linelength=100", "--filter=-build/c++11,-runtime/references,-whitespace/braces,-whitespace/indent,-whitespace/parens,-whitespace/semicolon"]
+
 
   # Cmake hooks
   - repo: local
