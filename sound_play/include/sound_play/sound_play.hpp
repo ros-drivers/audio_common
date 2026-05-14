@@ -157,7 +157,7 @@ public:
    * machine running the sound_play node.
    * \param volume Volume at which to play the sound. 0 is mute, 1.0 is 100%.
    */
-  Sound waveSound(const std::string & s, float volume = 1.0f)
+  Sound waveSound(const std::string &s, float volume = 1.0f)
   {
     return Sound(this, sound_play_msgs::msg::SoundRequest::PLAY_FILE, s, "", volume);
   }
