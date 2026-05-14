@@ -21,10 +21,10 @@
    <buildtool_depend>ament_cmake_python</buildtool_depend>
    <buildtool_depend>python3-setuptools</buildtool_depend>
 
-   <build_depend>action_msgs</build_depend>
-   <build_depend>audio_common_msgs</build_depend>
    <build_depend>boost</build_depend>
    <build_depend>sound_play_msgs</build_depend>
+
+   <build_export_depend>rclcpp</build_export_depend>
 
    <exec_depend>action_msgs</exec_depend>
    <exec_depend>ament_index_python</exec_depend>
