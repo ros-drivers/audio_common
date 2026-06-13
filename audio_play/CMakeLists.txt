@@ -7,6 +7,7 @@ find_package(rclcpp_components REQUIRED)
 find_package(audio_common_msgs REQUIRED)
 find_package(PkgConfig)
 pkg_check_modules(GST1.0 gstreamer-1.0 REQUIRED)
+pkg_check_modules(GST1.0_BASE gstreamer-plugins-base-1.0 REQUIRED)
 find_package(Boost REQUIRED COMPONENTS thread)
 
 add_library(${PROJECT_NAME} SHARED
@@ -19,6 +20,7 @@ target_include_directories(${PROJECT_NAME}
     ${rclcpp_components_INCLUDE_DIRS}
     ${audio_common_msgs_INCLUDE_DIRS}
     ${GST1.0_INCLUDE_DIRS}
+    ${GST1.0_BASE_INCLUDE_DIRS}
 )
 
 target_link_libraries(${PROJECT_NAME}
@@ -28,6 +30,7 @@ target_link_libraries(${PROJECT_NAME}
     ${audio_common_msgs_LIBRARIES}
   PRIVATE
     ${GST1.0_LIBRARIES}
+    ${GST1.0_BASE_LIBRARIES}
     ${Boost_LIBRARIES}
 )
 
