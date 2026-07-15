@@ -145,10 +145,10 @@ namespace audio_play
 
     private:
 
-      void onAudio(const audio_common_msgs::msg::AudioData::SharedPtr msg) const
+      void onAudio(const audio_common_msgs::msg::AudioData & msg) const
       {
-        GstBuffer *buffer = gst_buffer_new_and_alloc(msg->data.size());
-        gst_buffer_fill(buffer, 0, &msg->data[0], msg->data.size());
+        GstBuffer *buffer = gst_buffer_new_and_alloc(msg.data.size());
+        gst_buffer_fill(buffer, 0, &msg.data[0], msg.data.size());
         GstFlowReturn ret;
 
         g_signal_emit_by_name(_source, "push-buffer", buffer, &ret);
