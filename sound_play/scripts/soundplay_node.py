@@ -44,7 +44,9 @@ import traceback
 
 from ament_index_python.packages import get_package_share_directory
 import rclpy.action
+import rclpy.callback_groups
 import rclpy.duration
+import rclpy.executors
 import rclpy.logging
 import rclpy.node
 
@@ -253,7 +255,9 @@ class SoundPlayNode(rclpy.node.Node):
         self._as = rclpy.action.ActionServer(
             self, SoundRequestAction, 'sound_play',
             execute_callback=self.execute_cb,
-            handle_accepted_callback=self.handle_accepted_cb)
+            cancel_callback=self.cancel_cb,
+            handle_accepted_callback=self.handle_accepted_cb,
+            callback_group=rclpy.callback_groups.ReentrantCallbackGroup())
 
         # For ros startup race condition
         self.sleep(0.5)
@@ -522,6 +526,9 @@ class SoundPlayNode(rclpy.node.Node):
             self.get_logger().error(
                 'Exception in diagnostics: %s' % str(e))
 
+    def cancel_cb(self, goal_handle):
+        return rclpy.action.CancelResponse.ACCEPT
+
     def execute_cb(self, goal_handle):
         data = goal_handle.request.sound_request
         if not self.initialized:
@@ -549,18 +556,20 @@ class SoundPlayNode(rclpy.node.Node):
                         feedback.stamp = (
                             self.get_clock().now() - start_time).to_msg()
                         goal_handle.publish_feedback(feedback)
-                        if not goal_handle.is_active:
+                        if goal_handle.is_cancel_requested:
                             self.get_logger().info(
                                 'sound_play action: Preempted')
                             sound.stop()
                             success = False
                             break
                         self.sleep(1.0 / self.loop_rate)
+                    result.playing = feedback.playing
+                    result.stamp = feedback.stamp
                     if success:
-                        result.playing = feedback.playing
-                        result.stamp = feedback.stamp
                         self.get_logger().info('sound_play action: Succeeded')
                         goal_handle.succeed()
+                    else:
+                        goal_handle.canceled()
             except Exception as e:
                 goal_handle.abort()
                 self.get_logger().error(
@@ -608,7 +617,9 @@ class SoundPlayNode(rclpy.node.Node):
 if __name__ == '__main__':
     rclpy.init()
     soundplay_node = SoundPlayNode()
-    rclpy.spin(soundplay_node)
+    executor = rclpy.executors.MultiThreadedExecutor()
+    executor.add_node(soundplay_node)
+    executor.spin()
     soundplay_node.destroy_node()
     del soundplay_node
     rclpy.shutdown()
