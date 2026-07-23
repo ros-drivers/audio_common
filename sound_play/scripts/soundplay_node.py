@@ -114,7 +114,6 @@ class SoundType(object):
                 self.stop()
 
     def __del__(self):
-        self.destroy_timer(self.timer)
         self.dispose()
 
     def update(self):
