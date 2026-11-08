@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <gst/gst.h>
 #include <gst/app/gstappsink.h>
+#include <gst/audio/audio.h>
 #include <boost/thread.hpp>
 
 #include <diagnostic_updater/diagnostic_updater.hpp>
@@ -134,6 +135,7 @@ namespace audio_capture
           g_object_set(G_OBJECT(_source), "device", device.c_str(), NULL);
         }
 
+        guint64 channel_mask = gst_audio_channel_get_fallback_mask(_channels);
         GstCaps *caps;
         caps = gst_caps_new_simple("audio/x-raw",
                                    "format", G_TYPE_STRING, _sample_format.c_str(),
@@ -142,6 +144,7 @@ namespace audio_capture
                                    "depth",    G_TYPE_INT, _depth,
                                    "rate",     G_TYPE_INT, _sample_rate,
                                    "signed",   G_TYPE_BOOLEAN, TRUE,
+                                   "channel-mask", GST_TYPE_BITMASK, channel_mask,
                                    NULL);
 
         _convert = gst_element_factory_make("audioconvert", "convert");

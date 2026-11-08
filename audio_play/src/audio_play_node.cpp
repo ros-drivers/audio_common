@@ -68,6 +68,7 @@ namespace audio_play
             "depth",    G_TYPE_INT, depth,
             "signed",   G_TYPE_BOOLEAN, TRUE,
             "layout", G_TYPE_STRING, "interleaved",
+            "channel-mask", GST_TYPE_BITMASK, (guint64) 0,
             NULL);
 
         if (dst_type == "alsasink")
