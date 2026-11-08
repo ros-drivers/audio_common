@@ -1,5 +1,6 @@
 #include <gst/gst.h>
 #include <gst/app/gstappsrc.h>
+#include <gst/audio/audio.h>
 #include <boost/thread.hpp>
 
 #include <rclcpp/rclcpp.hpp>
@@ -59,6 +60,7 @@ namespace audio_play
 
         //_playbin = gst_element_factory_make("playbin2", "uri_play");
         //g_object_set( G_OBJECT(_playbin), "uri", "file:///home/test/test.mp3", NULL);
+        guint64 channel_mask = gst_audio_channel_get_fallback_mask(channels);
         caps = gst_caps_new_simple(
             "audio/x-raw",
             "format", G_TYPE_STRING, sample_format.c_str(),
@@ -68,7 +70,7 @@ namespace audio_play
             "depth",    G_TYPE_INT, depth,
             "signed",   G_TYPE_BOOLEAN, TRUE,
             "layout", G_TYPE_STRING, "interleaved",
-            "channel-mask", GST_TYPE_BITMASK, (guint64) 0,
+            "channel-mask", GST_TYPE_BITMASK, channel_mask,
             NULL);
 
         if (dst_type == "alsasink")
