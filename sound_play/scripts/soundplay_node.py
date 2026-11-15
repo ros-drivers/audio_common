@@ -537,9 +537,13 @@ class SoundPlayNode(rclpy.node.Node):
             goal_handle.abort()
             return
         with self.mutex:
+            result = SoundRequestAction.Result()
+            if not goal_handle.is_active:
+                # A newer goal was accepted while this one waited for the
+                # mutex, and handle_accepted_cb aborted this one.
+                return result
             # Force only one sound at a time
             self.stopall()
-            result = SoundRequestAction.Result()
             try:
                 if (data.sound == SoundRequest.ALL
                         and data.command == SoundRequest.PLAY_STOP):
@@ -550,7 +554,16 @@ class SoundPlayNode(rclpy.node.Node):
 
                     start_time = self.get_clock().now()
                     success = True
+                    feedback = SoundRequestAction.Feedback()
                     while sound.get_playing():
+                        if not goal_handle.is_active:
+                            # handle_accepted_cb aborted this goal for a newer
+                            # one: stop now so the newer sound starts at once,
+                            # and leave the goal in the state it was set to.
+                            self.get_logger().info(
+                                'sound_play action: Preempted by a new goal')
+                            sound.stop()
+                            break
                         sound.update()
                         feedback = SoundRequestAction.Feedback()
                         feedback.playing = sound.get_playing()
@@ -566,13 +579,16 @@ class SoundPlayNode(rclpy.node.Node):
                         self.sleep(1.0 / self.loop_rate)
                     result.playing = feedback.playing
                     result.stamp = feedback.stamp
-                    if success:
-                        self.get_logger().info('sound_play action: Succeeded')
-                        goal_handle.succeed()
-                    else:
-                        goal_handle.canceled()
+                    if goal_handle.is_active:
+                        if success:
+                            self.get_logger().info(
+                                'sound_play action: Succeeded')
+                            goal_handle.succeed()
+                        else:
+                            goal_handle.canceled()
             except Exception as e:
-                goal_handle.abort()
+                if goal_handle.is_active:
+                    goal_handle.abort()
                 self.get_logger().error(
                     'Exception in actionlib callback: %s' % str(e))
                 self.get_logger().info(traceback.format_exc())
