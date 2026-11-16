@@ -90,3 +90,84 @@ def test_idle_timer_does_not_hold_the_mutex_while_it_waits(node):
     t.join(timeout=10.0)
     assert got, 'execute_cb / robotsound would wait for the whole idle loop'
     assert not t.is_alive()
+
+
+class FakeGoalHandle:
+    """Records the state transitions a goal goes through, like rcl_action."""
+
+    def __init__(self, node, sound):
+        from sound_play_msgs.msg import SoundRequest
+        self.node = node
+        self.request = type('Goal', (), {})()
+        self.request.sound_request = SoundRequest(
+            sound=SoundRequest.PLAY_FILE, command=SoundRequest.PLAY_ONCE)
+        self.sound = sound
+        self.events = []
+        self.errors = []
+        self.is_cancel_requested = False
+        self.thread = None
+
+    @property
+    def is_active(self):
+        return not self.events
+
+    def _end(self, event):
+        if self.events:
+            self.errors.append('{} after {}'.format(event, self.events[0]))
+        self.events.append(event)
+
+    def succeed(self):
+        self._end('succeed')
+
+    def abort(self):
+        self._end('abort')
+
+    def canceled(self):
+        self._end('canceled')
+
+    def publish_feedback(self, feedback):
+        pass
+
+    def execute(self):
+        self.thread = run_in_thread(lambda: self.node.execute_cb(self))
+
+
+class PlayingSound:
+    """A sound that plays for ``length`` seconds unless stopped."""
+
+    def __init__(self, length):
+        self.length = length
+        self.end = None
+
+    def command(self, cmd):
+        self.end = time.monotonic() + self.length
+
+    def get_playing(self):
+        return self.end is not None and time.monotonic() < self.end
+
+    def update(self):
+        pass
+
+    def stop(self):
+        self.end = None
+
+
+def test_a_new_goal_preempts_the_playing_one(node, monkeypatch):
+    node.initialized = True
+    node._goal_handle = None
+    first = FakeGoalHandle(node, PlayingSound(3.0))
+    second = FakeGoalHandle(node, PlayingSound(0.3))
+    sounds = iter([first.sound, second.sound])
+    monkeypatch.setattr(node, 'select_sound', lambda data: next(sounds))
+
+    node.handle_accepted_cb(first)
+    time.sleep(0.3)
+    started = time.monotonic()
+    node.handle_accepted_cb(second)
+    first.thread.join(timeout=5.0)
+    second.thread.join(timeout=5.0)
+
+    assert first.events == ['abort'] and not first.errors, first.events
+    assert first.sound.end is None, 'the preempted sound kept playing'
+    assert second.events == ['succeed'] and not second.errors, second.events
+    assert time.monotonic() - started < 1.5, 'the new sound waited for the old'
