@@ -39,6 +39,8 @@ if(BUILD_TESTING)
   ament_auto_add_gtest(sound_play_test
     test/sound_play_mock_test.cpp
   )
+  find_package(ament_cmake_pytest REQUIRED)
+  ament_add_pytest_test(test_soundplay_node test/test_soundplay_node.py TIMEOUT 60)
 endif()
 
 

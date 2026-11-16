@@ -271,12 +271,14 @@ class SoundPlayNode(rclpy.node.Node):
         self.init_vars()
         self.no_error = True
         self.initialized = True
-        with self.mutex:
-            try:
-                self.idle_loop()
-            except Exception as e:
-                self.get_logger().error(
-                    'Exception in idle_loop: %s' % str(e))
+        # Not under self.mutex: idle_loop() sleeps and calls cleanup(), which
+        # takes self.mutex itself. Holding it here deadlocked cleanup() (a
+        # non-reentrant Lock) and kept execute_cb waiting for the whole loop.
+        try:
+            self.idle_loop()
+        except Exception as e:
+            self.get_logger().error(
+                'Exception in idle_loop: %s' % str(e))
         self.diagnostics(2)
 
     def stopdict(self, dict):
