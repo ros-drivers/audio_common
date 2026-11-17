@@ -17,8 +17,6 @@ add_library(${PROJECT_NAME} SHARED
 
 target_include_directories(${PROJECT_NAME}
   PRIVATE
-    ${rclcpp_INCLUDE_DIRS}
-    ${rclcpp_components_INCLUDE_DIRS}
     ${audio_common_msgs_INCLUDE_DIRS}
     ${diagnostic_updater_INCLUDE_DIRS}
     ${Boost_INCLUDE_DIRS}
@@ -28,8 +26,8 @@ target_include_directories(${PROJECT_NAME}
 
 target_link_libraries(${PROJECT_NAME}
   PUBLIC
-    ${rclcpp_LIBRARIES}
-    ${rclcpp_components_LIBRARIES}
+    rclcpp::rclcpp
+    rclcpp_components::component
     ${audio_common_msgs_LIBRARIES}
     ${diagnostic_updater_LIBRARIES}
   PRIVATE

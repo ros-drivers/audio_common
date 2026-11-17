@@ -16,8 +16,6 @@ add_library(${PROJECT_NAME} SHARED
 
 target_include_directories(${PROJECT_NAME}
   PRIVATE
-    ${rclcpp_INCLUDE_DIRS}
-    ${rclcpp_components_INCLUDE_DIRS}
     ${audio_common_msgs_INCLUDE_DIRS}
     ${GST1.0_INCLUDE_DIRS}
     ${GST1.0_BASE_INCLUDE_DIRS}
@@ -25,8 +23,8 @@ target_include_directories(${PROJECT_NAME}
 
 target_link_libraries(${PROJECT_NAME}
   PUBLIC
-    ${rclcpp_LIBRARIES}
-    ${rclcpp_components_LIBRARIES}
+    rclcpp::rclcpp
+    rclcpp_components::component
     ${audio_common_msgs_LIBRARIES}
   PRIVATE
     ${GST1.0_LIBRARIES}
